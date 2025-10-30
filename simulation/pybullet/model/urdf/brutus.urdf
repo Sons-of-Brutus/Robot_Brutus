@@ -826,7 +826,7 @@
       <!--foot001/foot001.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -834,7 +834,7 @@
       <!--foot001/foot001.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
@@ -869,7 +869,7 @@
       <!--foot003/foot003.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -877,7 +877,7 @@
       <!--foot003/foot003.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
@@ -912,7 +912,7 @@
       <!--foot005/foot005.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -920,7 +920,7 @@
       <!--foot005/foot005.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
@@ -955,7 +955,7 @@
       <!--foot007/foot007.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -963,7 +963,7 @@
       <!--foot007/foot007.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/foot_fist_mesh_relocated.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
