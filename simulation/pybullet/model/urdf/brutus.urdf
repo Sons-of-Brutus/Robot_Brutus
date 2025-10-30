@@ -1156,7 +1156,7 @@
     <inertial>
         <mass value="0.03146"/>
         <origin xyz="-0.000269 0.00184 0.002399" rpy="0 0 0"/>
-        <inertia ixx="0.03146" ixy="0" ixz="0" iyy="v" iyz="0" izz="0.03146"/>
+        <inertia ixx="0.03146" ixy="0" ixz="0" iyy="0" iyz="0" izz="0.03146"/>
     </inertial>
   </link>
   <link name="battery">
@@ -1173,7 +1173,7 @@
       </geometry>
     </collision>
     <inertial>
-        <mass value="0.2"/>
+        <mass value="0.0002"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <inertia ixx="0.2" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0.2"/>
     </inertial>
