@@ -80,8 +80,8 @@ FOOT_OFFSETS = {
 # Si algún eje está invertido por la kinemática local, cambia los signos aquí.
 SIGNS = {
     # cómo suma el codo y el bottom para cada pata (ajusta si ves que “se pasa” o va al revés)
-    "fr": {"elbow": +1.0, "bottom": -1.0, "foot": +1.0},
-    "fl": {"elbow": -1.0, "bottom": +1.0, "foot": +1.0},
+    "fr": {"elbow": +1.0, "bottom": -1.0, "foot": -1.0},
+    "fl": {"elbow": -1.0, "bottom": +1.0, "foot": -1.0},
     "br": {"elbow": -1.0, "bottom": -1.0, "foot": +1.0},
     "bl": {"elbow": +1.0, "bottom": +1.0, "foot": +1.0},
 }
@@ -132,7 +132,8 @@ def compute_flat_foot_target(brutus_id, leg_key):
     q_bottom = p.getJointState(brutus_id, joints["bottom"])[0]
 
     # objetivo de pie para “anular” la rotación total y quedar plano
-    q_foot_des = - (s["elbow"]*q_elbow + s["bottom"]*q_bottom) + FOOT_OFFSETS[leg_key]
+    #q_foot_des = - (s["elbow"]*q_elbow + s["bottom"]*q_bottom) + FOOT_OFFSETS[leg_key]
+    q_foot_des = - (s["bottom"]*q_bottom) + FOOT_OFFSETS[leg_key]
     # si el eje del propio pie está invertido, aplica también el signo:
     q_foot_des *= s["foot"]
     return q_foot_des

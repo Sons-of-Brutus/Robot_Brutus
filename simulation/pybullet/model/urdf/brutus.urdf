@@ -826,7 +826,7 @@
       <!--foot001/foot001.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_6evywk.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -834,7 +834,7 @@
       <!--foot001/foot001.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_6evywk.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -869,7 +869,7 @@
       <!--foot003/foot003.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_eruimg.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -877,7 +877,7 @@
       <!--foot003/foot003.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_eruimg.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
@@ -912,7 +912,7 @@
       <!--foot005/foot005.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_z7rhv3.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -920,7 +920,7 @@
       <!--foot005/foot005.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_z7rhv3.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
@@ -955,7 +955,7 @@
       <!--foot007/foot007.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_wkfqst.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -963,7 +963,7 @@
       <!--foot007/foot007.-->
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
       <geometry>
-        <mesh filename="../meshes/robot_foot_wkfqst.dae"/>
+        <mesh filename="../meshes/foot_fist_mesh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
     <inertial>
@@ -1154,9 +1154,9 @@
       </geometry>
     </collision>
     <inertial>
-        <mass value="0.03146"/>
+        <mass value="0.33146"/>
         <origin xyz="-0.000269 0.00184 0.002399" rpy="0 0 0"/>
-        <inertia ixx="0.03146" ixy="0" ixz="0" iyy="0" iyz="0" izz="0.03146"/>
+        <inertia ixx="0.33146" ixy="0" ixz="0" iyy="0.33146" iyz="0" izz="0.33146"/>
     </inertial>
   </link>
   <link name="battery">
@@ -1173,7 +1173,7 @@
       </geometry>
     </collision>
     <inertial>
-        <mass value="0.0002"/>
+        <mass value="0.2"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <inertia ixx="0.2" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0.2"/>
     </inertial>
