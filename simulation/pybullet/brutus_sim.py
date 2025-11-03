@@ -14,12 +14,12 @@ BRUTUS_PATH = os.path.abspath("./model/urdf/brutus.urdf")
 GRAVITY = -9.8
 
 FORCE = 70  # par máximo, ajusta 30–80 según tu modelo
-MAX_TORQUE = 0.17
+MAX_TORQUE = 0.22
 
 START_POS = (0,0,0.08)
 START_ORIENTATION = p.getQuaternionFromEuler([0, 0, -math.pi/2])
 
-SIM_TIME_STEP = 0.005
+SIM_TIME_STEP = 1/240
 
 TEST_ANGLE = math.radians(30)
 
@@ -43,10 +43,10 @@ LOG_JOINT_NAMES = [
 
 
 
-ELBOWS_INIT_POSITIONS = {'br':(-math.radians(10)), 'bl':(math.radians(10)), 'fl':(-math.radians(10)), 'fr':(math.radians(10))}
+ELBOWS_INIT_POSITIONS = {'br':(-math.radians(20)), 'bl':(math.radians(20)), 'fl':(-math.radians(20)), 'fr':(math.radians(20))}
 
 # 600°/s = 600*(180/π) ​= 10.4719755 rad/s
-MAX_SERVOS_SPEED = 10.47 #10.47
+MAX_SERVOS_SPEED = 10.47
 
 WAIT_MOV = 0.05
 
@@ -55,18 +55,19 @@ WAIT_MOV = 0.05
 
 r40 = math.radians(40)
 r15 = math.radians(15)
+r30 = math.radians(30)
 
 # FORWARD
 FRONT_RIGHT_JOINT_FORWARD = r40
-BACK_RIGHT_JOINT_FORWARD  = -math.radians(10)
+BACK_RIGHT_JOINT_FORWARD  = -math.radians(20)
 FRONT_LEFT_JOINT_FORWARD  = -r40
-BACK_LEFT_JOINT_FORWARD   = math.radians(10)
+BACK_LEFT_JOINT_FORWARD   = math.radians(20)
 
 # BOTTOM_UP
-BACK_RIGHT_JOINT_BOTTOM_UP  = r15
-FRONT_LEFT_JOINT_BOTTOM_UP  = r15
-BACK_LEFT_JOINT_BOTTOM_UP   = -r15
-FRONT_RIGHT_JOINT_BOTTOM_UP = -r15
+BACK_RIGHT_JOINT_BOTTOM_UP  = r30
+FRONT_LEFT_JOINT_BOTTOM_UP  = r30
+BACK_LEFT_JOINT_BOTTOM_UP   = -r30
+FRONT_RIGHT_JOINT_BOTTOM_UP = -r30
 
 # MID_F (mitad de 40°)
 FRONT_RIGHT_JOINT_MID_F = r40 / 2
@@ -79,6 +80,8 @@ FRONT_RIGHT_JOINT_BACKWARD = 0.0
 FRONT_LEFT_JOINT_BACKWARD  = 0.0
 BACK_RIGHT_JOINT_BACKWARD  = -math.radians(50)
 BACK_LEFT_JOINT_BACKWARD   =  math.radians(50)
+
+POS_ERROR = 0.05
 
 #state machine
 UP = 0
@@ -143,18 +146,18 @@ BOTTOM_SUPPORT = {
 }
 
 
-
 def compute_flat_foot_target(brutus_id, leg_key):
     joints = LEGS[leg_key]
     s = SIGNS[leg_key]
-    q_elbow  = p.getJointState(brutus_id, joints["elbow"])[0]
     q_bottom = p.getJointState(brutus_id, joints["bottom"])[0]
 
     # objetivo de pie para “anular” la rotación total y quedar plano
-    #q_foot_des = - (s["elbow"]*q_elbow + s["bottom"]*q_bottom) + FOOT_OFFSETS[leg_key]
     q_foot_des = - (s["bottom"]*q_bottom) + FOOT_OFFSETS[leg_key]
     # si el eje del propio pie está invertido, aplica también el signo:
     q_foot_des *= s["foot"]
+
+    #print(f"({leg_key}) bottom: {q_bottom}, foot desired: {q_foot_des}")
+
     return q_foot_des
 
 def keep_feet_flat(brutus_id, kp=1.0):
@@ -166,8 +169,8 @@ def keep_feet_flat(brutus_id, kp=1.0):
             LEGS[leg_key]["foot"],
             p.POSITION_CONTROL,
             targetPosition=q_des,
-            maxVelocity=MAX_SERVOS_SPEED,
-            force=FORCE
+            force=80,
+            maxVelocity=600
         )
 
 
@@ -175,9 +178,12 @@ def keep_feet_flat(brutus_id, kp=1.0):
 
 def wait_sim(dt, sim_step=SIM_TIME_STEP):
     steps = int(dt/sim_step)
-    for _ in range(steps):
+    finished = False
+
+    for i in range(steps):
         if brutus_id_global is not None:
             keep_feet_flat(brutus_id_global)
+
         p.stepSimulation()
         time.sleep(sim_step)
 
@@ -192,11 +198,13 @@ def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
     - Si stagger>0, hace una micro-pausa entre joints.
     - Luego espera wait_after antes de seguir.
     """
+    
     for j, q in targets:
         p.setJointMotorControl2(
             brutus_id, j, p.POSITION_CONTROL,
-            targetPosition=q, maxVelocity=MAX_SERVOS_SPEED, force=FORCE
+            targetPosition=q, maxVelocity=MAX_SERVOS_SPEED, force=MAX_TORQUE
         )
+
         if stagger > 0.0:
             wait_sim(stagger)  # micro-pausa entre joints del mismo paso
     wait_sim(dt)      # pausa entre mini-pasos
@@ -208,9 +216,8 @@ def movement_1(brutus_id):
   # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
   set_phase(brutus_id, [
       (FRONT_RIGHT_JOINTS["bottom"], FRONT_RIGHT_JOINT_BOTTOM_UP),
-      (FRONT_RIGHT_JOINTS["elbow"],  FRONT_RIGHT_JOINT_FORWARD),
-      
-      (FRONT_RIGHT_JOINTS["bottom"], TEST_ANGLE)
+      (FRONT_RIGHT_JOINTS["elbow"],  FRONT_RIGHT_JOINT_FORWARD)
+      #(FRONT_RIGHT_JOINTS["bottom"], TEST_ANGLE)
   ], dt=0.01, stagger=0.5)
 
   
@@ -220,9 +227,8 @@ def movement_2(brutus_id):
   # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
   set_phase(brutus_id, [
       (BACK_LEFT_JOINTS["bottom"], BACK_LEFT_JOINT_BOTTOM_UP),
-      (BACK_LEFT_JOINTS["elbow"],  BACK_LEFT_JOINT_FORWARD),
-      
-      (BACK_LEFT_JOINTS["bottom"], TEST_ANGLE)
+      (BACK_LEFT_JOINTS["elbow"],  BACK_LEFT_JOINT_FORWARD)
+      #(BACK_LEFT_JOINTS["bottom"], TEST_ANGLE)
   ], dt=0.01, stagger=0.5)
 
 def movement_3(brutus_id):
@@ -231,9 +237,8 @@ def movement_3(brutus_id):
   # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
   set_phase(brutus_id, [
       (FRONT_LEFT_JOINTS["bottom"], FRONT_LEFT_JOINT_BOTTOM_UP),
-      (FRONT_LEFT_JOINTS["elbow"],  FRONT_LEFT_JOINT_FORWARD),
-      
-      (FRONT_LEFT_JOINTS["bottom"], -TEST_ANGLE)
+      (FRONT_LEFT_JOINTS["elbow"],  FRONT_LEFT_JOINT_FORWARD)
+      #(FRONT_LEFT_JOINTS["bottom"], -TEST_ANGLE)
   ], dt=0.01, stagger=0.5)
 
 
@@ -243,9 +248,8 @@ def movement_4(brutus_id):
   # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
   set_phase(brutus_id, [
       (BACK_RIGHT_JOINTS["bottom"], BACK_RIGHT_JOINT_BOTTOM_UP),
-      (BACK_RIGHT_JOINTS["elbow"],  BACK_RIGHT_JOINT_FORWARD),
-      
-      (BACK_RIGHT_JOINTS["bottom"], -TEST_ANGLE)
+      (BACK_RIGHT_JOINTS["elbow"],  BACK_RIGHT_JOINT_FORWARD)
+      #(BACK_RIGHT_JOINTS["bottom"], -TEST_ANGLE)
   ], dt=0.01, stagger=0.5)
 
 
@@ -322,7 +326,7 @@ def read_logged_joint_torques(brutus_id):
     for name, st in zip(LOG_JOINT_NAMES, states):
         q, dq, react, tau = st  # tau = appliedJointMotorTorque
         out[name] = {
-            "tau": tau,
+            "tau": abs(tau),
             "Mx": react[3],
             "My": react[4],
             "Mz": react[5],
@@ -368,7 +372,9 @@ def main():
   plane_id = p.loadURDF("plane.urdf")
   brutus_id = p.loadURDF(BRUTUS_PATH,
                          basePosition=START_POS,
-                         baseOrientation=START_ORIENTATION)
+                         baseOrientation=START_ORIENTATION,
+                         #useFixedBase=True
+                        )
   
   for j in [
     FRONT_RIGHT_JOINTS["elbow"], FRONT_LEFT_JOINTS["elbow"],
@@ -410,13 +416,13 @@ def main():
 
   # aplica a cada pie; usa los linkIndex de los pies (en PyBullet suele ser el mismo índice del joint del link)
   for foot_idx in [FRONT_RIGHT_JOINTS["foot"], FRONT_LEFT_JOINTS["foot"],
-                  BACK_RIGHT_JOINTS["foot"],  BACK_LEFT_JOINTS["foot"]]:
+                  BACK_RIGHT_JOINTS["foot"],  BACK_LEFT_JOINTS["foot"],]:
       p.changeDynamics(
           brutus_id, foot_idx,
           lateralFriction=4.0,      # prueba entre 1.5 y 3.0
           rollingFriction=0.003,    # pequeña resistencia al rodar
           spinningFriction=0.003,   # evita “girar sobre sí” sin grip
-          frictionAnchor=1          # “ancla” de fricción -> menos deslizamiento lateral
+          frictionAnchor=1,         # “ancla” de fricción -> menos deslizamiento lateral
     )
 
 
@@ -429,22 +435,21 @@ def main():
 
   print(f"Total mass: {total_mass:.6f} kg")
 
-  #print("------------------------------------")
-  #print("JOINTS:", numJoints)
+#  print("------------------------------------")
+#  print("JOINTS:", numJoints)
 #
-  #for i in range(numJoints):
-  #    info = p.getJointInfo(brutus_id, i)
-  #    joint_index = info[0]
-  #    joint_name = info[1].decode("utf-8")
-  #    joint_type = info[2]
-  #    link_index = info[12]
+#  for i in range(numJoints):
+#      info = p.getJointInfo(brutus_id, i)
+#      joint_index = info[0]
+#      joint_name = info[1].decode("utf-8")
+#      joint_type = info[2]
+#      link_index = info[12]
 #
-  #    if joint_type == p.JOINT_REVOLUTE:
-  #        print("Joint", joint_index)
-  #        print("  Name -", joint_name)
-  #        print("  Link -", link_index)
+#      print("Joint", joint_index)
+#      print("  Name -", joint_name)
+#      print("  Link -", link_index)
 #
-  #print("-----------------------------------------")
+#  print("-----------------------------------------")
 
   # Initialize joint positions
   p.resetJointState(brutus_id, BACK_RIGHT_JOINTS["elbow"], targetValue=ELBOWS_INIT_POSITIONS["br"])
@@ -459,112 +464,114 @@ def main():
   pause_start = None
   MOVE_DELAY = 0.5
 
-  # # Tamaño en metros
-  # side = 0.10
-  # half = side / 2.0
-
-  # # Crea shapes
-  # col = p.createCollisionShape(p.GEOM_BOX, halfExtents=[half, half, half])
-  # vis = p.createVisualShape(p.GEOM_BOX, halfExtents=[half, half, half],
-  #                           rgbaColor=[0.2, 0.6, 1.0, 1.0])  # color opcional
-
-  # # Crea el rigid body (masa en kg, p.ej. 2 kg)
-  # cube_id = p.createMultiBody(baseMass=2.0,
-  #                             baseCollisionShapeIndex=col,
-  #                             baseVisualShapeIndex=vis,
-  #                             basePosition=[0, 0, 1.0])  # 1 m sobre el suelo
-
-  # # Ajusta fricción/restitución si quieres
-  # p.changeDynamics(cube_id, -1,
-  #                 lateralFriction=1.0,
-  #                 rollingFriction=0.003,
-  #                 spinningFriction=0.003,
-  #                 restitution=0.1)
-
   try:
     while True:
-
       now = time.time()
       elapsed = now - start_time
 
       if state == "WAIT_INIT":
-    
         # Elbow
         p.setJointMotorControl2(brutus_id,
           FRONT_RIGHT_JOINTS["elbow"],
           p.POSITION_CONTROL,
           targetPosition=ELBOWS_INIT_POSITIONS["fr"],
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           FRONT_LEFT_JOINTS["elbow"],
           p.POSITION_CONTROL,
           targetPosition=ELBOWS_INIT_POSITIONS["fl"],
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           BACK_RIGHT_JOINTS["elbow"],
           p.POSITION_CONTROL,
           targetPosition=ELBOWS_INIT_POSITIONS["br"],
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           BACK_LEFT_JOINTS["elbow"],
           p.POSITION_CONTROL,
           targetPosition=ELBOWS_INIT_POSITIONS["bl"],
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
 
         # Bottom
         p.setJointMotorControl2(brutus_id,
           FRONT_RIGHT_JOINTS["bottom"],
           p.POSITION_CONTROL,
           targetPosition=TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           FRONT_LEFT_JOINTS["bottom"],
           p.POSITION_CONTROL,
           targetPosition=-TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           BACK_RIGHT_JOINTS["bottom"],
           p.POSITION_CONTROL,
           targetPosition=-TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           BACK_LEFT_JOINTS["bottom"],
           p.POSITION_CONTROL,
           targetPosition=TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         # Foot
         p.setJointMotorControl2(brutus_id,
           FRONT_RIGHT_JOINTS["foot"],
           p.POSITION_CONTROL,
           targetPosition=-TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           FRONT_LEFT_JOINTS["foot"],
           p.POSITION_CONTROL,
           targetPosition=-TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           BACK_RIGHT_JOINTS["foot"],
           p.POSITION_CONTROL,
           targetPosition=-TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
         
         p.setJointMotorControl2(brutus_id,
           BACK_LEFT_JOINTS["foot"],
           p.POSITION_CONTROL,
           targetPosition=-TEST_ANGLE,
-          maxVelocity=MAX_SERVOS_SPEED)
+          maxVelocity=MAX_SERVOS_SPEED,
+          force=MAX_TORQUE)
 
         if now - start_time > 3:
+          p.setJointMotorControl2(brutus_id,
+                                  FRONT_RIGHT_JOINTS["bottom"],
+                                  p.POSITION_CONTROL,
+                                  targetPosition=BOTTOM_UP["fr"],
+                                  maxVelocity=MAX_SERVOS_SPEED,
+                                  force=MAX_TORQUE)
+          
+          p.setJointMotorControl2(brutus_id,
+                                  BACK_LEFT_JOINTS["bottom"],
+                                  p.POSITION_CONTROL,
+                                  targetPosition=BOTTOM_UP["bl"],
+                                  maxVelocity=MAX_SERVOS_SPEED,
+                                  force=MAX_TORQUE)
+
           state = "TROT_A"
        
 
@@ -587,13 +594,10 @@ def main():
       elif state == "PAUSE_B":
           if (now - pause_start) >= MOVE_DELAY:
               state = "TROT_A"
-
         
-
-
-
-
-
+      #print("----------")
+      #print("BR BOTTOM:", p.getJointState(brutus_id, BACK_RIGHT_JOINTS["bottom"])[0])
+      #print("BR FOOT:", p.getJointState(brutus_id, BACK_RIGHT_JOINTS["foot"])[0])
 
       p.stepSimulation()
       time.sleep(SIM_TIME_STEP)

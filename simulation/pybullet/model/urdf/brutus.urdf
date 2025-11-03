@@ -237,7 +237,7 @@
   <joint name="box_to_battery" type="fixed">
     <parent link="up_box_link"/>
     <child link="battery"/>
-    <origin rpy="0 0 0" xyz="-0.028 -0.035 0.005"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0135"/>
   </joint>
 
 
@@ -1163,13 +1163,13 @@
   </link>
   <link name="battery">
     <visual>
-      <origin rpy="0 0 0" xyz="0.028 0.035 0.009"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <box size="0.056 0.07 0.018"/>
       </geometry>
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0.028 0.035 0.009"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <box size="0.056 0.07 0.018"/>
       </geometry>
