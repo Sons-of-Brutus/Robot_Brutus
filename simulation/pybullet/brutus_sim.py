@@ -4,6 +4,9 @@ import time
 import os
 import math
 
+import csv
+from datetime import datetime
+
 brutus_id_global = None
 
 BRUTUS_PATH = os.path.abspath("./model/urdf/brutus.urdf")
@@ -11,6 +14,7 @@ BRUTUS_PATH = os.path.abspath("./model/urdf/brutus.urdf")
 GRAVITY = -9.8
 
 FORCE = 70  # par máximo, ajusta 30–80 según tu modelo
+MAX_TORQUE = 0.17
 
 START_POS = (0,0,0.08)
 START_ORIENTATION = p.getQuaternionFromEuler([0, 0, -math.pi/2])
@@ -24,6 +28,20 @@ BACK_RIGHT_JOINTS = {'elbow':20, 'bottom':24, 'foot':26}
 BACK_LEFT_JOINTS = {'elbow':29, 'bottom':33, 'foot':35}
 FRONT_LEFT_JOINTS = {'elbow':11, 'bottom':15, 'foot':17}
 FRONT_RIGHT_JOINTS = {'elbow':2, 'bottom':6, 'foot':8}
+
+LOG_JOINT_IDXS = [
+    FRONT_RIGHT_JOINTS["elbow"], FRONT_LEFT_JOINTS["elbow"],
+    BACK_RIGHT_JOINTS["elbow"],  BACK_LEFT_JOINTS["elbow"],
+    FRONT_RIGHT_JOINTS["bottom"], FRONT_LEFT_JOINTS["bottom"],
+    BACK_RIGHT_JOINTS["bottom"],  BACK_LEFT_JOINTS["bottom"],
+]
+
+LOG_JOINT_NAMES = [
+    "fr_elbow","fl_elbow","br_elbow","bl_elbow",
+    "fr_bottom","fl_bottom","br_bottom","bl_bottom"
+]
+
+
 
 ELBOWS_INIT_POSITIONS = {'br':(-math.radians(10)), 'bl':(math.radians(10)), 'fl':(-math.radians(10)), 'fr':(math.radians(10))}
 
@@ -262,6 +280,77 @@ def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt
   set_phase(brutus_id, push_targets, dt=dt_push, stagger=0.0)
 
 
+def read_elbows_bottom_torques(brutus_id):
+    # lista de indices de elbows y bottoms
+    idxs = [
+        FRONT_RIGHT_JOINTS["elbow"], FRONT_LEFT_JOINTS["elbow"],
+        BACK_RIGHT_JOINTS["elbow"],  BACK_LEFT_JOINTS["elbow"],
+        FRONT_RIGHT_JOINTS["bottom"], FRONT_LEFT_JOINTS["bottom"],
+        BACK_RIGHT_JOINTS["bottom"],  BACK_LEFT_JOINTS["bottom"],
+    ]
+
+    states = p.getJointStates(brutus_id, idxs)
+    # states[i] = (position, velocity, reactionForces[6], appliedJointMotorTorque)
+
+    # Mapea a un dict legible
+    names = [
+        "fr_elbow","fl_elbow","br_elbow","bl_elbow",
+        "fr_bottom","fl_bottom","br_bottom","bl_bottom"
+    ]
+
+    data = {}
+    for name, st in zip(names, states):
+        q, dq, react, tau_motor = st
+        # tau_motor: par aplicado por el actuador en el último paso
+        # react[3:6] = (Mx, My, Mz) momento de reacción en marco mundial
+        data[name] = {
+            "tau_motor": tau_motor,
+            "Mx_react": react[3],
+            "My_react": react[4],
+            "Mz_react": react[5],
+        }
+    return data
+
+def enable_force_sensors_for_logged_joints(brutus_id):
+    for j in LOG_JOINT_IDXS:
+        p.enableJointForceTorqueSensor(brutus_id, j, enableSensor=1)
+
+def read_logged_joint_torques(brutus_id):
+    """Devuelve dict nombre -> {tau, Mx, My, Mz}"""
+    states = p.getJointStates(brutus_id, LOG_JOINT_IDXS)
+    out = {}
+    for name, st in zip(LOG_JOINT_NAMES, states):
+        q, dq, react, tau = st  # tau = appliedJointMotorTorque
+        out[name] = {
+            "tau": tau,
+            "Mx": react[3],
+            "My": react[4],
+            "Mz": react[5],
+        }
+    return out
+
+def init_csv_logger():
+    os.makedirs("logs", exist_ok=True)
+    fname = f"logs/torques_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    f = open(fname, "w", newline="")
+    writer = csv.writer(f)
+
+    # Cabecera: timestamp + tau de cada joint (y, opcional, Mx/My/Mz)
+    header = ["t_seconds"]
+    for n in LOG_JOINT_NAMES:
+        header.append(f"{n}_tau")
+        # si quieres guardar momentos de reacción, descomenta:
+        # header.extend([f"{n}_Mx", f"{n}_My", f"{n}_Mz"])
+    writer.writerow(header)
+    return f, writer, fname
+
+def write_csv_row(writer, t, data_dict):
+    row = [t]
+    for n in LOG_JOINT_NAMES:
+        row.append(data_dict[n]["tau"])
+        # si activaste Mx/My/Mz en cabecera, añade también:
+        # row.extend([data_dict[n]["Mx"], data_dict[n]["My"], data_dict[n]["Mz"]])
+    writer.writerow(row)
 
   
 
@@ -269,7 +358,7 @@ def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt
   
 
 
-
+last_print = time.time()
 
 def main():
   physics_client = p.connect(p.GUI)
@@ -281,6 +370,15 @@ def main():
                          basePosition=START_POS,
                          baseOrientation=START_ORIENTATION)
   
+  for j in [
+    FRONT_RIGHT_JOINTS["elbow"], FRONT_LEFT_JOINTS["elbow"],
+    BACK_RIGHT_JOINTS["elbow"],  BACK_LEFT_JOINTS["elbow"],
+    FRONT_RIGHT_JOINTS["bottom"], FRONT_LEFT_JOINTS["bottom"],
+    BACK_RIGHT_JOINTS["bottom"],  BACK_LEFT_JOINTS["bottom"],
+  ]:
+    p.enableJointForceTorqueSensor(brutus_id, j, enableSensor=1)
+
+  
   p.changeDynamics(
     bodyUniqueId=plane_id,
     linkIndex=-1,              # el plano no tiene links: usa -1
@@ -289,6 +387,19 @@ def main():
     spinningFriction=0.005     # opcional, evita giros sobre sí mismo
 )
   
+  enable_force_sensors_for_logged_joints(brutus_id)
+
+  csv_file, csv_writer, csv_path = init_csv_logger()
+  print(f"[logger] Escribiendo torques en {csv_path}")
+
+  # tras: csv_file, csv_writer, csv_path = init_csv_logger()
+  LOG_DT = 0.02           # frecuencia de log (50 Hz). Sube a 0.05 si quieres menos filas
+  last_log_t = time.time()
+  t0_log = last_log_t
+  rows_written = 0
+  FLUSH_EVERY = 50        # fuerza flush cada 50 filas (ajústalo a gusto)
+
+
   global brutus_id_global
   brutus_id_global = brutus_id
   
@@ -486,6 +597,16 @@ def main():
 
       p.stepSimulation()
       time.sleep(SIM_TIME_STEP)
+
+      # ---- LOG CSV ----
+      now_log = time.time()
+      if (now_log - last_log_t) >= LOG_DT:
+          torques = read_logged_joint_torques(brutus_id)
+          write_csv_row(csv_writer, now_log - t0_log, torques)
+          rows_written += 1
+          if rows_written % FLUSH_EVERY == 0:
+              csv_file.flush()  # asegura datos en disco periódicamente
+          last_log_t = now_log
 
   except KeyboardInterrupt:
     pass
