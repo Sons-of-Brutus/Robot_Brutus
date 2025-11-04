@@ -365,19 +365,24 @@ def read_logged_joint_torques(brutus_id):
     return out
 
 def init_csv_logger():
-    os.makedirs("logs", exist_ok=True)
-    fname = f"logs/torques_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-    f = open(fname, "w", newline="")
+    # Siempre el mismo fichero
+    fname = "logs/torques.csv"
+    os.makedirs(os.path.dirname(fname), exist_ok=True)
+
+    # "w" = sobrescribe en cada ejecución
+    f = open(fname, "w", newline="")   # newline="" evita líneas en blanco extra en Windows
     writer = csv.writer(f)
 
-    # Cabecera: timestamp + tau de cada joint (y, opcional, Mx/My/Mz)
+    # Cabecera fija
     header = ["t_seconds"]
     for n in LOG_JOINT_NAMES:
         header.append(f"{n}_tau")
-        # si quieres guardar momentos de reacción, descomenta:
-        # header.extend([f"{n}_Mx", f"{n}_My", f"{n}_Mz"])
+        # Si algún día guardas Mx/My/Mz, añade aquí las columnas como antes
     writer.writerow(header)
+
+    print(f"[logger] Escribiendo torques en {fname} (sobrescribiendo)")
     return f, writer, fname
+
 
 def write_csv_row(writer, t, data_dict):
     row = [t]
@@ -419,7 +424,7 @@ def main():
   p.changeDynamics(
     bodyUniqueId=plane_id,
     linkIndex=-1,              # el plano no tiene links: usa -1
-    lateralFriction=6.0,       # prueba 3–6
+    lateralFriction=0.6,       # prueba 3–6
     rollingFriction=0.005,     # opcional, reduce deslizamiento por rodadura
     spinningFriction=0.005     # opcional, evita giros sobre sí mismo
 )
