@@ -185,6 +185,28 @@ def wait_sim(dt, sim_step=SIM_TIME_STEP):
         p.stepSimulation()
         time.sleep(sim_step)
 
+
+
+def is_in_pos(brutus_id, j, q_target):
+  theshold = 0.3
+  q_now, dq_now, *_ = p.getJointState(brutus_id, j)
+  reach_p = abs(q_now - q_target)
+  print("reach_p: ",reach_p)
+
+  if(reach_p < theshold):
+     return True
+  
+  return False
+
+def all_joints_in_pos(brutus_id, targets):
+    for j, q in targets:
+      if not is_in_pos(brutus_id, j, q):
+         return False
+    
+    return True
+
+       
+
 def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
     """
     targets: lista [(jointIndex, targetPosition), ...]
@@ -201,7 +223,10 @@ def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
 
         if stagger > 0.0:
             wait_sim(stagger)  # micro-pausa entre joints del mismo paso
+    
+    #while not all_joints_in_pos(brutus_id, targets):
     wait_sim(dt)      # pausa entre mini-pasos
+
 
 
 def movement_1(brutus_id):
