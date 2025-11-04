@@ -15,12 +15,12 @@ BRUTUS_PATH = os.path.abspath("./model/urdf/brutus.urdf")
 GRAVITY = -9.8
 
 FORCE = 70  # par máximo, ajusta 30–80 según tu modelo
-MAX_TORQUE = 0.22
+MAX_TORQUE = 0.1824
 
 START_POS = (0,0,0.08)
 START_ORIENTATION = p.getQuaternionFromEuler([0, 0, -math.pi/2])
 
-SIM_TIME_STEP = 1/240
+SIM_TIME_STEP = (1/240)
 
 TEST_ANGLE = math.radians(30)
 
@@ -82,7 +82,7 @@ FRONT_LEFT_JOINT_BACKWARD  = 0.0
 BACK_RIGHT_JOINT_BACKWARD  = -math.radians(50)
 BACK_LEFT_JOINT_BACKWARD   =  math.radians(50)
 
-POS_ERROR = 0.05
+POS_ERROR = 0.55
 
 #state machine
 UP = 0
@@ -188,12 +188,12 @@ def wait_sim(dt, sim_step=SIM_TIME_STEP):
 
 
 def is_in_pos(brutus_id, j, q_target):
-  theshold = 0.3
-  q_now, dq_now, *_ = p.getJointState(brutus_id, j)
-  reach_p = abs(q_now - q_target)
-  print("reach_p: ",reach_p)
+  q_now = p.getJointState(brutus_id, j)[0]
+  q_diff = abs(q_now - q_target)
 
-  if(reach_p < theshold):
+  print(f"j: {j}, q_now: {q_now}, q_target: {q_target}, diff: {q_diff}")
+
+  if q_diff <= POS_ERROR:
      return True
   
   return False
@@ -201,6 +201,7 @@ def is_in_pos(brutus_id, j, q_target):
 def all_joints_in_pos(brutus_id, targets):
     for j, q in targets:
       if not is_in_pos(brutus_id, j, q):
+         print(f"Is not in pos ({j})")
          return False
     
     return True
@@ -224,8 +225,9 @@ def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
         if stagger > 0.0:
             wait_sim(stagger)  # micro-pausa entre joints del mismo paso
     
-    #while not all_joints_in_pos(brutus_id, targets):
-    wait_sim(dt)      # pausa entre mini-pasos
+    while not all_joints_in_pos(brutus_id, targets):
+      print("--------")
+      wait_sim(dt)      # pausa entre mini-pasos
 
 
 
@@ -327,7 +329,7 @@ def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt
       advance_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
   set_phase(brutus_id, advance_targets, dt=dt_lift, stagger=0.0)
 
-  ## 3) Empujar con la pareja de soporte (llevar sus elbows a backward)
+  # 3) Empujar con la pareja de soporte (llevar sus elbows a backward)
   #push_targets = []
   #for leg in support:
   #    push_targets.append((LEGS[leg]["elbow"], ELBOW_BACK[leg]))
@@ -449,10 +451,11 @@ def main():
   p.changeDynamics(
     bodyUniqueId=plane_id,
     linkIndex=-1,              # el plano no tiene links: usa -1
-    lateralFriction=0.6,       # prueba 3–6
+    lateralFriction=1,       # prueba 3–6
     rollingFriction=0.005,     # opcional, reduce deslizamiento por rodadura
-    spinningFriction=0.005     # opcional, evita giros sobre sí mismo
-)
+    spinningFriction=0.005,    # opcional, evita giros sobre sí mismo
+    frictionAnchor=True
+  )
   
   enable_force_sensors_for_logged_joints(brutus_id)
 
@@ -483,7 +486,7 @@ def main():
           lateralFriction=4.0,      # prueba entre 1.5 y 3.0
           rollingFriction=0.003,    # pequeña resistencia al rodar
           spinningFriction=0.003,   # evita “girar sobre sí” sin grip
-          frictionAnchor=1,         # “ancla” de fricción -> menos deslizamiento lateral
+          frictionAnchor=True,         # “ancla” de fricción -> menos deslizamiento lateral
     )
 
 
