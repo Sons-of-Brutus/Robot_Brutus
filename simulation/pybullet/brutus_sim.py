@@ -4,6 +4,7 @@ import time
 import os
 import math
 
+import numpy as np
 import csv
 from datetime import datetime
 
@@ -173,9 +174,6 @@ def keep_feet_flat(brutus_id, kp=1.0):
             maxVelocity=600
         )
 
-
-
-
 def wait_sim(dt, sim_step=SIM_TIME_STEP):
     steps = int(dt/sim_step)
     finished = False
@@ -186,10 +184,6 @@ def wait_sim(dt, sim_step=SIM_TIME_STEP):
 
         p.stepSimulation()
         time.sleep(sim_step)
-
-
-
-
 
 def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
     """
@@ -216,9 +210,14 @@ def movement_1(brutus_id):
   # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
   set_phase(brutus_id, [
       (FRONT_RIGHT_JOINTS["bottom"], FRONT_RIGHT_JOINT_BOTTOM_UP),
-      (FRONT_RIGHT_JOINTS["elbow"],  FRONT_RIGHT_JOINT_FORWARD)
+      (FRONT_RIGHT_JOINTS["elbow"],  FRONT_RIGHT_JOINT_FORWARD),
+
+      (BACK_LEFT_JOINTS["bottom"], BACK_LEFT_JOINT_BOTTOM_UP),
+      (BACK_LEFT_JOINTS["elbow"],  BACK_LEFT_JOINT_FORWARD)
+
+
       #(FRONT_RIGHT_JOINTS["bottom"], TEST_ANGLE)
-  ], dt=0.01, stagger=0.5)
+  ], dt=1, stagger=0.5)
 
   
 def movement_2(brutus_id):
@@ -229,7 +228,7 @@ def movement_2(brutus_id):
       (BACK_LEFT_JOINTS["bottom"], BACK_LEFT_JOINT_BOTTOM_UP),
       (BACK_LEFT_JOINTS["elbow"],  BACK_LEFT_JOINT_FORWARD)
       #(BACK_LEFT_JOINTS["bottom"], TEST_ANGLE)
-  ], dt=0.01, stagger=0.5)
+  ], dt=1, stagger=0.5)
 
 def movement_3(brutus_id):
   print("MOV 3")
@@ -239,7 +238,7 @@ def movement_3(brutus_id):
       (FRONT_LEFT_JOINTS["bottom"], FRONT_LEFT_JOINT_BOTTOM_UP),
       (FRONT_LEFT_JOINTS["elbow"],  FRONT_LEFT_JOINT_FORWARD)
       #(FRONT_LEFT_JOINTS["bottom"], -TEST_ANGLE)
-  ], dt=0.01, stagger=0.5)
+  ], dt=1, stagger=0.5)
 
 
 def movement_4(brutus_id):
@@ -250,12 +249,12 @@ def movement_4(brutus_id):
       (BACK_RIGHT_JOINTS["bottom"], BACK_RIGHT_JOINT_BOTTOM_UP),
       (BACK_RIGHT_JOINTS["elbow"],  BACK_RIGHT_JOINT_FORWARD)
       #(BACK_RIGHT_JOINTS["bottom"], -TEST_ANGLE)
-  ], dt=0.01, stagger=0.5)
+  ], dt=1, stagger=0.5)
 
 
 
 
-
+'''
 def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt_push=0.12):
   """Un paso de trote:
       - swing: pareja que se levanta y avanza (por defecto FR+BL)
@@ -282,7 +281,39 @@ def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt
       push_targets.append((LEGS[leg]["elbow"], ELBOW_BACK[leg]))
       push_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
   set_phase(brutus_id, push_targets, dt=dt_push, stagger=0.0)
+'''
 
+def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt_push=0.12):
+  support = tuple({"fr","fl","br","bl"} - set(swing))
+
+  # 1) Levantar bottoms
+  lift_targets = []
+  for leg in swing:
+      lift_targets.append((LEGS[leg]["bottom"], BOTTOM_UP[leg]))
+  set_phase(brutus_id, lift_targets, dt=dt_lift, stagger=0.0)
+
+  # 2) Adelantar elbows de ambas patas swing (a la vez) y empujar con la pareja de soporte (llevar sus elbows a backward)
+  advance_targets = []
+  for leg in swing:
+      advance_targets.append((LEGS[leg]["elbow"],  ELBOW_FWD[leg]))
+
+  for leg in support:
+      advance_targets.append((LEGS[leg]["elbow"], ELBOW_BACK[leg]))
+      advance_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
+  set_phase(brutus_id, advance_targets, dt=dt_lift, stagger=0.0)
+
+  ## 3) Empujar con la pareja de soporte (llevar sus elbows a backward)
+  #push_targets = []
+  #for leg in support:
+  #    push_targets.append((LEGS[leg]["elbow"], ELBOW_BACK[leg]))
+  #    push_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
+  #set_phase(brutus_id, push_targets, dt=dt_push, stagger=0.0)
+
+  # 4) Bajar esas dos patas a su ángulo de apoyo (a la vez)
+  lower_targets = []
+  for leg in swing:
+      lower_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
+  set_phase(brutus_id, lower_targets, dt=dt_lower, stagger=0.0)
 
 def read_elbows_bottom_torques(brutus_id):
     # lista de indices de elbows y bottoms
@@ -434,6 +465,34 @@ def main():
     total_mass += mass
 
   print(f"Total mass: {total_mass:.6f} kg")
+
+  masses = []
+  positions = []
+
+  # Incluir también el cuerpo base (link -1)
+  link_indices = [-1] + list(range(numJoints))
+
+  for link_index in link_indices:
+      # Obtener masa
+      mass = p.getDynamicsInfo(brutus_id, link_index)[0]
+      if mass == 0:
+          continue  # ignorar links sin masa
+
+      # Obtener posición del centro de masa en coordenadas globales
+      if link_index == -1:
+          pos, _ = p.getBasePositionAndOrientation(brutus_id)
+      else:
+          pos = p.getLinkState(brutus_id, link_index, computeForwardKinematics=True)[0]
+
+      masses.append(mass)
+      positions.append(np.array(pos))
+
+  # Calcular centro de masas global
+  total_mass = np.sum(masses)
+  com_global = np.sum([m * r for m, r in zip(masses, positions)], axis=0) / total_mass
+
+  print("Masa total:", total_mass, "kg")
+  print("Centro de masas global (x, y, z):", com_global)
 
 #  print("------------------------------------")
 #  print("JOINTS:", numJoints)

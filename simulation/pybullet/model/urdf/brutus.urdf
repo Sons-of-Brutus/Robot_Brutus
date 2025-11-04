@@ -1155,10 +1155,10 @@
       </geometry>
     </collision>
     <inertial>
-        <!-- Mass = box (0.33146 kg) + 3 us sensors (~ 10g * 3) + 3 us sensor's case (~ 15g * 3) + 250 g -->
-        <mass value="0.65646"/>
+        <!-- Mass = box (0.1 kg) + 3 us sensors (~ 10g * 3) + 3 us sensor's case (~ 6g * 3) + 250 g -->
+        <mass value="0.398"/>
         <origin xyz="-0.000269 0.00184 0.002399" rpy="0 0 0"/>
-        <inertia ixx="0.65646" ixy="0" ixz="0" iyy="0.65646" iyz="0" izz="0.65646"/>
+        <inertia ixx="0.398" ixy="0" ixz="0" iyy="0.398" iyz="0" izz="0.398"/>
     </inertial>
   </link>
   <link name="battery">
