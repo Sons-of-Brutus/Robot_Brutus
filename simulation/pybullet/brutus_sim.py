@@ -147,6 +147,8 @@ BOTTOM_SUPPORT = {
 }
 
 
+
+
 def compute_flat_foot_target(brutus_id, leg_key):
     joints = LEGS[leg_key]
     s = SIGNS[leg_key]
@@ -225,9 +227,8 @@ def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
         if stagger > 0.0:
             wait_sim(stagger)  # micro-pausa entre joints del mismo paso
     
-    while not all_joints_in_pos(brutus_id, targets):
-      print("--------")
-      wait_sim(dt)      # pausa entre mini-pasos
+    
+    wait_sim(dt)      # pausa entre mini-pasos
 
 
 
@@ -461,6 +462,11 @@ def main():
 
   csv_file, csv_writer, csv_path = init_csv_logger()
   print(f"[logger] Escribiendo torques en {csv_path}")
+
+  BATTERY_LINK_INDEX = 38
+  b_csv_file = open("logs/battery_height.csv", "w", newline="")
+  b_csv_writer = csv.writer(b_csv_file)
+  b_csv_writer.writerow(["t_seconds", "battery_z_m"])
 
   # tras: csv_file, csv_writer, csv_path = init_csv_logger()
   LOG_DT = 0.02           # frecuencia de log (50 Hz). Sube a 0.05 si quieres menos filas
@@ -700,6 +706,9 @@ def main():
           torques = read_logged_joint_torques(brutus_id)
           write_csv_row(csv_writer, now_log - t0_log, torques)
           rows_written += 1
+          pos_com = p.getLinkState(brutus_id, BATTERY_LINK_INDEX, computeForwardKinematics=True)[0]
+          z_battery = pos_com[2]
+          b_csv_writer.writerow([now_log - t0_log, z_battery])
           if rows_written % FLUSH_EVERY == 0:
               csv_file.flush()  # asegura datos en disco periódicamente
           last_log_t = now_log
@@ -707,6 +716,9 @@ def main():
   except KeyboardInterrupt:
     pass
 
+  try: b_csv_file.close()
+  except: pass
+  
   p.disconnect()
 
 if __name__ == '__main__':
