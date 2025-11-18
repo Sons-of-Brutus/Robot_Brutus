@@ -116,32 +116,34 @@ TaskServos(void *pvParameters)
   //const float angles[][2] = {{MIN_MG90S_ANGLE + 10, MIN_MG90S_ANGLE + 10}, {MAX_MG90S_ANGLE - 10, MAX_MG90S_ANGLE - 10}};
   //const float angles[][2] = {{MAX_MG90S_ANGLE, MAX_MG90S_ANGLE}, {MIN_MG90S_ANGLE, MIN_MG90S_ANGLE}};
 
-  int angle_idx = 0;
-  bool up = false;
+  int angle_idx = 21;
+  bool up = true;
   int min, max;
   while (true) {
-    //pca.setPWM(1, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
-    //pca.setPWM(2, 0, angle_to_pwm(180.0 - angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[1]->min_pwm, servos_list[1]->max_pwm));
-    //pca.setPWM(3, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[2]->min_pwm, servos_list[2]->max_pwm));
-    //pca.setPWM(4, 0, angle_to_pwm(180.0 - angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[3]->min_pwm, servos_list[3]->max_pwm));
+    //Serial.println(angle_idx);
+    pca.setPWM(1, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
+    pca.setPWM(2, 0, angle_to_pwm(180.0 - angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[1]->min_pwm, servos_list[1]->max_pwm));
+    pca.setPWM(3, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[2]->min_pwm, servos_list[2]->max_pwm));
+    pca.setPWM(4, 0, angle_to_pwm(180.0 - angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[3]->min_pwm, servos_list[3]->max_pwm));
 
-    pca.setPWM(1, 0, angle_to_pwm(angles[angle_idx%2][0], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
-    pca.setPWM(2, 0, angle_to_pwm(angles[(angle_idx+1)%2][1], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[1]->min_pwm, servos_list[1]->max_pwm));
-    pca.setPWM(3, 0, angle_to_pwm(angles[angle_idx%2][2], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[2]->min_pwm, servos_list[2]->max_pwm));
-    pca.setPWM(4, 0, angle_to_pwm(angles[(angle_idx+1)%2][3], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[3]->min_pwm, servos_list[3]->max_pwm));
+    //pca.setPWM(1, 0, angle_to_pwm(90, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
+    //pca.setPWM(1, 0, angle_to_pwm(angles[angle_idx%2][0], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
+    //pca.setPWM(2, 0, angle_to_pwm(angles[(angle_idx+1)%2][1], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[1]->min_pwm, servos_list[1]->max_pwm));
+    //pca.setPWM(3, 0, angle_to_pwm(angles[angle_idx%2][2], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[2]->min_pwm, servos_list[2]->max_pwm));
+    //pca.setPWM(4, 0, angle_to_pwm(angles[(angle_idx+1)%2][3], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[3]->min_pwm, servos_list[3]->max_pwm));
 
 
-    if (angle_idx == 180 || angle_idx == 0) {
+    if (angle_idx >= 160 || angle_idx <= 20) {
       up = !(up);
     }
 
     if (up) {
-      angle_idx += 5;
+      angle_idx += 2;
     } else {
-      angle_idx -= 5;
+      angle_idx -= 2;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(1000)); // HAbria que añdir timer
+    vTaskDelay(pdMS_TO_TICKS(50)); // HAbria que añdir timer
   }
 
   // TODO Cambiar la función de angle_to_pwm para meterle los offsets de calibración
