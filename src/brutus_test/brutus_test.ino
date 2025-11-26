@@ -11,10 +11,16 @@
 #define MIN_MG90S_PULSE_US  500
 #define MAX_MG90S_PULSE_US  2500
 
-#define N_SERVOS 4
+#define N_SERVOS 8
 
-#define LED1_PCA_IDX 2
-#define LED2_PCA_IDX 3
+#define R_PIN 32
+#define G_PIN 25
+#define B_PIN 33
+
+#define BUZZER_PIN 23
+
+#define ECHO_PIN 18
+#define TRIG_PIN 19
 
 struct PcaServo {
   int pca_idx;
@@ -63,6 +69,7 @@ setup_servo(PcaServo *s, int idx, float min_angle, float max_angle)
 TaskHandle_t Task1;
 TaskHandle_t Task2;
 TaskHandle_t Task3;
+TaskHandle_t Task4;
 
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
@@ -84,14 +91,20 @@ PcaServo* servos_list[] = {&servo_lfr,
                            &servo_cbr,
                            &servo_cbl};
 
-void
-setup()
-{
+void setup() {
   Serial.begin(115200);
-  pinMode(2, OUTPUT);
 
   pca.begin();
   pca.setPWMFreq(PWM_SERVO_FREQ);
+
+  pinMode(R_PIN, OUTPUT);
+  pinMode(G_PIN, OUTPUT);
+  pinMode(B_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
   delay(100);
 
   setup_servo(&servo_lfr, 12, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE);
@@ -104,7 +117,6 @@ setup()
   setup_servo(&servo_cbl, 0, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE);
   delay(100);
 
-  /*
   xTaskCreatePinnedToCore(
     TaskServos,
     "TaskServos",
@@ -114,41 +126,41 @@ setup()
     &Task1,
     0
   );
-  */
+
+  xTaskCreatePinnedToCore(
+    TaskUltrasonic,
+    "TaskUltrasonic",
+    2048,
+    NULL,
+    1,
+    &Task2,
+    1
+  );
+
+  xTaskCreatePinnedToCore(
+    TaskLed,
+    "TaskLed",
+    2048,
+    NULL,
+    2,
+    &Task4,
+    1
+  );
 }
 
-void loop() {
-  Serial.println("hola");
-  delay(1000);
-
-  for (int i = 0; i < N_SERVOS; i++) {
-    pca.setPWM(servo_cfr.pca_idx, 0, angle_to_pwm(90, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servo_cfr.min_pwm, servo_cfr.max_pwm));
-  }
-}
-
+void loop() {}
 
 void
 TaskServos(void *pvParameters)
 {
-  const float angles[][4] = {{MIN_MG90S_ANGLE + 10, MAX_MG90S_ANGLE - 35, MIN_MG90S_ANGLE + 10, MAX_MG90S_ANGLE - 35}, {MAX_MG90S_ANGLE - 35, MIN_MG90S_ANGLE + 10, MAX_MG90S_ANGLE - 35, MIN_MG90S_ANGLE + 10}};
-  //const float angles[][2] = {{MIN_MG90S_ANGLE + 10, MIN_MG90S_ANGLE + 10}, {MAX_MG90S_ANGLE - 10, MAX_MG90S_ANGLE - 10}};
-  //const float angles[][2] = {{MAX_MG90S_ANGLE, MAX_MG90S_ANGLE}, {MIN_MG90S_ANGLE, MIN_MG90S_ANGLE}};
-
   int angle_idx = 21;
   bool up = true;
   int min, max;
   while (true) {
-    //Serial.println(angle_idx);
-    pca.setPWM(1, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
-    pca.setPWM(2, 0, angle_to_pwm(180.0 - angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[1]->min_pwm, servos_list[1]->max_pwm));
-    pca.setPWM(3, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[2]->min_pwm, servos_list[2]->max_pwm));
-    pca.setPWM(4, 0, angle_to_pwm(180.0 - angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[3]->min_pwm, servos_list[3]->max_pwm));
-
-    //pca.setPWM(1, 0, angle_to_pwm(90, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
-    //pca.setPWM(1, 0, angle_to_pwm(angles[angle_idx%2][0], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[0]->min_pwm, servos_list[0]->max_pwm));
-    //pca.setPWM(2, 0, angle_to_pwm(angles[(angle_idx+1)%2][1], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[1]->min_pwm, servos_list[1]->max_pwm));
-    //pca.setPWM(3, 0, angle_to_pwm(angles[angle_idx%2][2], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[2]->min_pwm, servos_list[2]->max_pwm));
-    //pca.setPWM(4, 0, angle_to_pwm(angles[(angle_idx+1)%2][3], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servos_list[3]->min_pwm, servos_list[3]->max_pwm));
+    for (int i = 0; i < N_SERVOS; i++) {
+      auto actual_servo = servos_list[i];
+      pca.setPWM(actual_servo->pca_idx, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, actual_servo->min_pwm, actual_servo->max_pwm));
+    }
 
 
     if (angle_idx >= 160 || angle_idx <= 20) {
@@ -163,19 +175,53 @@ TaskServos(void *pvParameters)
 
     vTaskDelay(pdMS_TO_TICKS(50)); // HAbria que añdir timer
   }
+}
 
-  // TODO Cambiar la función de angle_to_pwm para meterle los offsets de calibración
-  // FRONT LEFT +10, -35
-
-  /*
-  const float angles[] = {MIN_MG90S_ANGLE + 10, MAX_MG90S_ANGLE - 35};
-  int angle_idx = 0;
+void
+TaskLed(void *pvParameters)
+{
+  uint8_t rgbTable[8][3] = {
+    {0, 0, 0},
+    {1, 0, 0},
+    {0, 1, 0},
+    {1, 1, 0},
+    {0, 0, 1},
+    {1, 0, 1},
+    {0, 1, 1},
+    {1, 1, 1}
+  };
 
   while (true) {
-    pca.setPWM(servo_fl.pca_idx, 0, angle_to_pwm(angles[angle_idx%2], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, servo_fl.min_pwm, servo_fl.max_pwm));
+    for (uint8_t i = 0; i < 8; i++) {
+      digitalWrite(R_PIN, rgbTable[i][0]);
+      digitalWrite(G_PIN, rgbTable[i][1]);
+      digitalWrite(B_PIN, rgbTable[i][2]);
 
-    angle_idx++;
-    vTaskDelay(pdMS_TO_TICKS(1000));
+      vTaskDelay(pdMS_TO_TICKS(500));
+    }
   }
-  */
+}
+
+void
+TaskUltrasonic(void *pvParameters)
+{
+  while (true) {
+    long duration;
+    float distance_cm;
+
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+
+    duration = pulseIn(ECHO_PIN, HIGH, 30000);
+    distance_cm = (duration / 2.0) * 0.0343;
+
+    Serial.print("Distance: ");
+    Serial.print(distance_cm);
+    Serial.println(" cm");
+
+    vTaskDelay(pdMS_TO_TICKS(500));
+  }
 }
