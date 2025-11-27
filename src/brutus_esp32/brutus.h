@@ -2,7 +2,7 @@
 #define BRUTUS__H
 
 #include "Pca9685Servo.h"
-#include "brutus_leg_controller.h"
+#include "BrutusLegController.h"
 #include "brutus_params.h"
 
 void init_brutus(Adafruit_PWMServoDriver* pca);
