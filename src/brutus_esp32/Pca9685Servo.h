@@ -4,7 +4,6 @@
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
-#define PWM_SERVO_FREQ      50
 #define PCA9685_RESOLUTION  4096
 #define PWM_PERIOD_US       20000.0f
 
@@ -21,9 +20,6 @@ private:
   uint16_t max_pwm;             // PWM value corresponant to max_angle
 
   uint16_t init_pwm;            // PWM value for the angle in the middle
-
-  uint16_t pwm_offset;          // PWM value for the servo's angle offset with the same 
-                                // init_pwm as other servos with the same parameters
 
 public:
 
@@ -60,16 +56,45 @@ public:
   /**
    * @brief Sends a PWM pulse corresponding to an angle to the specified servo
    * 
-   * @param angle Desired angle, normalized to [this->min_angle, this->max_angle]
+   * @param angle   Desired angle, normalized to [this->min_angle, this->max_angle]
+   * @param on_tick The tick when the PCA send the pulse to the servo
    */
-  void set_angle(float angle)
+  void set_angle(float angle
+                 uint16_t on_tick = 0)
   {
     uint16_t pwm_value = Pca9685Servo::angle_to_pwm(this->pca_idx,
                                                     this->min_angle,
                                                     this->max_angle,
                                                     this->min_pwm,
                                                     this->max_pwm);
-    this->pca->setPWM();
+    this->pca->setPWM(this->pca_idx,
+                      on_tick,
+                      pwm_value);
+  }
+
+  /**
+   * @return Actual servo's angle.
+   */
+  void
+  get_angle()
+  {
+    uint16_t on_tick, off_tick;
+    this->pca->getPWM(this->pca_idx, &on_tick, &off_tick);
+
+    uint16_t pwm_val;
+    if (off_tick >= on_tick) {
+      pwm_val = off_tick - on_tick;
+    } else {
+      pwm_val = off_tick + 4096 - on_tick;
+    }
+
+    float angle = Pca9685Servo::pwm_to_angle(pwm_val,
+                                             this->min_pwm,
+                                             this->max_pwm,
+                                             this->min_angle,
+                                             this->max_angle);
+
+    return angle;
   }
 
   /**
