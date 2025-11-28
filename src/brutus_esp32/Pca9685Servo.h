@@ -48,9 +48,9 @@ public:
     this->min_angle = min_angle;
     this->max_angle = max_angle;
 
-    float init_angle = (s->min_angle + s->max_angle) * 0.5f; 
+    float init_angle = (this->min_angle + this->max_angle) * 0.5f; 
 
-    this->init_pwm = Pca9685Servo::angle_to_pwm(init_angle, min_angle, max_angle, s->min_pwm, s->max_pwm);
+    this->init_pwm = Pca9685Servo::angle_to_pwm(init_angle, min_angle, max_angle, this->min_pwm, this->max_pwm);
   }
 
   /**
