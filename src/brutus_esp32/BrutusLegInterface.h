@@ -17,9 +17,10 @@ private:
 
 public:
   BrutusLegInterface(Adafruit_PWMServoDriver* pca)
-  {
-    this->pca = pca;
-  }
+  : pca(pca),
+    elbow(pca,0,0,0,0,0),
+    shoulder(pca,0,0,0,0,0)
+  {}
 
   void setup_elbow(int pca_idx,
                    int min_pwm_pulse_period,
@@ -38,7 +39,9 @@ public:
   {
     shoulder = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
-  
+
+
+
 };
 
 #endif // BRUTUS_LEG_INTERFACE__H

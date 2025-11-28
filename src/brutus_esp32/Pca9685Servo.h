@@ -75,11 +75,11 @@ public:
   /**
    * @return Actual servo's angle.
    */
-  void
+  float
   get_angle()
   {
-    uint16_t on_tick, off_tick;
-    this->pca->getPWM(this->pca_idx, &on_tick, &off_tick);
+    uint16_t on_tick = this->pca->getPWM(this->pca_idx, false);
+    uint16_t off_tick = this->pca->getPWM(this->pca_idx, true);
 
     uint16_t pwm_val;
     if (off_tick >= on_tick) {

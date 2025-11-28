@@ -47,3 +47,5 @@ void setup() {
                      MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
                      MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
 }
+
+void loop() {}
