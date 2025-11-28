@@ -59,7 +59,7 @@ public:
    * @param angle   Desired angle, normalized to [this->min_angle, this->max_angle]
    * @param on_tick The tick when the PCA send the pulse to the servo
    */
-  void set_angle(float angle
+  void set_angle(float angle,
                  uint16_t on_tick = 0)
   {
     uint16_t pwm_value = Pca9685Servo::angle_to_pwm(this->pca_idx,
@@ -110,7 +110,8 @@ public:
    * @note Values below 0 are clamped to 0.
    * @note Values above 4095 are clamped to the maximum allowed.
    */
-  static uint16_t us_to_pwm(float pulse_width_us)
+  static uint16_t
+  us_to_pwm(float pulse_width_us)
   {
     float counts = (pulse_width_us / PWM_PERIOD_US) * PCA9685_RESOLUTION;
 
@@ -137,9 +138,10 @@ public:
    * @note Angles above max_angle are clamped to max_angle.
    * @note The angle-to-PWM mapping is linear.
    */
-  static uint16_t angle_to_pwm(float angle,
-                        float min_angle, float max_angle,
-                        uint16_t min_pwm, uint16_t max_pwm)
+  static uint16_t
+  angle_to_pwm(float angle,
+               float min_angle, float max_angle,
+               uint16_t min_pwm, uint16_t max_pwm)
   {
     if (angle < min_angle) angle = min_angle;
     if (angle > max_angle) angle = max_angle;
@@ -166,9 +168,10 @@ public:
    * @note PWM values above max_pwm are clamped to max_pwm.
    * @note The PWM-to-angle mapping is linear.
    */
-  static float pwm_to_angle(uint16_t pwm,
-                     uint16_t min_pwm, uint16_t max_pwm,
-                     float min_angle, float max_angle)
+  static float
+  pwm_to_angle(uint16_t pwm,
+               uint16_t min_pwm, uint16_t max_pwm,
+               float min_angle, float max_angle)
   {
     if (pwm < min_pwm) pwm = min_pwm;
     if (pwm > max_pwm) pwm = max_pwm;
