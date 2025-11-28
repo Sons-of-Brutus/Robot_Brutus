@@ -178,6 +178,6 @@ public:
     return min_angle + slope * (pwm - min_pwm);
   }
 
-}
+};
 
 #endif // PCA_9685_SERVO__H

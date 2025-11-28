@@ -1,12 +1,12 @@
-#ifndef BRUTUS_LEG_CONTROLLER__H
-#define BRUTUS_LEG_CONTROLLER__H
+#ifndef BRUTUS_LEG_INTERFACE__H
+#define BRUTUS_LEG_INTERFACE__H
 
 #include "Pca9685Servo.h"
 #include "brutus_params.h"
 
 #define N_SERVOS_AT_LEG 2
 
-class BrutusLegController
+class BrutusLegInterface
 {
 
 private:
@@ -16,7 +16,7 @@ private:
   Adafruit_PWMServoDriver* pca;
 
 public:
-  BrutusLegController(Adafruit_PWMServoDriver* pca)
+  BrutusLegInterface(Adafruit_PWMServoDriver* pca)
   {
     this->pca = pca;
   }
@@ -38,9 +38,7 @@ public:
   {
     shoulder = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
+  
+};
 
-
-
-}
-
-#endif // BRUTUS_LEG_CONTROLLER__H
+#endif // BRUTUS_LEG_INTERFACE__H
