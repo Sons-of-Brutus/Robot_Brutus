@@ -4,7 +4,7 @@
 // --------- SERVOS CONFIG ----------
 
 // Actual configuration is for MG90s servos
-#define PWM_SERVO_FREQ      50
+#define PWM_SERVO_FREQ 50
 
 #define MIN_SERVO_ANGLE 0.0
 #define MAX_SERVO_ANGLE 180.0
