@@ -13,37 +13,33 @@ private:
   Pca9685Servo elbow;
   Pca9685Servo shoulder;
 
-  float elbow_offset;
-  float shoulder_offset;
+  Adafruit_PWMServoDriver* pca;
 
 public:
-  BrutusLegController()
+  BrutusLegController(Adafruit_PWMServoDriver* pca)
   {
+    this->pca = pca;
   }
 
-  void setup_elbow(Adafruit_PWMServoDriver* pca,
-                   int pca_idx,
+  void setup_elbow(int pca_idx,
                    int min_pwm_pulse_period,
                    int max_pwm_pulse_period,
                    float min_angle,
-                   float max_angle.
-                   float angle_offset)
+                   float max_angle)
   {
-    elbow = Pca9685Servo(pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
-    elbow_offset = angle_offset;
+    elbow = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
 
-  void setup_shoulder(Adafruit_PWMServoDriver* pca,
-                      int pca_idx,
+  void setup_shoulder(int pca_idx,
                       int min_pwm_pulse_period,
                       int max_pwm_pulse_period,
                       float min_angle,
-                      float max_angle.
-                      float angle_offset)
+                      float max_angle)
   {
-    shoulder = Pca9685Servo(pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
-    shoulder_offset = angle_offset;
+    shoulder = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
+
+
 
 }
 
