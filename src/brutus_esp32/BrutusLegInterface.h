@@ -10,7 +10,7 @@ struct BrutusLegState
 {
   float elbow_angle;
   float shoulder_angle;
-}
+};
 
 class BrutusLegInterface
 {
