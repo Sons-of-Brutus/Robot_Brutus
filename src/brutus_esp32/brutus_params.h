@@ -76,4 +76,13 @@
 
 // ---------------------------
 
+
+
+// -------- FreeRTOS -----------
+#define GAIT_CORE  0
+#define MOVEMENT_PERIOD 20 // [ms]
+
+#define LOGIC_CORE 1
+// -----------------------------
+
 #endif // BRUTUS_PARAMS__H
