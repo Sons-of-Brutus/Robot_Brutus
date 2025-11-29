@@ -6,6 +6,12 @@
 
 #define N_SERVOS_AT_LEG 2
 
+struct BrutusLegState
+{
+  float elbow_angle;
+  float shoulder_angle;
+}
+
 class BrutusLegInterface
 {
 
@@ -22,26 +28,43 @@ public:
     shoulder(pca,0,0,0,0,0)
   {}
 
-  void setup_elbow(int pca_idx,
-                   int min_pwm_pulse_period,
-                   int max_pwm_pulse_period,
-                   float min_angle,
-                   float max_angle)
+  void
+  setup_elbow(int pca_idx,
+              int min_pwm_pulse_period,
+              int max_pwm_pulse_period,
+              float min_angle,
+              float max_angle)
   {
     elbow = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
 
-  void setup_shoulder(int pca_idx,
-                      int min_pwm_pulse_period,
-                      int max_pwm_pulse_period,
-                      float min_angle,
-                      float max_angle)
+  void
+  setup_shoulder(int pca_idx,
+                 int min_pwm_pulse_period,
+                 int max_pwm_pulse_period,
+                 float min_angle,
+                 float max_angle)
   {
     shoulder = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
 
+  struct BrutusLegState
+  get_leg_state()
+  {
+    struct BrutusLegState leg_state;
 
+    leg_state.shoulder_angle = shoulder.get_angle();
+    leg_state.elbow_angle = elbow.get_angle();
 
+    return leg_state;
+  }
+
+  void
+  set_leg_state(BrutusLegState & leg_state)
+  {
+    shoulder.set_angle(leg_state.shoulder_angle);
+    elbow.set_angle(leg_state.elbow_angle);
+  }
 };
 
 #endif // BRUTUS_LEG_INTERFACE__H
