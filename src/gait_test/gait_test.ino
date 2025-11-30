@@ -1,68 +1,45 @@
-#include "brutus.h"
-
-typedef struct BrutusMovementState BrutusMovementState;
-typedef struct BrutusData BrutusData;
+#include "Brutus.h"
 
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
-BrutusLegInterface fr_leg = BrutusLegInterface(&pca);
-BrutusLegInterface fl_leg = BrutusLegInterface(&pca);
-BrutusLegInterface br_leg = BrutusLegInterface(&pca);
-BrutusLegInterface bl_leg = BrutusLegInterface(&pca);
-
-BrutusLegState fr_leg_state = {0,0};
-BrutusLegState fl_leg_state = {0,0};
-BrutusLegState br_leg_state = {0,0};
-BrutusLegState bl_leg_state = {0,0};
-BrutusMovementState mov_state = {0.0, 0.0, &fr_leg_state, &fl_leg_state, &br_leg_state, &bl_leg_state};
 
 TaskHandle_t TaskMov;
 
-SemaphoreHandle_t x_movement_mutex;
-
-BrutusData brutus
+Brutus brutus = Brutus(&pca,
+                       PCA9685_OE,
+                       R_PIN,
+                       B_PIN,
+                       G_PIN,
+                       PWM_SERVO_FREQ);
 
 void
 setup()
 {
+  brutus.setup_front_right_leg(SHOULDER_FRONT_RIGHT_PCA_PIN, ELBOW_FRONT_RIGHT_PCA_PIN,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_ANGLE, MIN_SERVO_ANGLE,
+                              MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
 
-  mov_state.ang_speed = 0.0;
-  mov_state.lin_speed = 0.0;
+  brutus.setup_front_left_leg(SHOULDER_FRONT_LEFT_PCA_PIN, ELBOW_FRONT_LEFT_PCA_PIN,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_ANGLE, MIN_SERVO_ANGLE,
+                              MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
 
-  x_movement_mutex = xSemaphoreCreateMutex();
+  brutus.setup_back_right_leg(SHOULDER_BACK_RIGHT_PCA_PIN, ELBOW_BACK_RIGHT_PCA_PIN,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_ANGLE, MIN_SERVO_ANGLE,
+                              MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
 
-  xTaskCreatePinnedToCore(
-    movement_task,
-    "movement_task",
-    2048,
-    (void*)x_movement_mutex,
-    0,
-    &TaskMov,
-    MOVEMENT_CORE
-  );
+  brutus.setup_back_left_leg(SHOULDER_BACK_LEFT_PCA_PIN, ELBOW_BACK_LEFT_PCA_PIN,
+                             MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                             MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                             MIN_SERVO_ANGLE, MIN_SERVO_ANGLE,
+                             MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
+
+  brutus.start();
 }
 
 void loop() {}
-
-void
-movement_task(void *pvParameters)
-{
-  SemaphoreHandle_t mutex = (SemaphoreHandle_t)pvParameters;
-
-  TickType_t exec_period = pdMS_TO_TICKS(MOVEMENT_PERIOD);
-  TickType_t last_wake = xTaskGetTickCount();
-
-  float v, w;
-
-  while(true) {
-
-
-    if 
-  }
-}
-
-void
-set_brutus_linear_speed(float linear_speed, )
-{
-
-}

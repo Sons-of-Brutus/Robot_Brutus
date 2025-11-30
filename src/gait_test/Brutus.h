@@ -1,26 +1,9 @@
 #ifndef BRUTUS__H
 #define BRUTUS__H
 
-#include "Pca9685Servo.h"
-#include "BrutusLegInterface.h"
 #include "brutus_params.h"
-
-struct BrutusPose {
-  BrutusLegState & fr_leg_state;
-  BrutusLegState & fl_leg_state;
-  BrutusLegState & br_leg_state;
-  BrutusLegState & bl_leg_state;
-
-  BrutusPose(
-    BrutusLegState & fr,
-    BrutusLegState & fl,
-    BrutusLegState & br,
-    BrutusLegState & bl)
-    : fr_leg_state(fr), fl_leg_state(fl),
-      br_leg_state(br), bl_leg_state(bl)
-  {}
-};
-typedef struct BrutusPose BrutusPose;
+#include "BrutusLegInterface.h"
+#include "BrutusPose.h"
 
 class Brutus {
 
@@ -37,6 +20,17 @@ private:
   float lin_speed = 0;
   float ang_speed = 0;
 
+  bool brutus_is_setup = false;
+
+  bool fr_leg_is_setup = false;
+  bool fl_leg_is_setup = false;
+  bool br_leg_is_setup = false;
+  bool bl_leg_is_setup = false;
+
+  bool pca_active = false;
+
+  BrutusPose standing_pose = STANDING_POSE;
+
 public:
   Brutus(Adafruit_PWMServoDriver* pca,
          int pca_oe_pin,
@@ -44,6 +38,10 @@ public:
          int eyes_b_pin,
          int eyes_g_pin,
          int pwm_servo_frequency)
+  : front_right_leg(pca),
+    back_right_leg(pca),
+    front_left_leg(pca),
+    back_left_leg(pca)
   {
     pinMode(eyes_r_pin, OUTPUT);
     pinMode(eyes_b_pin, OUTPUT);
@@ -63,11 +61,6 @@ public:
 
     this->eyes_green();
 
-    front_right_leg = BrutusLegInterface(pca);
-    back_right_leg = BrutusLegInterface(pca);
-    front_left_leg = BrutusLegInterface(pca);
-    back_left_leg = BrutusLegInterface(pca);
-
     delay(100);
 
     this->eyes_blue();
@@ -75,11 +68,26 @@ public:
     activate_motors();
     delay(100);
 
-    this->eyes_red();
-
-    this->eyes_magenta();
-    
+    pca_active = true;
+    brutus_is_setup = false;
   }
+
+  void
+  start()
+  {
+    if (pca_active && fr_leg_is_setup && fl_leg_is_setup && br_leg_is_setup && bl_leg_is_setup) {
+      brutus_is_setup = true;
+    }
+
+    if (brutus_is_setup) {
+      this->set_pose(standing_pose);
+      this->eyes_magenta();
+    } else {
+      this->eyes_red();
+    }
+  }
+
+  // --------- LEGS -----------
 
   void
   setup_front_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
@@ -91,6 +99,66 @@ public:
     this->front_right_leg.setup_shoulder(shoulder_pca_pin,
                                          shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
                                          shoulder_min_servo_angle, shoulder_max_servo_angle);
+
+    this->front_right_leg.setup_elbow(elbow_pca_pin,
+                                      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+                                      elbow_min_servo_angle, elbow_max_servo_angle);
+
+    fr_leg_is_setup = true;
+  }
+
+  void
+  setup_front_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                       int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                       int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                       int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                       int elbow_min_servo_angle, int elbow_max_servo_angle)
+  {
+    this->front_left_leg.setup_shoulder(shoulder_pca_pin,
+                                        shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+                                        shoulder_min_servo_angle, shoulder_max_servo_angle);
+
+    this->front_left_leg.setup_elbow(elbow_pca_pin,
+                                     elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+                                     elbow_min_servo_angle, elbow_max_servo_angle);
+
+    fl_leg_is_setup = true;
+  }
+
+  void
+  setup_back_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                       int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                       int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                       int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                       int elbow_min_servo_angle, int elbow_max_servo_angle)
+  {
+    this->front_right_leg.setup_shoulder(shoulder_pca_pin,
+                                         shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+                                         shoulder_min_servo_angle, shoulder_max_servo_angle);
+
+    this->front_right_leg.setup_elbow(elbow_pca_pin,
+                                      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+                                      elbow_min_servo_angle, elbow_max_servo_angle);
+
+    br_leg_is_setup = true;
+  }
+
+  void
+  setup_back_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                      int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                      int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                      int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                      int elbow_min_servo_angle, int elbow_max_servo_angle)
+  {
+    this->back_left_leg.setup_shoulder(shoulder_pca_pin,
+                                        shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+                                        shoulder_min_servo_angle, shoulder_max_servo_angle);
+
+    this->back_left_leg.setup_elbow(elbow_pca_pin,
+                                     elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+                                     elbow_min_servo_angle, elbow_max_servo_angle);
+
+    bl_leg_is_setup = true;
   }
 
   // -------- PCA9685 --------
@@ -180,11 +248,30 @@ public:
     
   }
 
-  const BrutusLegState standing_fr_state = {};
-  const BrutusLegState standing_fl_state = {};
-  const BrutusLegState standing_br_state = {};
-  const BrutusLegState standing_bl_state = {};
-  const BrutusPose standing_pose;
+  // ---------- POSES -----------
+  void
+  set_pose(BrutusPose & pose)
+  {
+    this->front_right_leg.set_leg_state(pose.fr_leg_state);
+    this->front_left_leg.set_leg_state(pose.fl_leg_state);
+    this->back_right_leg.set_leg_state(pose.br_leg_state);
+    this->back_left_leg.set_leg_state(pose.bl_leg_state);
+  }
+
+  BrutusPose
+  check_pose()
+  {
+    auto fr_state = front_right_leg.get_leg_state();
+  }
+
+  void
+  change_standing_pose(BrutusPose & pose)
+  {
+    this->standing_pose.fr_leg_state = pose.fr_leg_state;
+    this->standing_pose.fl_leg_state = pose.fl_leg_state;
+    this->standing_pose.br_leg_state = pose.br_leg_state;
+    this->standing_pose.bl_leg_state = pose.bl_leg_state;
+  }
 };
 
 
