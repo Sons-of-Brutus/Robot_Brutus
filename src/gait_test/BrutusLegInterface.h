@@ -3,14 +3,10 @@
 
 #include "Pca9685Servo.h"
 #include "brutus_params.h"
+#include "BrutusLegState.h"
 
 #define N_SERVOS_AT_LEG 2
 
-struct BrutusLegState
-{
-  float elbow_angle;
-  float shoulder_angle;
-};
 
 class BrutusLegInterface
 {
