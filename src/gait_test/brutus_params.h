@@ -1,6 +1,8 @@
 #ifndef BRUTUS_PARAMS__H
 #define BRUTUS_PARAMS__H
 
+#include "BrutusPose.h"
+
 // --------- SERVOS CONFIG ----------
 
 // Actual configuration is for MG90s servos
@@ -83,7 +85,19 @@
 #define MOVEMENT_PERIOD 20 // [ms]
 
 #define LOGIC_CORE 1
-
 // -----------------------------
+
+
+// ------- POSES ---------
+constexpr BrutusLegState STANDING_FR_STATE {70, 70};
+constexpr BrutusLegState STANDING_FL_STATE {70, 110};
+constexpr BrutusLegState STANDING_BR_STATE {70, 110};
+constexpr BrutusLegState STANDING_BL_STATE {70, 70};
+
+constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
+                                    STANDING_FL_STATE,
+                                    STANDING_BR_STATE,
+                                    STANDING_BL_STATE};
+// -----------------------
 
 #endif // BRUTUS_PARAMS__H
