@@ -5,6 +5,17 @@
 #include "BrutusLegInterface.h"
 #include "brutus_params.h"
 
+struct BrutusGaitState {
+  // TODO La representación de las velocidades debe ser checkeada con el movimiento de las patas
+  float lin_speed; // Desired linear speed
+  float ang_speed; // Desired angular speed
+
+  BrutusLegState fr_leg_state; // Desired front right leg state
+  BrutusLegState fl_leg_state; // Desired front left leg state
+  BrutusLegState br_leg_state; // Desired back right leg state
+  BrutusLegState bl_leg_state; // Desired back left leg state
+};
+
 void init_brutus(Adafruit_PWMServoDriver* pca);
 
 void activate_motors();
@@ -18,6 +29,8 @@ void eyes_cyan();
 void eyes_yellow();
 void eyes_white();
 void eyes_off();
+
+void gait_task(void *pvParameters);
 
 // -------- SETUP --------
 void
@@ -43,7 +56,7 @@ init_brutus(Adafruit_PWMServoDriver* pca)
   pca->setPWMFreq(PWM_SERVO_FREQ);
   delay(100);
 
-  digitalWrite(PCA9685_OE, LOW);
+  activate_motors();
   delay(100);
 
   eyes_magenta();
@@ -128,5 +141,13 @@ eyes_off()
   digitalWrite(B_PIN, LOW);
   digitalWrite(G_PIN, LOW);
 }
+
+// ---------- GAIT -------------
+void
+gait_task(void *pvParameters)
+{
+  
+}
+
 
 #endif // BRUTUS__H

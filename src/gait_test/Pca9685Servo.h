@@ -62,7 +62,9 @@ public:
   void set_angle(float angle,
                  uint16_t on_tick = 0)
   {
-    uint16_t pwm_value = Pca9685Servo::angle_to_pwm(this->pca_idx,
+    float ang = this->normalize_to_servo_range(angle);
+
+    uint16_t pwm_value = Pca9685Servo::angle_to_pwm(ang,
                                                     this->min_angle,
                                                     this->max_angle,
                                                     this->min_pwm,

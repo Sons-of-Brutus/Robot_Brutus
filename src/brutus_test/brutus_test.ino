@@ -17,7 +17,7 @@
 #define G_PIN 25
 #define B_PIN 33
 
-#define BUZZER_PIN 23
+#define PCA9685_OE 19
 
 #define ECHO_PIN 18
 #define TRIG_PIN 19
@@ -100,10 +100,14 @@ void setup() {
   pinMode(R_PIN, OUTPUT);
   pinMode(G_PIN, OUTPUT);
   pinMode(B_PIN, OUTPUT);
-  pinMode(BUZZER_PIN, OUTPUT);
 
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+
+  pinMode(PCA9685_OE, INPUT_PULLDOWN); 
+  pinMode(PCA9685_OE, OUTPUT);
+
+  digitalWrite(PCA9685_OE, LOW);
 
   delay(100);
 
@@ -153,27 +157,31 @@ void loop() {}
 void
 TaskServos(void *pvParameters)
 {
-  int angle_idx = 21;
+  int angle_idx = 41;
   bool up = true;
   int min, max;
+
+  float positions[][2] = {{70, 130}, {110, 50}, {110, 50}, {70, 130},{80,80},{80,80},{80,80},{80,80}};
+
   while (true) {
     for (int i = 0; i < N_SERVOS; i++) {
       auto actual_servo = servos_list[i];
-      pca.setPWM(actual_servo->pca_idx, 0, angle_to_pwm(angle_idx, MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, actual_servo->min_pwm, actual_servo->max_pwm));
+
+      pca.setPWM(actual_servo->pca_idx, 0, angle_to_pwm(positions[i][angle_idx%2], MIN_MG90S_ANGLE, MAX_MG90S_ANGLE, actual_servo->min_pwm, actual_servo->max_pwm));
     }
 
 
-    if (angle_idx >= 160 || angle_idx <= 20) {
+    if (angle_idx >= 140 || angle_idx <= 40) {
       up = !(up);
     }
 
     if (up) {
-      angle_idx += 2;
+      angle_idx += 1;
     } else {
-      angle_idx -= 2;
+      angle_idx -= 1;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(50)); // HAbria que añdir timer
+    vTaskDelay(pdMS_TO_TICKS(2000)); // HAbria que añdir timer
   }
 }
 
