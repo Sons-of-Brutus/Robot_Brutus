@@ -161,7 +161,7 @@ TaskServos(void *pvParameters)
   bool up = true;
   int min, max;
 
-  float positions[][2] = {{70, 130}, {110, 50}, {110, 50}, {70, 130},{80,80},{80,80},{80,80},{80,80}};
+  float positions[][2] = {{60, 120}, {120, 70}, {120, 70}, {60, 120},{70,70},{110,110},{110,110},{70,70}};
 
   while (true) {
     for (int i = 0; i < N_SERVOS; i++) {
