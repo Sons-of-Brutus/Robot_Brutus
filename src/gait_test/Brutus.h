@@ -8,28 +8,34 @@
 class Brutus {
 
 private:
-  Adafruit_PWMServoDriver* pca;
-  SemaphoreHandle_t motion_mutex;
-  BrutusPose target_pose;
+  Adafruit_PWMServoDriver* pca_;
+  SemaphoreHandle_t motion_mutex_;
 
-  BrutusLegInterface front_right_leg;
-  BrutusLegInterface back_right_leg;
-  BrutusLegInterface front_left_leg;
-  BrutusLegInterface back_left_leg;
+  BrutusLegInterface front_right_leg_;
+  BrutusLegInterface back_right_leg_;
+  BrutusLegInterface front_left_leg_;
+  BrutusLegInterface back_left_leg_;
 
-  float lin_speed = 0;
-  float ang_speed = 0;
+  float lin_speed_ = 0;
+  float ang_speed_ = 0;
 
-  bool brutus_is_setup = false;
+  int pca_oe_pin_;
+  int eyes_r_pin_;
+  int eyes_b_pin_;
+  int eyes_g_pin_;
 
-  bool fr_leg_is_setup = false;
-  bool fl_leg_is_setup = false;
-  bool br_leg_is_setup = false;
-  bool bl_leg_is_setup = false;
+  bool brutus_is_setup_ = false;
 
-  bool pca_active = false;
+  bool fr_leg_is_setup_ = false;
+  bool fl_leg_is_setup_ = false;
+  bool br_leg_is_setup_ = false;
+  bool bl_leg_is_setup_ = false;
+
+  bool pca_active_ = false;
 
   BrutusPose standing_pose = STANDING_POSE;
+
+  BrutusPose* target_pose_ = &standing_pose;
 
 public:
   Brutus(Adafruit_PWMServoDriver* pca,
@@ -38,10 +44,15 @@ public:
          int eyes_b_pin,
          int eyes_g_pin,
          int pwm_servo_frequency)
-  : front_right_leg(pca),
-    back_right_leg(pca),
-    front_left_leg(pca),
-    back_left_leg(pca)
+  : pca_(pca),
+    front_right_leg_(pca),
+    back_right_leg_(pca),
+    front_left_leg_(pca),
+    back_left_leg_(pca),
+    pca_oe_pin_(pca_oe_pin),
+    eyes_r_pin_(eyes_r_pin),
+    eyes_b_pin_(eyes_b_pin),
+    eyes_g_pin_(eyes_g_pin)
   {
     pinMode(eyes_r_pin, OUTPUT);
     pinMode(eyes_b_pin, OUTPUT);
@@ -49,18 +60,17 @@ public:
 
     this->eyes_yellow();
 
-    this->pca = pca;
-    this->motion_mutex = xSemaphoreCreateMutex();
+    this->motion_mutex_ = xSemaphoreCreateMutex();
 
-    pinMode(pca_oe_pin, INPUT_PULLDOWN); 
-    pinMode(pca_oe_pin, OUTPUT);
-
-    pca->begin();
-    pca->setPWMFreq(pwm_servo_frequency);
     delay(100);
 
     this->eyes_green();
 
+    pinMode(pca_oe_pin, OUTPUT);
+
+    this->eyes_red();
+
+    pca->setPWMFreq(pwm_servo_frequency);
     delay(100);
 
     this->eyes_blue();
@@ -166,13 +176,13 @@ public:
   void
   activate_motors()
   {
-    digitalWrite(PCA9685_OE, LOW);
+    digitalWrite(this->pca_oe_pin_, LOW);
   }
 
   void
   deactivate_motors()
   {
-    digitalWrite(PCA9685_OE, HIGH);
+    digitalWrite(this->pca_oe_pin_, HIGH);
   }
 
   // -------- Eyes color --------
@@ -180,65 +190,65 @@ public:
   void
   eyes_red()
   {
-    digitalWrite(R_PIN, HIGH);
-    digitalWrite(B_PIN, LOW);
-    digitalWrite(G_PIN, LOW);
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, LOW);
   }
 
   void
   eyes_blue()
   {
-    digitalWrite(R_PIN, LOW);
-    digitalWrite(B_PIN, HIGH);
-    digitalWrite(G_PIN, LOW);
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, LOW);
   }
 
   void
   eyes_green()
   {
-    digitalWrite(R_PIN, LOW);
-    digitalWrite(B_PIN, LOW);
-    digitalWrite(G_PIN, HIGH);
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
   void
   eyes_magenta()
   {
-    digitalWrite(R_PIN, HIGH);
-    digitalWrite(B_PIN, HIGH);
-    digitalWrite(G_PIN, LOW);
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, LOW);
   }
 
   void
   eyes_cyan()
   {
-    digitalWrite(R_PIN, LOW);
-    digitalWrite(B_PIN, HIGH);
-    digitalWrite(G_PIN, HIGH);
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
   void
   eyes_yellow()
   {
-    digitalWrite(R_PIN, HIGH);
-    digitalWrite(B_PIN, LOW);
-    digitalWrite(G_PIN, HIGH);
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
   void
   eyes_white()
   {
-    digitalWrite(R_PIN, HIGH);
-    digitalWrite(B_PIN, HIGH);
-    digitalWrite(G_PIN, HIGH);
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
   void
   eyes_off()
   {
-    digitalWrite(R_PIN, LOW);
-    digitalWrite(B_PIN, LOW);
-    digitalWrite(G_PIN, LOW);
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, LOW);
   }
 
   // ---------- MOTION -------------
