@@ -89,10 +89,10 @@
 
 
 // ------- POSES ---------
-constexpr BrutusLegState STANDING_FR_STATE {70, 70};
+constexpr BrutusLegState STANDING_FR_STATE {110, 70};
 constexpr BrutusLegState STANDING_FL_STATE {70, 110};
 constexpr BrutusLegState STANDING_BR_STATE {70, 110};
-constexpr BrutusLegState STANDING_BL_STATE {70, 70};
+constexpr BrutusLegState STANDING_BL_STATE {110, 70};
 
 constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
                                     STANDING_FL_STATE,

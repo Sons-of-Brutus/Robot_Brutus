@@ -7,22 +7,27 @@
 
 #define N_SERVOS_AT_LEG 2
 
-
 class BrutusLegInterface
 {
 
 private:
-  Pca9685Servo elbow;
-  Pca9685Servo shoulder;
+  Pca9685Servo elbow_;
+  Pca9685Servo shoulder_;
 
-  Adafruit_PWMServoDriver* pca;
+  Adafruit_PWMServoDriver* pca_;
 
 public:
-  BrutusLegInterface(Adafruit_PWMServoDriver* pca)
-  : pca(pca),
-    elbow(pca,0,0,0,0,0),
-    shoulder(pca,0,0,0,0,0)
+  BrutusLegInterface()
+  : pca_(NULL),
+    elbow_(),
+    shoulder_()
   {}
+
+  void
+  setup(Adafruit_PWMServoDriver* pca)
+  {
+    this->pca_ = pca;
+  }
 
   void
   setup_elbow(int pca_idx,
@@ -31,7 +36,7 @@ public:
               float min_angle,
               float max_angle)
   {
-    elbow = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    elbow_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
 
   void
@@ -41,7 +46,7 @@ public:
                  float min_angle,
                  float max_angle)
   {
-    shoulder = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    shoulder_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
   }
 
   struct BrutusLegState
@@ -49,8 +54,8 @@ public:
   {
     struct BrutusLegState leg_state;
 
-    leg_state.shoulder_angle = shoulder.get_angle();
-    leg_state.elbow_angle = elbow.get_angle();
+    leg_state.shoulder_angle = shoulder_.get_angle();
+    leg_state.elbow_angle = elbow_.get_angle();
 
     return leg_state;
   }
@@ -58,8 +63,8 @@ public:
   void
   set_leg_state(BrutusLegState & leg_state)
   {
-    shoulder.set_angle(leg_state.shoulder_angle);
-    elbow.set_angle(leg_state.elbow_angle);
+    shoulder_.set_angle(leg_state.shoulder_angle);
+    elbow_.set_angle(leg_state.elbow_angle);
   }
 };
 

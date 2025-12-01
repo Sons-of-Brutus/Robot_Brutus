@@ -16,6 +16,11 @@ private:
   BrutusLegInterface front_left_leg_;
   BrutusLegInterface back_left_leg_;
 
+  BrutusLegState fr_offsets_ = {0,0};
+  BrutusLegState fl_offsets_ = {0,0};
+  BrutusLegState br_offsets_ = {0,0};
+  BrutusLegState bl_offsets_ = {0,0};
+
   float lin_speed_ = 0;
   float ang_speed_ = 0;
 
@@ -33,30 +38,41 @@ private:
 
   bool pca_active_ = false;
 
-  BrutusPose standing_pose_ = standing_pose_;
+  BrutusPose standing_pose_ = STANDING_POSE;
 
   BrutusPose* target_pose_ = &standing_pose_;
 
 public:
-  Brutus(Adafruit_PWMServoDriver* pca,
-         int pca_oe_pin,
-         int eyes_r_pin,
-         int eyes_b_pin,
-         int eyes_g_pin,
-         int pwm_servo_frequency)
-  : pca_(pca),
-    front_right_leg_(pca),
-    back_right_leg_(pca),
-    front_left_leg_(pca),
-    back_left_leg_(pca),
-    pca_oe_pin_(pca_oe_pin),
-    eyes_r_pin_(eyes_r_pin),
-    eyes_b_pin_(eyes_b_pin),
-    eyes_g_pin_(eyes_g_pin)
+  Brutus()
+  : pca_(NULL),
+    front_right_leg_(),
+    back_right_leg_(),
+    front_left_leg_(),
+    back_left_leg_(),
+    pca_oe_pin_(0),
+    eyes_r_pin_(0),
+    eyes_b_pin_(0),
+    eyes_g_pin_(0)
+  {}
+
+  void
+  setup(Adafruit_PWMServoDriver* pca,
+        int pca_oe_pin,
+        int eyes_r_pin,
+        int eyes_b_pin,
+        int eyes_g_pin,
+        int pwm_servo_frequency)
   {
-    pinMode(eyes_r_pin, OUTPUT);
-    pinMode(eyes_b_pin, OUTPUT);
-    pinMode(eyes_g_pin, OUTPUT);
+    this->pca_ = pca;
+    
+    this->pca_oe_pin_ = pca_oe_pin;
+    this->eyes_r_pin_ = eyes_r_pin;
+    this->eyes_b_pin_ = eyes_b_pin;
+    this->eyes_g_pin_ = eyes_g_pin;
+
+    pinMode(this->eyes_r_pin_, OUTPUT);
+    pinMode(this->eyes_b_pin_, OUTPUT);
+    pinMode(this->eyes_g_pin_, OUTPUT);
 
     this->eyes_yellow();
 
@@ -74,11 +90,17 @@ public:
     pca->begin();
     pca->setPWMFreq(pwm_servo_frequency);
     delay(100);
-
     this->eyes_blue();
 
     activate_motors();
     delay(100);
+
+    this->front_right_leg_.setup(this->pca_);
+    this->back_right_leg_.setup(this->pca_);
+    this->front_left_leg_.setup(this->pca_);
+    this->back_left_leg_.setup(this->pca_);
+
+    this->eyes_cyan();
 
     pca_active_ = true;
     brutus_is_setup_ = false;
@@ -92,11 +114,7 @@ public:
     }
 
     if (brutus_is_setup_) {
-      //this->set_pose(standing_pose_);
-      this->front_right_leg_.set_leg_state(standing_pose_.fr_leg_state);
-      this->front_left_leg_.set_leg_state(standing_pose_.fl_leg_state);
-      this->back_right_leg_.set_leg_state(standing_pose_.br_leg_state);
-      this->back_left_leg_.set_leg_state(standing_pose_.bl_leg_state);
+      this->set_pose(standing_pose_);
 
       this->eyes_magenta();
     } else {
@@ -106,74 +124,90 @@ public:
 
   // --------- LEGS -----------
 
-  void
-  setup_front_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
-                        int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
-                        int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
-                        int shoulder_min_servo_angle, int shoulder_max_servo_angle,
-                        int elbow_min_servo_angle, int elbow_max_servo_angle)
+  void setup_front_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                             int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                             int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                             int elbow_min_servo_angle, int elbow_max_servo_angle,
+                             float elbow_offset, float shoulder_offset)
   {
-    this->front_right_leg_.setup_shoulder(shoulder_pca_pin,
-                                         shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-                                         shoulder_min_servo_angle, shoulder_max_servo_angle);
+    front_right_leg_.setup_shoulder(
+      shoulder_pca_pin,
+      shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+      shoulder_min_servo_angle, shoulder_max_servo_angle
+    );
 
-    this->front_right_leg_.setup_elbow(elbow_pca_pin,
-                                      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-                                      elbow_min_servo_angle, elbow_max_servo_angle);
+    front_right_leg_.setup_elbow(
+      elbow_pca_pin,
+      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+      elbow_min_servo_angle, elbow_max_servo_angle
+    );
 
     fr_leg_is_setup_ = true;
   }
 
-  void
-  setup_front_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
-                       int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
-                       int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
-                       int shoulder_min_servo_angle, int shoulder_max_servo_angle,
-                       int elbow_min_servo_angle, int elbow_max_servo_angle)
+  void setup_front_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                            int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                            int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                            int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                            int elbow_min_servo_angle, int elbow_max_servo_angle,
+                             float elbow_offset, float shoulder_offset)
   {
-    this->front_left_leg_.setup_shoulder(shoulder_pca_pin,
-                                        shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-                                        shoulder_min_servo_angle, shoulder_max_servo_angle);
+    front_left_leg_.setup_shoulder(
+      shoulder_pca_pin,
+      shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+      shoulder_min_servo_angle, shoulder_max_servo_angle
+    );
 
-    this->front_left_leg_.setup_elbow(elbow_pca_pin,
-                                     elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-                                     elbow_min_servo_angle, elbow_max_servo_angle);
+    front_left_leg_.setup_elbow(
+      elbow_pca_pin,
+      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+      elbow_min_servo_angle, elbow_max_servo_angle
+    );
 
     fl_leg_is_setup_ = true;
   }
 
-  void
-  setup_back_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
-                       int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
-                       int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
-                       int shoulder_min_servo_angle, int shoulder_max_servo_angle,
-                       int elbow_min_servo_angle, int elbow_max_servo_angle)
+  void setup_back_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                            int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                            int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                            int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                            int elbow_min_servo_angle, int elbow_max_servo_angle,
+                             float elbow_offset, float shoulder_offset)
   {
-    this->front_right_leg_.setup_shoulder(shoulder_pca_pin,
-                                         shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-                                         shoulder_min_servo_angle, shoulder_max_servo_angle);
+    back_right_leg_.setup_shoulder(
+      shoulder_pca_pin,
+      shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+      shoulder_min_servo_angle, shoulder_max_servo_angle
+    );
 
-    this->front_right_leg_.setup_elbow(elbow_pca_pin,
-                                      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-                                      elbow_min_servo_angle, elbow_max_servo_angle);
+    back_right_leg_.setup_elbow(
+      elbow_pca_pin,
+      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+      elbow_min_servo_angle, elbow_max_servo_angle
+    );
 
     br_leg_is_setup_ = true;
   }
 
-  void
-  setup_back_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
-                      int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
-                      int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
-                      int shoulder_min_servo_angle, int shoulder_max_servo_angle,
-                      int elbow_min_servo_angle, int elbow_max_servo_angle)
+  void setup_back_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
+                           int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
+                           int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
+                           int shoulder_min_servo_angle, int shoulder_max_servo_angle,
+                           int elbow_min_servo_angle, int elbow_max_servo_angle,
+                             float elbow_offset, float shoulder_offset)
   {
-    this->back_left_leg_.setup_shoulder(shoulder_pca_pin,
-                                        shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-                                        shoulder_min_servo_angle, shoulder_max_servo_angle);
+    back_left_leg_.setup_shoulder(
+      shoulder_pca_pin,
+      shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
+      shoulder_min_servo_angle, shoulder_max_servo_angle
+    );
 
-    this->back_left_leg_.setup_elbow(elbow_pca_pin,
-                                     elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-                                     elbow_min_servo_angle, elbow_max_servo_angle);
+    back_left_leg_.setup_elbow(
+      elbow_pca_pin,
+      elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
+      elbow_min_servo_angle, elbow_max_servo_angle
+    );
 
     bl_leg_is_setup_ = true;
   }
@@ -278,12 +312,14 @@ public:
   BrutusPose
   check_pose()
   {
-    auto & fr_state = front_right_leg_.get_leg_state();
-    auto & fl_state = front_right_leg_.get_leg_state();
-    auto & br_state = front_right_leg_.get_leg_state();
-    auto & bl_state = front_right_leg_.get_leg_state();
+    auto fr_state = front_right_leg_.get_leg_state();
+    auto fl_state = front_left_leg_.get_leg_state();
+    auto br_state = back_right_leg_.get_leg_state();
+    auto bl_state = back_left_leg_.get_leg_state();
 
-    1
+    BrutusPose pose = {fr_state, fl_state, br_state, bl_state};
+
+    return pose;
   }
 
   void
