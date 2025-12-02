@@ -11,10 +11,23 @@ class BrutusLegInterface
 {
 
 private:
+  Adafruit_PWMServoDriver* pca_;
+
   Pca9685Servo elbow_;
   Pca9685Servo shoulder_;
 
-  Adafruit_PWMServoDriver* pca_;
+  bool shoulder_is_inverted_;
+  bool elbow_is_inverted_;
+
+  float
+  apply_angle_inversion(bool is_inverted, float angle)
+  {
+    if (is_inverted) {
+      angle = 180 - angle;
+    }
+
+    return angle;
+  }
 
 public:
   BrutusLegInterface()
@@ -34,9 +47,11 @@ public:
               int min_pwm_pulse_period,
               int max_pwm_pulse_period,
               float min_angle,
-              float max_angle)
+              float max_angle
+              bool is_inverted)
   {
     elbow_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    this->elbow_is_inverted_ = is_inverted;
   }
 
   void
@@ -44,18 +59,25 @@ public:
                  int min_pwm_pulse_period,
                  int max_pwm_pulse_period,
                  float min_angle,
-                 float max_angle)
+                 float max_angle,
+                 bool is_inverted)
   {
     shoulder_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    this->shoulder_is_inverted_ = is_inverted;
   }
 
-  struct BrutusLegState
-  get_leg_state()
+  BrutusLegState
+  get_leg_state(bool apply_inversion)
   {
-    struct BrutusLegState leg_state;
+    BrutusLegState leg_state;
 
     leg_state.shoulder_angle = shoulder_.get_angle();
     leg_state.elbow_angle = elbow_.get_angle();
+
+    if (apply_inversion) {
+      leg_state.shoulder_angle = apply_angle_inversion(shoulder_is_inverted_, leg_state.shoulder_angle);
+      leg_state.elbow_angle = apply_angle_inversion(elbow_is_inverted_, leg_state.elbow_angle);
+    }
 
     return leg_state;
   }
@@ -63,8 +85,8 @@ public:
   void
   set_leg_state(BrutusLegState & leg_state)
   {
-    shoulder_.set_angle(leg_state.shoulder_angle);
-    elbow_.set_angle(leg_state.elbow_angle);
+    shoulder_.set_angle(apply_angle_inversion(shoulder_is_inverted_, leg_state.shoulder_angle));
+    elbow_.set_angle(apply_angle_inversion(elbow_is_inverted_, leg_state.elbow_angle));
   }
 };
 
