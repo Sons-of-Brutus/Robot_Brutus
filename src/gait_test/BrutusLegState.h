@@ -3,8 +3,8 @@
 
 struct BrutusLegState
 {
-  float elbow_angle;
   float shoulder_angle;
+  float elbow_angle;
 };
 
 #endif // BRUTUS_LEG_STATE__H
