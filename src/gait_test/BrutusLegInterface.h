@@ -47,7 +47,7 @@ public:
               int min_pwm_pulse_period,
               int max_pwm_pulse_period,
               float min_angle,
-              float max_angle
+              float max_angle,
               bool is_inverted)
   {
     elbow_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
@@ -66,6 +66,7 @@ public:
     this->shoulder_is_inverted_ = is_inverted;
   }
 
+  // TODO Needs test
   BrutusLegState
   get_leg_state(bool apply_inversion)
   {

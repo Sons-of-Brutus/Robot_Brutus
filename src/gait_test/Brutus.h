@@ -5,6 +5,9 @@
 #include "BrutusLegInterface.h"
 #include "BrutusPose.h"
 
+#define JOINTS_PER_LEG 2
+#define N_LEGS 4
+
 class Brutus {
 
 private:
@@ -129,18 +132,21 @@ public:
                              int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                              int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                              int elbow_min_servo_angle, int elbow_max_servo_angle,
-                             float elbow_offset, float shoulder_offset)
+                             float elbow_offset, float shoulder_offset,
+                             bool elbow_is_inverted, bool shoulder_is_inverted)
   {
     front_right_leg_.setup_shoulder(
       shoulder_pca_pin,
       shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-      shoulder_min_servo_angle, shoulder_max_servo_angle
+      shoulder_min_servo_angle, shoulder_max_servo_angle,
+      shoulder_is_inverted
     );
 
     front_right_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-      elbow_min_servo_angle, elbow_max_servo_angle
+      elbow_min_servo_angle, elbow_max_servo_angle,
+      elbow_is_inverted
     );
 
     fr_leg_is_setup_ = true;
@@ -151,18 +157,21 @@ public:
                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                             int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                             int elbow_min_servo_angle, int elbow_max_servo_angle,
-                             float elbow_offset, float shoulder_offset)
+                            float elbow_offset, float shoulder_offset,
+                            bool elbow_is_inverted, bool shoulder_is_inverted)
   {
     front_left_leg_.setup_shoulder(
       shoulder_pca_pin,
       shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-      shoulder_min_servo_angle, shoulder_max_servo_angle
+      shoulder_min_servo_angle, shoulder_max_servo_angle,
+      shoulder_is_inverted
     );
 
     front_left_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-      elbow_min_servo_angle, elbow_max_servo_angle
+      elbow_min_servo_angle, elbow_max_servo_angle,
+      elbow_is_inverted
     );
 
     fl_leg_is_setup_ = true;
@@ -173,18 +182,21 @@ public:
                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                             int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                             int elbow_min_servo_angle, int elbow_max_servo_angle,
-                             float elbow_offset, float shoulder_offset)
+                            float elbow_offset, float shoulder_offset,
+                            bool elbow_is_inverted, bool shoulder_is_inverted)
   {
     back_right_leg_.setup_shoulder(
       shoulder_pca_pin,
       shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-      shoulder_min_servo_angle, shoulder_max_servo_angle
+      shoulder_min_servo_angle, shoulder_max_servo_angle,
+      shoulder_is_inverted
     );
 
     back_right_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-      elbow_min_servo_angle, elbow_max_servo_angle
+      elbow_min_servo_angle, elbow_max_servo_angle,
+      elbow_is_inverted
     );
 
     br_leg_is_setup_ = true;
@@ -195,18 +207,21 @@ public:
                            int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                            int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                            int elbow_min_servo_angle, int elbow_max_servo_angle,
-                             float elbow_offset, float shoulder_offset)
+                           float elbow_offset, float shoulder_offset,
+                           bool elbow_is_inverted, bool shoulder_is_inverted)
   {
     back_left_leg_.setup_shoulder(
       shoulder_pca_pin,
       shoulder_min_servo_pwm_pulse_us, shoulder_max_servo_pwm_pulse_us,
-      shoulder_min_servo_angle, shoulder_max_servo_angle
+      shoulder_min_servo_angle, shoulder_max_servo_angle,
+      shoulder_is_inverted
     );
 
     back_left_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
-      elbow_min_servo_angle, elbow_max_servo_angle
+      elbow_min_servo_angle, elbow_max_servo_angle,
+      elbow_is_inverted
     );
 
     bl_leg_is_setup_ = true;
@@ -303,19 +318,40 @@ public:
   void
   set_pose(BrutusPose & pose)
   {
-    this->front_right_leg_.set_leg_state(pose.fr_leg_state);
-    this->front_left_leg_.set_leg_state(pose.fl_leg_state);
-    this->back_right_leg_.set_leg_state(pose.br_leg_state);
-    this->back_left_leg_.set_leg_state(pose.bl_leg_state);
+    BrutusLegInterface* legs[4] = {
+        &this->front_right_leg_,
+        &this->front_left_leg_,
+        &this->back_right_leg_,
+        &this->back_left_leg_
+    };
+
+    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle + this->fr_offsets_.shoulder_angle,
+                         pose.fr_leg_state.elbow_angle + this->fr_offsets_.elbow_angle};
+    
+    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle + this->fl_offsets_.shoulder_angle,
+                         pose.fl_leg_state.elbow_angle + this->fl_offsets_.elbow_angle};
+
+    BrutusLegState br = {pose.br_leg_state.shoulder_angle + this->br_offsets_.shoulder_angle,
+                         pose.br_leg_state.elbow_angle + this->br_offsets_.elbow_angle};
+    
+    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle + this->bl_offsets_.shoulder_angle,
+                         pose.bl_leg_state.elbow_angle + this->bl_offsets_.elbow_angle};
+
+    BrutusLegState states[4] = {fr,fl,br,bl};
+
+    for (int i = 0; i < 4; i++)
+    {
+        legs[i]->set_leg_state(states[i]);
+    }
   }
 
   BrutusPose
-  check_pose()
+  check_pose(bool apply_inversion)
   {
-    auto fr_state = front_right_leg_.get_leg_state();
-    auto fl_state = front_left_leg_.get_leg_state();
-    auto br_state = back_right_leg_.get_leg_state();
-    auto bl_state = back_left_leg_.get_leg_state();
+    auto fr_state = front_right_leg_.get_leg_state(apply_inversion);
+    auto fl_state = front_left_leg_.get_leg_state(apply_inversion);
+    auto br_state = back_right_leg_.get_leg_state(apply_inversion);
+    auto bl_state = back_left_leg_.get_leg_state(apply_inversion);
 
     BrutusPose pose = {fr_state, fl_state, br_state, bl_state};
 
