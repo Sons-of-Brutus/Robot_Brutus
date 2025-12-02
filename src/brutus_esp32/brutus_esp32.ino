@@ -1,72 +1,120 @@
-#include "brutus.h"
+#include "Brutus.h"
 
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
-BrutusLegInterface fr_leg = BrutusLegInterface(&pca);
-BrutusLegInterface fl_leg = BrutusLegInterface(&pca);
-BrutusLegInterface br_leg = BrutusLegInterface(&pca);
-BrutusLegInterface bl_leg = BrutusLegInterface(&pca);
+Brutus brutus;
 
-float angles[][2] = {{70, 120}, {70, 90}};
-int i = 0;
-
-Pca9685Servo shoulder = Pca9685Servo(&pca,
-                        SHOULDER_FRONT_RIGHT_PCA_PIN,
-                        MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                        MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+TaskHandle_t serial_task_handle;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
+
+  brutus.setup(&pca,
+               PCA9685_OE,
+               R_PIN,
+               B_PIN,
+               G_PIN,
+               PWM_SERVO_FREQ);
+
+  brutus.setup_front_right_leg(SHOULDER_FRONT_RIGHT_PCA_PIN, ELBOW_FRONT_RIGHT_PCA_PIN,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                              MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                              SHOULDER_FRONT_RIGHT_ANGLE_OFFSET, ELBOW_FRONT_RIGHT_ANGLE_OFFSET,
+                              SHOULDER_FRONT_RIGHT_INVERTED, ELBOW_FRONT_RIGHT_INVERTED);
+
+  brutus.setup_front_left_leg(SHOULDER_FRONT_LEFT_PCA_PIN, ELBOW_FRONT_LEFT_PCA_PIN,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                              MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                              SHOULDER_FRONT_LEFT_ANGLE_OFFSET, ELBOW_FRONT_LEFT_ANGLE_OFFSET,
+                              SHOULDER_FRONT_LEFT_INVERTED, ELBOW_FRONT_LEFT_INVERTED);
+
+  brutus.setup_back_right_leg(SHOULDER_BACK_RIGHT_PCA_PIN, ELBOW_BACK_RIGHT_PCA_PIN,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                              MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                              MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                              SHOULDER_BACK_RIGHT_ANGLE_OFFSET, ELBOW_BACK_RIGHT_ANGLE_OFFSET,
+                              SHOULDER_BACK_RIGHT_INVERTED, ELBOW_BACK_RIGHT_INVERTED);
+
+  brutus.setup_back_left_leg(SHOULDER_BACK_LEFT_PCA_PIN, ELBOW_BACK_LEFT_PCA_PIN,
+                             MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                             MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                             MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                             MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                             SHOULDER_BACK_LEFT_ANGLE_OFFSET, ELBOW_BACK_LEFT_ANGLE_OFFSET,
+                             SHOULDER_BACK_LEFT_INVERTED, ELBOW_BACK_LEFT_INVERTED);
+
+  delay(3000);
+
+  brutus.start();
+
+  delay(100);
+
+  Serial.println("<START>");
   
-  // Setup brutus
-  init_brutus(&pca);
+  brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
 
-  // Setup front right leg
-  fr_leg.setup_shoulder(SHOULDER_FRONT_RIGHT_PCA_PIN,
-                        MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                        MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  fr_leg.setup_elbow(SHOULDER_FRONT_RIGHT_PCA_PIN,
-                     MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                     MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  // Setup front left leg
-  fl_leg.setup_shoulder(SHOULDER_FRONT_LEFT_PCA_PIN,
-                        MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                        MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  fl_leg.setup_elbow(SHOULDER_FRONT_LEFT_PCA_PIN,
-                     MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                     MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  // Setup back right leg
-  br_leg.setup_shoulder(SHOULDER_BACK_RIGHT_PCA_PIN,
-                        MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                        MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  br_leg.setup_elbow(SHOULDER_BACK_RIGHT_PCA_PIN,
-                     MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                     MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  // Setup back left leg
-  bl_leg.setup_shoulder(SHOULDER_BACK_LEFT_PCA_PIN,
-                        MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                        MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
-
-  bl_leg.setup_elbow(SHOULDER_BACK_LEFT_PCA_PIN,
-                     MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
-                     MIN_SERVO_ANGLE, MIN_SERVO_ANGLE);
+  xTaskCreatePinnedToCore(
+    &serial_command,
+    "SerialTask",
+    4096,
+    NULL,
+    1,
+    &serial_task_handle,
+    LOGIC_CORE
+  );
 }
 
-void loop() {
-  //BrutusLegState state = {angles[0][(i%2)], angles[1][(i%2)]};
-  //fr_leg.set_leg_state(state);
+void loop() {}
 
-  shoulder.set_angle(angles[0][(i%2)]);
+void
+serial_command(void* pvParameters)
+{
+  while (true) {
+    if (Serial.available() > 0)
+    {
+      String input = Serial.readStringUntil('\n');
 
-  i++;
+      input.replace(",", " ");
+      input.trim();
 
-  delay(1000);
-  Serial.print("  [FR] ");
-  Serial.println(shoulder.get_angle());
+      float vals[N_LEGS * JOINTS_PER_LEG];
+      int index = 0;
+
+      char *token = strtok((char*)input.c_str(), " ");
+      while (token != NULL && index < 8)
+      {
+        vals[index] = atof(token);
+        index++;
+        token = strtok(NULL, " ");
+      }
+
+      if (index == N_LEGS * JOINTS_PER_LEG)
+      {
+        BrutusPose new_pose;
+
+        new_pose.fr_leg_state.shoulder_angle = vals[0];
+        new_pose.fr_leg_state.elbow_angle    = vals[1];
+
+        new_pose.fl_leg_state.shoulder_angle = vals[2];
+        new_pose.fl_leg_state.elbow_angle    = vals[3];
+
+        new_pose.br_leg_state.shoulder_angle = vals[4];
+        new_pose.br_leg_state.elbow_angle    = vals[5];
+
+        new_pose.bl_leg_state.shoulder_angle = vals[6];
+        new_pose.bl_leg_state.elbow_angle    = vals[7];
+
+        brutus.change_target_pose(new_pose);
+
+        Serial.println("Nueva pose aplicada");
+      }
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(200));
+  }
 }

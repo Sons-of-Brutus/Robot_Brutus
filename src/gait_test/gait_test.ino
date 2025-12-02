@@ -4,6 +4,8 @@ Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
 Brutus brutus;
 
+TaskHandle_t serial_task_handle;
+
 void setup() {
   Serial.begin(115200);
 
@@ -52,53 +54,67 @@ void setup() {
 
   delay(100);
 
-  Serial.println("KLLKKKKK");
+  Serial.println("<START>");
   
-  //brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
+  brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
+
+  xTaskCreatePinnedToCore(
+    &serial_command,
+    "SerialTask",
+    4096,
+    NULL,
+    1,
+    &serial_task_handle,
+    LOGIC_CORE
+  );
 }
 
-void loop() {
-  
-  if (Serial.available() > 0)
-  {
-    String input = Serial.readStringUntil('\n');
+void loop() {}
 
-    input.replace(",", " ");
-    input.trim();
-
-    float vals[N_LEGS * JOINTS_PER_LEG];
-    int index = 0;
-
-    char *token = strtok((char*)input.c_str(), " ");
-    while (token != NULL && index < 8)
+void
+serial_command(void* pvParameters)
+{
+  while (true) {
+    if (Serial.available() > 0)
     {
-      vals[index] = atof(token);
-      index++;
-      token = strtok(NULL, " ");
+      String input = Serial.readStringUntil('\n');
+
+      input.replace(",", " ");
+      input.trim();
+
+      float vals[N_LEGS * JOINTS_PER_LEG];
+      int index = 0;
+
+      char *token = strtok((char*)input.c_str(), " ");
+      while (token != NULL && index < 8)
+      {
+        vals[index] = atof(token);
+        index++;
+        token = strtok(NULL, " ");
+      }
+
+      if (index == N_LEGS * JOINTS_PER_LEG)
+      {
+        BrutusPose new_pose;
+
+        new_pose.fr_leg_state.shoulder_angle = vals[0];
+        new_pose.fr_leg_state.elbow_angle    = vals[1];
+
+        new_pose.fl_leg_state.shoulder_angle = vals[2];
+        new_pose.fl_leg_state.elbow_angle    = vals[3];
+
+        new_pose.br_leg_state.shoulder_angle = vals[4];
+        new_pose.br_leg_state.elbow_angle    = vals[5];
+
+        new_pose.bl_leg_state.shoulder_angle = vals[6];
+        new_pose.bl_leg_state.elbow_angle    = vals[7];
+
+        brutus.change_target_pose(new_pose);
+
+        Serial.println("Nueva pose aplicada");
+      }
     }
 
-    if (index == N_LEGS * JOINTS_PER_LEG)
-    {
-      BrutusPose new_pose;
-
-      new_pose.fr_leg_state.shoulder_angle = vals[0];
-      new_pose.fr_leg_state.elbow_angle    = vals[1];
-
-      new_pose.fl_leg_state.shoulder_angle = vals[2];
-      new_pose.fl_leg_state.elbow_angle    = vals[3];
-
-      new_pose.br_leg_state.shoulder_angle = vals[4];
-      new_pose.br_leg_state.elbow_angle    = vals[5];
-
-      new_pose.bl_leg_state.shoulder_angle = vals[6];
-      new_pose.bl_leg_state.elbow_angle    = vals[7];
-
-      brutus.set_pose(new_pose, true);
-
-      Serial.println("Nueva pose aplicada");
-    }
-    
-    auto pose = brutus.check_pose(true);
+    vTaskDelay(pdMS_TO_TICKS(200));
   }
-  delay(2000);
 }

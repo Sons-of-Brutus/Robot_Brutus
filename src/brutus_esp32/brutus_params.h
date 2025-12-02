@@ -1,13 +1,15 @@
 #ifndef BRUTUS_PARAMS__H
 #define BRUTUS_PARAMS__H
 
+#include "BrutusPose.h"
+
 // --------- SERVOS CONFIG ----------
 
 // Actual configuration is for MG90s servos
 #define PWM_SERVO_FREQ 50
 
-#define MIN_SERVO_ANGLE 0.0
-#define MAX_SERVO_ANGLE 180.0
+#define MIN_SERVO_ANGLE -90.0
+#define MAX_SERVO_ANGLE 90.0
 
 #define MIN_SERVO_PWM_PULSE_US 500
 #define MAX_SERVO_PWM_PULSE_US 2500
@@ -72,17 +74,40 @@
 
 
 
-#define N_LEGS 4
+#define SHOULDER_BACK_LEFT_INVERTED true
+#define ELBOW_BACK_LEFT_INVERTED    true
+
+#define SHOULDER_BACK_RIGHT_INVERTED false
+#define ELBOW_BACK_RIGHT_INVERTED    false
+
+#define SHOULDER_FRONT_LEFT_INVERTED false
+#define ELBOW_FRONT_LEFT_INVERTED    false
+
+#define SHOULDER_FRONT_RIGHT_INVERTED true
+#define ELBOW_FRONT_RIGHT_INVERTED    true
 
 // ---------------------------
 
 
 
 // -------- FreeRTOS -----------
-#define GAIT_CORE  0
-#define MOVEMENT_PERIOD 20 // [ms]
+#define MOTION_CORE  0
+#define MOTION_PERIOD 1000 // [ms]
 
 #define LOGIC_CORE 1
 // -----------------------------
+
+
+// ------- POSES ---------
+constexpr BrutusLegState STANDING_FR_STATE {20, -20};
+constexpr BrutusLegState STANDING_FL_STATE {20, -20};
+constexpr BrutusLegState STANDING_BR_STATE {20, -20};
+constexpr BrutusLegState STANDING_BL_STATE {20, -20};
+
+constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
+                                    STANDING_FL_STATE,
+                                    STANDING_BR_STATE,
+                                    STANDING_BL_STATE};
+// -----------------------
 
 #endif // BRUTUS_PARAMS__H

@@ -3,39 +3,55 @@
 
 #include "Pca9685Servo.h"
 #include "brutus_params.h"
+#include "BrutusLegState.h"
 
 #define N_SERVOS_AT_LEG 2
-
-struct BrutusLegState
-{
-  float elbow_angle;
-  float shoulder_angle;
-};
 
 class BrutusLegInterface
 {
 
 private:
-  Pca9685Servo elbow;
-  Pca9685Servo shoulder;
+  Adafruit_PWMServoDriver* pca_;
 
-  Adafruit_PWMServoDriver* pca;
+  Pca9685Servo elbow_;
+  Pca9685Servo shoulder_;
+
+  bool shoulder_is_inverted_;
+  bool elbow_is_inverted_;
+
+  float
+  apply_angle_inversion(bool is_inverted, float angle)
+  {
+    if (is_inverted) {
+      angle = -angle;
+    }
+
+    return angle;
+  }
 
 public:
-  BrutusLegInterface(Adafruit_PWMServoDriver* pca)
-  : pca(pca),
-    elbow(pca,0,0,0,0,0),
-    shoulder(pca,0,0,0,0,0)
+  BrutusLegInterface()
+  : pca_(NULL),
+    elbow_(),
+    shoulder_()
   {}
+
+  void
+  setup(Adafruit_PWMServoDriver* pca)
+  {
+    this->pca_ = pca;
+  }
 
   void
   setup_elbow(int pca_idx,
               int min_pwm_pulse_period,
               int max_pwm_pulse_period,
               float min_angle,
-              float max_angle)
+              float max_angle,
+              bool is_inverted)
   {
-    elbow = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    elbow_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    this->elbow_is_inverted_ = is_inverted;
   }
 
   void
@@ -43,27 +59,45 @@ public:
                  int min_pwm_pulse_period,
                  int max_pwm_pulse_period,
                  float min_angle,
-                 float max_angle)
+                 float max_angle,
+                 bool is_inverted)
   {
-    shoulder = Pca9685Servo(this->pca, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    shoulder_.init(this->pca_, pca_idx, min_pwm_pulse_period, max_pwm_pulse_period, min_angle, max_angle);
+    this->shoulder_is_inverted_ = is_inverted;
   }
 
-  struct BrutusLegState
-  get_leg_state()
+  // TODO Needs test
+  BrutusLegState
+  get_leg_state(bool apply_inversion)
   {
-    struct BrutusLegState leg_state;
+    BrutusLegState leg_state;
 
-    leg_state.shoulder_angle = shoulder.get_angle();
-    leg_state.elbow_angle = elbow.get_angle();
+    leg_state.shoulder_angle = shoulder_.get_angle();
+    leg_state.elbow_angle = elbow_.get_angle();
+
+    if (apply_inversion) {
+      leg_state.shoulder_angle = apply_angle_inversion(shoulder_is_inverted_, leg_state.shoulder_angle);
+      leg_state.elbow_angle = apply_angle_inversion(elbow_is_inverted_, leg_state.elbow_angle);
+    }
 
     return leg_state;
   }
 
   void
-  set_leg_state(BrutusLegState & leg_state)
+  set_leg_state(BrutusLegState & leg_state, bool apply_inversion)
   {
-    shoulder.set_angle(leg_state.shoulder_angle);
-    elbow.set_angle(leg_state.elbow_angle);
+    float shoulder_angle, elbow_angle;
+
+    if (apply_inversion) {
+      shoulder_angle = apply_angle_inversion(shoulder_is_inverted_, leg_state.shoulder_angle);
+      elbow_angle = apply_angle_inversion(elbow_is_inverted_, leg_state.elbow_angle);
+    } else {
+      shoulder_angle = leg_state.shoulder_angle;
+      elbow_angle = leg_state.elbow_angle;
+    }
+
+    shoulder_.set_angle(shoulder_angle);
+    elbow_.set_angle(elbow_angle);
   }
 };
 

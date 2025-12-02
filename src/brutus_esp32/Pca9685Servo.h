@@ -25,33 +25,44 @@ public:
 
   /**
    * @brief Constructor
-   *
-   * @param pca              PCA's controller object reference
-   * @param pca_idx          PCA's pin where the servo is connected
-   * @param min_pwm_pulse_t  The lowest pwm pulse period that the servo can use  [unit: us]
-   * @param max_pwm_pulse_t  The highest pwm pulse period that the servo can use [unit: us]
-   * @param min_angle        The lowest angle the servo can reach
    */
-  Pca9685Servo(Adafruit_PWMServoDriver* pca,
-               int pca_idx,
-               int min_pwm_pulse_period,
-               int max_pwm_pulse_period,
-               float min_angle,
-               float max_angle)
-  {
-    this->pca = pca;
-    this->pca_idx = pca_idx;
+  Pca9685Servo() {}
 
-    this->min_pwm = Pca9685Servo::us_to_pwm(min_pwm_pulse_period);
-    this->max_pwm = Pca9685Servo::us_to_pwm(max_pwm_pulse_period);
+  /**
+    * @brief Initializes a Pca9685Servo object with the given parameters.
+    *
+    * This method sets up the servo to use the specified PCA9685 controller,
+    * configures the PWM pin, pulse width limits, and angle limits. It also
+    * calculates the initial PWM value corresponding to the midpoint angle.
+    *
+    * @param pca Pointer to the Adafruit_PWMServoDriver instance controlling the PCA9685.
+    * @param pca_idx The PCA9685 channel/pin number where the servo is connected.
+    * @param min_pwm_pulse_period Minimum PWM pulse width in microseconds for the servo.
+    * @param max_pwm_pulse_period Maximum PWM pulse width in microseconds for the servo.
+    * @param min_angle Minimum angle the servo can reach (degrees).
+    * @param max_angle Maximum angle the servo can reach (degrees).
+    */
+    void 
+    init(Adafruit_PWMServoDriver* pca,
+         int pca_idx,
+         int min_pwm_pulse_period,
+         int max_pwm_pulse_period,
+         float min_angle,
+         float max_angle)
+    {
+      this->pca = pca;
+      this->pca_idx = pca_idx;
 
-    this->min_angle = min_angle;
-    this->max_angle = max_angle;
+      this->min_pwm = Pca9685Servo::us_to_pwm(min_pwm_pulse_period);
+      this->max_pwm = Pca9685Servo::us_to_pwm(max_pwm_pulse_period);
 
-    float init_angle = (this->min_angle + this->max_angle) * 0.5f; 
+      this->min_angle = min_angle;
+      this->max_angle = max_angle;
 
-    this->init_pwm = Pca9685Servo::angle_to_pwm(init_angle, min_angle, max_angle, this->min_pwm, this->max_pwm);
-  }
+      float init_angle = (this->min_angle + this->max_angle) * 0.5f; 
+
+      this->init_pwm = Pca9685Servo::angle_to_pwm(init_angle, min_angle, max_angle, this->min_pwm, this->max_pwm);
+    }
 
   /**
    * @brief Sends a PWM pulse corresponding to an angle to the specified servo
@@ -62,7 +73,9 @@ public:
   void set_angle(float angle,
                  uint16_t on_tick = 0)
   {
-    uint16_t pwm_value = Pca9685Servo::angle_to_pwm(this->pca_idx,
+    float ang = this->normalize_to_servo_range(angle);
+
+    uint16_t pwm_value = Pca9685Servo::angle_to_pwm(ang,
                                                     this->min_angle,
                                                     this->max_angle,
                                                     this->min_pwm,
@@ -95,6 +108,22 @@ public:
                                              this->max_angle);
 
     return angle;
+  }
+
+  /**
+   * @brief Wraps an angle into the servo's valid range.
+   *
+   * Normalizes the input angle so it fits within [min_angle, max_angle].
+   *
+   * @param angle Input angle in degrees.
+   * @return float Normalized angle within the servo range.
+   */
+  float
+  normalize_to_servo_range(float angle) {
+    float range = this->max_angle - this->min_angle;
+    float a = fmod(angle - this->min_angle, range);
+    if (a < 0) a += range;
+    return a + this->min_angle;
   }
 
   /**
