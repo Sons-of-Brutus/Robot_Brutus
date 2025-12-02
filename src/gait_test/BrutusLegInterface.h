@@ -23,7 +23,7 @@ private:
   apply_angle_inversion(bool is_inverted, float angle)
   {
     if (is_inverted) {
-      angle = 180 - angle;
+      angle = -angle;
     }
 
     return angle;
@@ -84,10 +84,20 @@ public:
   }
 
   void
-  set_leg_state(BrutusLegState & leg_state)
+  set_leg_state(BrutusLegState & leg_state, bool apply_inversion)
   {
-    shoulder_.set_angle(apply_angle_inversion(shoulder_is_inverted_, leg_state.shoulder_angle));
-    elbow_.set_angle(apply_angle_inversion(elbow_is_inverted_, leg_state.elbow_angle));
+    float shoulder_angle, elbow_angle;
+
+    if (apply_inversion) {
+      shoulder_angle = apply_angle_inversion(shoulder_is_inverted_, leg_state.shoulder_angle);
+      elbow_angle = apply_angle_inversion(elbow_is_inverted_, leg_state.elbow_angle);
+    } else {
+      shoulder_angle = leg_state.shoulder_angle;
+      elbow_angle = leg_state.elbow_angle;
+    }
+
+    shoulder_.set_angle(shoulder_angle);
+    elbow_.set_angle(elbow_angle);
   }
 };
 

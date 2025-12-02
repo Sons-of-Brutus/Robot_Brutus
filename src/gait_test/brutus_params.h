@@ -8,8 +8,8 @@
 // Actual configuration is for MG90s servos
 #define PWM_SERVO_FREQ 50
 
-#define MIN_SERVO_ANGLE 0.0
-#define MAX_SERVO_ANGLE 180.0
+#define MIN_SERVO_ANGLE -90.0
+#define MAX_SERVO_ANGLE 90.0
 
 #define MIN_SERVO_PWM_PULSE_US 500
 #define MAX_SERVO_PWM_PULSE_US 2500
@@ -91,18 +91,18 @@
 
 
 // -------- FreeRTOS -----------
-#define MOVEMENT_CORE  0
-#define MOVEMENT_PERIOD 20 // [ms]
+#define MOTION_CORE  0
+#define MOTION_PERIOD 1000 // [ms]
 
 #define LOGIC_CORE 1
 // -----------------------------
 
 
 // ------- POSES ---------
-constexpr BrutusLegState STANDING_FR_STATE {110, 70};
-constexpr BrutusLegState STANDING_FL_STATE {110, 70};
-constexpr BrutusLegState STANDING_BR_STATE {110, 70};
-constexpr BrutusLegState STANDING_BL_STATE {110, 70};
+constexpr BrutusLegState STANDING_FR_STATE {20, -20};
+constexpr BrutusLegState STANDING_FL_STATE {20, -20};
+constexpr BrutusLegState STANDING_BR_STATE {20, -20};
+constexpr BrutusLegState STANDING_BL_STATE {20, -20};
 
 constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
                                     STANDING_FL_STATE,

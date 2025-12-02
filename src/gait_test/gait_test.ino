@@ -4,10 +4,8 @@ Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
 Brutus brutus;
 
-void
-setup()
-{
-  Serial.begin(9600);
+void setup() {
+  Serial.begin(115200);
 
   brutus.setup(&pca,
                PCA9685_OE,
@@ -51,9 +49,16 @@ setup()
   delay(3000);
 
   brutus.start();
+
+  delay(100);
+
+  Serial.println("KLLKKKKK");
+  
+  //brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
 }
 
 void loop() {
+  
   if (Serial.available() > 0)
   {
     String input = Serial.readStringUntil('\n');
@@ -88,34 +93,12 @@ void loop() {
       new_pose.bl_leg_state.shoulder_angle = vals[6];
       new_pose.bl_leg_state.elbow_angle    = vals[7];
 
-      brutus.set_pose(new_pose);
+      brutus.set_pose(new_pose, true);
 
       Serial.println("Nueva pose aplicada");
     }
-
+    
     auto pose = brutus.check_pose(true);
-    Serial.println("Pose:");
-
-    Serial.print("  [FR] ");
-    Serial.print(pose.fr_leg_state.shoulder_angle);
-    Serial.print(" ");
-    Serial.println(pose.fr_leg_state.elbow_angle);
-
-    Serial.print("  [FL] ");
-    Serial.print(pose.fl_leg_state.shoulder_angle);
-    Serial.print(" ");
-    Serial.println(pose.fl_leg_state.elbow_angle);
-
-    Serial.print("  [BR] ");
-    Serial.print(pose.br_leg_state.shoulder_angle);
-    Serial.print(" ");
-    Serial.println(pose.br_leg_state.elbow_angle);
-
-    Serial.print("  [BL] ");
-    Serial.print(pose.bl_leg_state.shoulder_angle);
-    Serial.print(" ");
-    Serial.println(pose.bl_leg_state.elbow_angle);
   }
-
   delay(2000);
 }
