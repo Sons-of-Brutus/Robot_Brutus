@@ -92,7 +92,7 @@
 
 // -------- FreeRTOS -----------
 #define MOTION_CORE  0
-#define MOTION_PERIOD 1000 // [ms]
+#define MOTION_PERIOD 20 // [ms]
 
 #define LOGIC_CORE 1
 // -----------------------------

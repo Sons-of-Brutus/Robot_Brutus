@@ -8,6 +8,11 @@
 #define JOINTS_PER_LEG 2
 #define N_LEGS 4
 
+enum BrutusMotionMode {
+  SPEEDS = 0,
+  POSE = 1
+};
+
 class Brutus {
 
 private:
@@ -48,6 +53,8 @@ private:
 
   TaskHandle_t motion_task_handle_;
   int motion_task_period_;
+
+  enum BrutusMotionMode current_motion_mode_ = POSE;
 
 public:
   Brutus()
@@ -326,7 +333,6 @@ public:
 
     while (true) {
       this->set_pose(target_pose_,true);
-
       vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(motion_task_period_));
     }
   }
@@ -353,6 +359,15 @@ public:
     );
 
     motion_task_period_ = MOTION_PERIOD;
+  }
+
+  // This function is thread safe
+  void
+  change_motion_mode(enum BrutusMotionMode mode)
+  {
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+    this->current_motion_mode_ = mode;
+    xSemaphoreGive(motion_mutex_);
   }
 
   // ---------- SPEED -----------
@@ -436,6 +451,8 @@ public:
   }
 
   // ---------- POSES -----------
+
+  // This function is thread safe
   void
   change_target_pose(BrutusPose pose)
   {
@@ -464,10 +481,10 @@ public:
   set_pose(BrutusPose & pose, bool apply_inversion)
   {
     BrutusLegInterface* legs[4] = {
-        &this->front_right_leg_,
-        &this->front_left_leg_,
-        &this->back_right_leg_,
-        &this->back_left_leg_
+      &this->front_right_leg_,
+      &this->front_left_leg_,
+      &this->back_right_leg_,
+      &this->back_left_leg_
     };
 
     BrutusLegState fr = {pose.fr_leg_state.shoulder_angle + this->fr_offsets_.shoulder_angle,
@@ -484,9 +501,8 @@ public:
 
     BrutusLegState states[4] = {fr,fl,br,bl};
 
-    for (int i = 0; i < 4; i++)
-    {
-        legs[i]->set_leg_state(states[i], apply_inversion);
+    for (int i = 0; i < 4; i++) {
+      legs[i]->set_leg_state(states[i], apply_inversion);
     }
   }
 

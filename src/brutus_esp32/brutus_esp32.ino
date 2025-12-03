@@ -4,7 +4,7 @@ Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
 Brutus brutus;
 
-TaskHandle_t serial_task_handle;
+TaskHandle_t mqtt_task_handle;
 
 void setup() {
   Serial.begin(115200);
@@ -59,12 +59,12 @@ void setup() {
   brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
 
   xTaskCreatePinnedToCore(
-    &serial_command,
-    "SerialTask",
+    &mqtt_command,
+    "MqttTask",
     4096,
     NULL,
-    1,
-    &serial_task_handle,
+    0,
+    &mqtt_task_handle,
     LOGIC_CORE
   );
 }
@@ -72,7 +72,7 @@ void setup() {
 void loop() {}
 
 void
-serial_command(void* pvParameters)
+mqtt_command(void* pvParameters)
 {
   while (true) {
     if (Serial.available() > 0)
