@@ -37,12 +37,12 @@ class MainActivity : AppCompatActivity() {
     private val MODE_SPEED = "4"
 
     private val joints = mutableMapOf(
-        "FR_SH" to 0, "FR_EL" to 0,
-        "FL_SH" to 0, "FL_EL" to 0,
-        "BR_SH" to 0, "BR_EL" to 0,
-        "BL_SH" to 0, "BL_EL" to 0
+        "FR_SH" to 0f, "FR_EL" to 0f,
+        "FL_SH" to 0f, "FL_EL" to 0f,
+        "BR_SH" to 0f, "BR_EL" to 0f,
+        "BL_SH" to 0f, "BL_EL" to 0f
     )
-    private val seekMap = mutableMapOf<String, SeekBar>()
+                private val seekMap = mutableMapOf<String, SeekBar>()
     private val handler = Handler(Looper.getMainLooper())
 
     // Guardar último mensaje por topic
@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
                     val floatValue = progressToFloat(progress)
                     tv.text = "$joint: $floatValue"
-                    joints[joint] = (floatValue * 100).toInt() // escala opcional para JSON
+                    joints[joint] = floatValue
                     tv.setTextColor(Color.parseColor("#1976D2"))
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({ tv.setTextColor(Color.BLUE) }, 500)
@@ -210,12 +210,13 @@ class MainActivity : AppCompatActivity() {
     private fun publishPose() {
         val json = """
             {
-                "fr": {"ang_shoulder": ${joints["FR_SH"]}, "ang_elbow": ${joints["FR_EL"]}},
-                "fl": {"ang_shoulder": ${joints["FL_SH"]}, "ang_elbow": ${joints["FL_EL"]}},
-                "br": {"ang_shoulder": ${joints["BR_SH"]}, "ang_elbow": ${joints["BR_EL"]}},
-                "bl": {"ang_shoulder": ${joints["BL_SH"]}, "ang_elbow": ${joints["BL_EL"]}}
+                "fr": {"0": ${joints["FR_SH"]}, "1": ${joints["FR_EL"]}},
+                "fl": {"0": ${joints["FL_SH"]}, "1": ${joints["FL_EL"]}},
+                "br": {"0": ${joints["BR_SH"]}, "1": ${joints["BR_EL"]}},
+                "bl": {"0": ${joints["BL_SH"]}, "1": ${joints["BL_EL"]}}
             }
         """.trimIndent()
         publishMessage(TOPIC_CMD_POSE, json)
     }
 }
+
