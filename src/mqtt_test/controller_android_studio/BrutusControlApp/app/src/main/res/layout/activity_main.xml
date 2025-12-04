@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/layoutRoot"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvConnection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MQTT: Disconnected"
+            android:textSize="18sp"
+            android:textColor="#AA0000"
+            android:padding="8dp" />
+
+        <!-- Botones de modos en fila -->
+        <LinearLayout
+            android:id="@+id/layoutModes"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:weightSum="5">
+
+            <Button android:id="@+id/btnModeStanding" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Stand" />
+            <Button android:id="@+id/btnModeEx1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Ex1" />
+            <Button android:id="@+id/btnModeEx2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Ex2" />
+            <Button android:id="@+id/btnModeLegs" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Legs" />
+            <Button android:id="@+id/btnModeSpeed" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Speed" />
+        </LinearLayout>
+
+        <!-- Velocidad con valor al lado -->
+        <Button
+            android:id="@+id/btnSendVel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Send Velocity" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Velocity X: " />
+            <SeekBar
+                android:id="@+id/seekVelX"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100" />
+            <TextView
+                android:id="@+id/tvVelXValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:paddingStart="8dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Angular Velocity Z: " />
+            <SeekBar
+                android:id="@+id/seekVelZ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100" />
+            <TextView
+                android:id="@+id/tvVelZValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:paddingStart="8dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvReceived"
+            android:layout_width="match_parent"
+            android:layout_height="290dp"
+            android:scrollbars="vertical"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:layout_marginTop="16dp"
+            android:background="#EEEEEE" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Joints:"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp" />
+
+        <LinearLayout
+            android:id="@+id/layoutPose"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"/>
+
+        <Button
+            android:id="@+id/btnPublishPose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Force Publish Pose"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+</ScrollView>
