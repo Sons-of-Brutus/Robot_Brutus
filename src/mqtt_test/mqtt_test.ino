@@ -1,53 +1,10 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include "WiFiClientSecure.h"
 #include "credential.h"
+#include "mqtt_params.h"
 
-#define CLIENT_ID "brutus_esp"
-
-// ----------- TOPICS SUBS-----------
-
-#define TOPIC_STATE_MODE "brutus/state/mode"
-#define TOPIC_CMD_MODE   "brutus/cmd/mode"
-#define TOPIC_CMD_VEL   "brutus/cmd/velocity"
-#define TOPIC_CMD_POSE   "brutus/cmd/pose"
-
-// ----------- TOPICS PUBS-----------
-
-#define TOPIC_STATE_HEARTBEAT "brutus/data/heartbeat"
-#define TOPIC_POSE            "brutus/data/pose"
-#define TOPIC_DIST_FRONT      "brutus/data/distance/front"
-#define TOPIC_DIST_RIGHT      "brutus/data/distance/right"
-#define TOPIC_DIST_LEFT       "brutus/data/distance/left"
-
-#define STATE_HEARTBEAT 0
-#define POSE            1
-#define DIST_FRONT      2
-#define DIST_RIGHT      3
-#define DIST_LEFT       4
-
-// ----------- OTHER -----------
-
-#define MSG_BUFFER 100
-#define PUB_FREQ 1000
-#define BAUD 115200
-#define WIFI_WAIT 500
-#define RECONNECT_WAIT 3000
-#define SHOULDER 0
-#define ELBOW 1
-
-// CREATE MSG
-void create_msg(int topic, const void* val, char* msg);
-
-// SUBS
-void callback(char* topic, byte* payload, unsigned int length);
-void handleStateMode(const char* msg);
-void handleCmdMode(const char* msg);
-void handleCmdVel(const char* msg);
-void handleCmdPose(const char* msg);
-
-
-void reconnect();
-
+// ----------- STRUCTS -----------
 struct TopicHandlerSub {
   const char* topic;
   void (*handler)(const char* msg);
@@ -57,7 +14,6 @@ struct TopicHandlerPub {
   int n;
   const char* topic;
 };
-
 
 struct leg {
   int ang_shoulder;
@@ -70,6 +26,18 @@ struct legs {
   leg br;
   leg bl;
 };
+
+// CREATE MSG
+void create_msg(int topic, const void* val, char* msg);
+
+// SUBS
+void callback(char* topic, byte* payload, unsigned int length);
+void handleStateMode(const char* msg);
+void handleCmdMode(const char* msg);
+void handleCmdVel(const char* msg);
+void handleCmdPose(const char* msg);
+
+void reconnect();
 
 
 TopicHandlerSub topicHandlers_sub[] = {
@@ -186,12 +154,16 @@ void reconnect() {
 void setup() {
   Serial.begin(BAUD);
 
-  // Wifi conection
-  Serial.print("Conectando a ");
-  Serial.println(SSID);
-  WiFi.begin(SSID, PASSWORD);
 
-  while (WiFi.status() != WL_CONNECTED) {
+#if IS_EDUROAM
+  WiFi.begin(SSID_EDUROAM, WPA2_AUTH_PEAP, USERNAME_EDUROAM, USERNAME_EDUROAM, PASSWORD_EDUROAM);
+  Serial.print("Connecting to eduroam");
+#else
+  WiFi.begin(SSID, PASSWORD);
+  Serial.print("Connecting to WiFi");
+#endif
+
+  while(WiFi.status()!=WL_CONNECTED){
     delay(WIFI_WAIT);
     Serial.print(".");
   }
@@ -212,50 +184,57 @@ void loop() {
   }
   client.loop();
 
-  unsigned long now = millis();
-  if (now - last_msg > PUB_FREQ) {
+  #if TEST_WITH_RANDOM_MSG
+    unsigned long now = millis();
+    if (now - last_msg > PUB_FREQ) {
 
-    char msg[MSG_BUFFER];
-    create_msg(STATE_HEARTBEAT, 0, msg, MSG_BUFFER);
+      char msg[MSG_BUFFER];
+      // HEARTBEAT
+      create_msg(STATE_HEARTBEAT, 0, msg, MSG_BUFFER);
 
-    if (!client.publish(TOPIC_STATE_HEARTBEAT, msg)) {
-      Serial.println("Error publicando STATE_HEARTBEAT");
+      if (!client.publish(TOPIC_STATE_HEARTBEAT, msg)) {
+        Serial.println("Error publishing STATE_HEARTBEAT");
+      }
+
+      // POSE
+      legs l = {
+        {random(MIN_LEG_DEG, MAX_LEG_DEG), random(MIN_LEG_DEG, MAX_LEG_DEG)}, // fr
+        {random(MIN_LEG_DEG, MAX_LEG_DEG), random(MIN_LEG_DEG, MAX_LEG_DEG)}, // fl
+        {random(MIN_LEG_DEG, MAX_LEG_DEG), random(MIN_LEG_DEG, MAX_LEG_DEG)}, // br
+        {random(MIN_LEG_DEG, MAX_LEG_DEG), random(MIN_LEG_DEG, MAX_LEG_DEG)}  // bl
+      };
+
+      create_msg(POSE, &l, msg, MSG_BUFFER);
+      if (!client.publish(TOPIC_POSE, msg)) {
+        Serial.println("Error publishing POSE");
+      }
+
+      // DISTANCES
+      int front_dist = random(MIN_DIST, MAX_DIST);
+      int right_dist = random(MIN_DIST, MAX_DIST);
+      int left_dist = random(MIN_DIST, MAX_DIST);
+      
+      // FRONT DIST
+      create_msg(DIST_FRONT, &front_dist, msg, MSG_BUFFER);
+      if (!client.publish(TOPIC_DIST_FRONT, msg)) {
+        Serial.println("Error publishing DIST_FRONT");
+      }
+
+      // RIGHT DIST
+      create_msg(DIST_RIGHT, &right_dist, msg, MSG_BUFFER);
+      if (!client.publish(TOPIC_DIST_RIGHT, msg)) {
+        Serial.println("Error publishing DIST_RIGHT");
+      }
+
+      // LEFT DIST
+      create_msg(DIST_LEFT, &left_dist, msg, MSG_BUFFER);
+      if (!client.publish(TOPIC_DIST_LEFT, msg)) {
+        Serial.println("Error publishing DIST_LEFT");
+      }
+
+
+      last_msg = now;
     }
-
-    legs l = {
-      {random(0, 181), random(0, 181)}, // fr
-      {random(0, 181), random(0, 181)}, // fl
-      {random(0, 181), random(0, 181)}, // br
-      {random(0, 181), random(0, 181)}  // bl
-    };
-    create_msg(POSE, &l, msg, MSG_BUFFER);
-
-    if (!client.publish(TOPIC_POSE, msg)) {
-      Serial.println("Error publicando POSE");
-    }
-
-    int front_dist = random(0, 100);
-    int right_dist = random(0, 100);
-    int left_dist = random(0, 100);
-    create_msg(DIST_FRONT, &front_dist, msg, MSG_BUFFER);
-
-    if (!client.publish(TOPIC_DIST_FRONT, msg)) {
-      Serial.println("Error publicando DIST_FRONT");
-    }
-
-    create_msg(DIST_RIGHT, &right_dist, msg, MSG_BUFFER);
-
-    if (!client.publish(TOPIC_DIST_RIGHT, msg)) {
-      Serial.println("Error publicando DIST_RIGHT");
-    }
-
-    create_msg(DIST_LEFT, &left_dist, msg, MSG_BUFFER);
-
-    if (!client.publish(TOPIC_DIST_LEFT, msg)) {
-      Serial.println("Error publicando DIST_LEFT");
-    }
-
-    last_msg = now;
-  }
+  #endif
 }
 
