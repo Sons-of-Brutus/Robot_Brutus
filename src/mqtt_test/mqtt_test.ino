@@ -1,5 +1,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <iostream>
+#include "ArduinoJson.h"
 #include "WiFiClientSecure.h"
 #include "credential.h"
 #include "mqtt_params.h"
@@ -32,7 +34,6 @@ void create_msg(int topic, const void* val, char* msg);
 
 // SUBS
 void callback(char* topic, byte* payload, unsigned int length);
-void handleStateMode(const char* msg);
 void handleCmdMode(const char* msg);
 void handleCmdVel(const char* msg);
 void handleCmdPose(const char* msg);
@@ -42,7 +43,6 @@ void reconnect();
 
 TopicHandlerSub topicHandlers_sub[] = {
   { TOPIC_CMD_POSE, handleCmdPose },
-  { TOPIC_STATE_MODE, handleStateMode },
   { TOPIC_CMD_MODE, handleCmdMode },
   { TOPIC_CMD_VEL, handleCmdVel }
 };
@@ -77,24 +77,62 @@ void callback(char* topic, byte* payload, unsigned int length) {
     
 // ----------- HANDLERS -----------
 void handleCmdPose(const char* msg) {
-  Serial.print("handleCmdPose called with message: ");
-  Serial.println(msg);
+    Serial.print("msg: ");
+    Serial.println(msg);
+    StaticJsonDocument<JSON_BUFFER> doc;
+    
+    if (deserializeJson(doc, msg)) {
+        Serial.println("JSON parsing error");
+        return;
+    }
+
+    JsonObject fr = doc["fr"];
+    JsonObject fl = doc["fl"];
+    JsonObject br = doc["br"];
+    JsonObject bl = doc["bl"];
+
+    float fr_shoulder = fr[SHOULDER];
+    float fr_elbow    = fr[ELBOW];
+
+    float fl_shoulder = fl[SHOULDER];
+    float fl_elbow    = fl[ELBOW];
+
+    float br_shoulder = br[SHOULDER];
+    float br_elbow    = br[ELBOW];
+
+    float bl_shoulder = bl[SHOULDER];
+    float bl_elbow    = bl[ELBOW];
+
+    Serial.printf("FR shoulder: %2f, FR elbow: %2f, ", fr_shoulder, fr_elbow);
+    Serial.printf("FL shoulder: %2f, FL elbow: %2f, ", fl_shoulder, fl_elbow);
+    Serial.printf("BR shoulder: %2f, BR elbow: %2f, ", br_shoulder, br_elbow);
+    Serial.printf("BL shoulder: %2f, BL elbow: %2f\n", bl_shoulder, bl_elbow);
 }
 
-void handleStateMode(const char* msg) {
-  Serial.print("handleStateMode called with message: ");
-  Serial.println(msg);
-
-}
 
 void handleCmdVel(const char* msg) {
   Serial.print("handleCmdVel called with message: ");
-  Serial.println(msg);
+   StaticJsonDocument<JSON_BUFFER> doc;
+  
+  if (deserializeJson(doc, msg)) {
+      Serial.println("JSON parsing error");
+      return;
+  }
+
+  float vel_x = doc["vx"] | 0.0;
+  float vel_z = doc["wz"] | 0.0;
+
+  Serial.print("vel_x = ");
+  Serial.print(vel_x);
+  Serial.print("  vel_z = ");
+  Serial.println(vel_z);
+
 }
 
 void handleCmdMode(const char* msg) {
   Serial.print("handleCmdMode called with message: ");
-  Serial.println(msg);
+  int cmd_mode = atoi(msg);
+  Serial.println(cmd_mode);
 }
 
 void create_msg(int topic, const void* val, char* msg, int msg_size) {
@@ -106,11 +144,15 @@ void create_msg(int topic, const void* val, char* msg, int msg_size) {
     case POSE: {
       const legs* l = static_cast<const legs*>(val);
 
-      snprintf(msg, msg_size, "{\"fr\":{%d:%d,%d:%d}, \"fl\":{%d:%d,%d:%d}, \"br\":{%d:%d,%d:%d}, \"bl\":{%d:%d,%d:%d}}",
-                                  SHOULDER, l->fr.ang_shoulder, ELBOW, l->fr.ang_elbow,
-                                  SHOULDER, l->fl.ang_shoulder, ELBOW, l->fl.ang_elbow,
-                                  SHOULDER, l->br.ang_shoulder, ELBOW, l->br.ang_elbow,
-                                  SHOULDER, l->bl.ang_shoulder, ELBOW, l->bl.ang_elbow);
+      snprintf(msg, msg_size,
+        "{\"fr\":{\"%s\":%d,\"%s\":%d},\"fl\":{\"%s\":%d,\"%s\":%d},"
+        "\"br\":{\"%s\":%d,\"%s\":%d},\"bl\":{\"%s\":%d,\"%s\":%d}}",
+        SHOULDER, l->fr.ang_shoulder, ELBOW, l->fr.ang_elbow,
+        SHOULDER, l->fl.ang_shoulder, ELBOW, l->fl.ang_elbow,
+        SHOULDER, l->br.ang_shoulder, ELBOW, l->br.ang_elbow,
+        SHOULDER, l->bl.ang_shoulder, ELBOW, l->bl.ang_elbow
+);
+
       break;
       
     }
@@ -137,7 +179,6 @@ void reconnect() {
 
       client.subscribe(TOPIC_CMD_POSE);
       client.subscribe(TOPIC_CMD_VEL);
-      client.subscribe(TOPIC_STATE_MODE);
       client.subscribe(TOPIC_CMD_MODE);
 
     } else {

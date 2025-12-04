@@ -26,7 +26,6 @@ mosquitto_sub -h test.mosquitto.org -t brutus/data/distance/left
 
 Controller (topics received/monitored by the controller):
 ```bash
-mosquitto_sub -h test.mosquitto.org -t brutus/state/mode
 mosquitto_sub -h test.mosquitto.org -t brutus/cmd/mode
 mosquitto_sub -h test.mosquitto.org -t brutus/cmd/velocity
 mosquitto_sub -h test.mosquitto.org -t brutus/cmd/pose
@@ -52,7 +51,6 @@ mosquitto_pub -h test.mosquitto.org -t brutus/data/distance/left -m "sensor_left
 
 Messages from the controller:
 ```bash
-mosquitto_pub -h test.mosquitto.org -t brutus/state/mode -m "state_pose"
 mosquitto_pub -h test.mosquitto.org -t brutus/cmd/mode -m "cmd_mode"
 mosquitto_pub -h test.mosquitto.org -t brutus/cmd/velocity -m "cmd_vel"
 mosquitto_pub -h test.mosquitto.org -t brutus/cmd/pose -m "cmd_pose"

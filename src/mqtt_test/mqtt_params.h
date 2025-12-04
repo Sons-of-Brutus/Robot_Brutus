@@ -6,7 +6,6 @@
 
 // ----------- TOPICS SUBS-----------
 
-#define TOPIC_STATE_MODE "brutus/state/mode"
 #define TOPIC_CMD_MODE   "brutus/cmd/mode"
 #define TOPIC_CMD_VEL   "brutus/cmd/velocity"
 #define TOPIC_CMD_POSE   "brutus/cmd/pose"
@@ -43,11 +42,12 @@
 #define MAX_DIST 200
 
 // ----------- JOINTS -----------
-#define SHOULDER 0
-#define ELBOW 1
+#define SHOULDER "0"
+#define ELBOW "1"
 
 // ----------- OTHER -----------
 #define MSG_BUFFER 254
+#define JSON_BUFFER 300
 #define BAUD 115200
 
 #endif
