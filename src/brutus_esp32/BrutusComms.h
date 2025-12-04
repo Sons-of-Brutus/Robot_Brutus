@@ -3,6 +3,7 @@
 
 #include "Brutus.h"
 #include "brutus_params.h"
+#include "comms_structs.h"
 
 /*
 TODO
@@ -76,5 +77,100 @@ Cosas importantes de la clase Brutus:
 A meterle bien duro chavales.
 
 */
+
+class BrutusComms {
+  
+  private:
+    Brutus* brutus_;
+    BrutusCommsCmd cmd_;
+    BrutusCommsData data_;
+
+    TopicHandlerSub topicHandlers_sub[] = {
+      { TOPIC_CMD_POSE, handleCmdPose },
+      { TOPIC_STATE_MODE, handleStateMode },
+      { TOPIC_CMD_MODE, handleCmdMode },
+      { TOPIC_CMD_VEL, handleCmdVel }
+    };
+
+    const int numTopics;
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+  public:
+    BrutusComms():
+      brutus_(nullptr),
+      cmd_(START_CMD),
+      data_(START_DATA)
+    {};
+    
+    void callback(char* topic, byte* payload, unsigned int length) {
+      char message[MSG_BUFFER];
+
+      if (length >= sizeof(message)) {
+        Serial.print("Message received too long: ");
+        return;
+      }
+
+      memcpy(message, payload, length);
+      message[length] = '\0';
+
+      for (int i = 0; i < numTopics; i++) {
+        if (strcmp(topic, topicHandlers_sub[i].topic) == 0) {
+          topicHandlers_sub[i].handler(message);
+          return;
+        }
+      }
+
+      Serial.print("Message received on unknown topic: ");
+      Serial.println(topic);
+    }
+
+    void start(*b){
+      Serial.begin(BAUD);
+      brutus_ = b;
+      numTopics = sizeof(topicHandlers_sub) / sizeof(TopicHandlerSub);
+
+      #if IS_EDUROAM
+        WiFi.begin(SSID_EDUROAM, WPA2_AUTH_PEAP, USERNAME_EDUROAM, USERNAME_EDUROAM, PASSWORD_EDUROAM);
+        Serial.print("Connecting to eduroam");
+      #else
+        WiFi.begin(SSID, PASSWORD);
+        Serial.print("Connecting to WiFi");
+      #endif
+
+      while(WiFi.status()!=WL_CONNECTED){
+        delay(WIFI_WAIT);
+        Serial.print(".");
+      }
+
+      Serial.println("\nWiFi connected!");
+
+      client.setServer(MQTT_SERVER, MQTT_PORT);
+      client.setCallback(callback);
+    }
+
+    void reconnect() {
+      while (!client.connected()) {
+        Serial.print("Attempting to connect to the MQTT broker...");
+
+        if (client.connect(CLIENT_ID)) {
+          Serial.println("Connected!");
+
+          client.subscribe(TOPIC_CMD_POSE);
+          client.subscribe(TOPIC_CMD_VEL);
+          client.subscribe(TOPIC_STATE_MODE);
+          client.subscribe(TOPIC_CMD_MODE);
+
+        } else {
+          Serial.print("Failed. Code: ");
+          Serial.print(client.state());
+          Serial.println(" Trying again in 3 seconds...");
+          delay(RECONNECT_WAIT);
+        }
+      }
+    }
+
+  // Other member functions and attributes can be added later
+};
 
 #endif // BRUTUS_COMMS__H

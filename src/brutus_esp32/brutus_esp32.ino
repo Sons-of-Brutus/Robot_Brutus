@@ -1,9 +1,9 @@
 #include "Brutus.h"
-
+#include "BrutusComms.h"
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
 Brutus brutus;
-
+BrutusComms brutus_comms;
 TaskHandle_t mqtt_task_handle;
 
 void setup() {
@@ -51,7 +51,7 @@ void setup() {
   delay(3000);
 
   brutus.start();
-
+  brutus_comms.start(&brutus);
   delay(100);
 
   Serial.println("<START>");
