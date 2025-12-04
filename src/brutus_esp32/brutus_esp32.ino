@@ -57,7 +57,7 @@ void setup() {
   Serial.println("<START>");
   
   brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
-
+  brutus_comms.create_comms_task(COMMS_CORE);
   xTaskCreatePinnedToCore(
     &mqtt_command,
     "MqttTask",

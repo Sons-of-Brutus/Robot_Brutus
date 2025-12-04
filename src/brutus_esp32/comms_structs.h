@@ -2,7 +2,6 @@
 #define COMMS_STRUCT__H
 
 #include "BrutusPose.h" 
-
 struct BrutusCommsCmd {
   int mode;          // Modo de funcionamiento
   float v;          // Velocidad lineal
@@ -17,12 +16,7 @@ struct BrutusCommsData {
   float right_us;   // Distancia detectada por el ultrasonidos izquierdo
 };
 
-struct TopicHandlerSub {
-  const char* topic;
-  void (*handler)(const char* msg);
-};
-
-struct TopicHandlerPub {
+struct TopicHandler{
   int n;
   const char* topic;
 };

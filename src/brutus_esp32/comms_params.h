@@ -1,5 +1,5 @@
-#ifndef COMMS_PARAMS__H
-#define COMMS_PARAMS__H
+#ifndef MQTT_PARAMS__H
+#define MQTT_PARAMS__H
 
 #include "BrutusPose.h"
 #include "comms_structs.h"
@@ -11,10 +11,13 @@
 
 // ----------- TOPICS SUBS-----------
 
-#define TOPIC_STATE_MODE "brutus/state/mode"
 #define TOPIC_CMD_MODE   "brutus/cmd/mode"
 #define TOPIC_CMD_VEL   "brutus/cmd/velocity"
 #define TOPIC_CMD_POSE   "brutus/cmd/pose"
+
+#define CMD_MODE   0
+#define CMD_VEL    1
+#define CMD_POSE   2
 
 // ----------- TOPICS PUBS-----------
 
@@ -37,9 +40,6 @@
 // ----------- MODES -----------
 #define IS_EDUROAM false // true to connect to eduroam, false to connect to normal wifi
 
-#define TEST_WITH_RANDOM_MSG true // true to publish random data without a controller
-#define PUB_FREQ 1000 // Frequency of publishing random data in ms
-
 // ----------- RANGES FOR TEST_WITH_RANDOM_MSG-----------
 #define MIN_LEG_DEG 0
 #define MAX_LEG_DEG 181
@@ -48,15 +48,20 @@
 #define MAX_DIST 200
 
 // ----------- JOINTS -----------
-#define SHOULDER 0
-#define ELBOW 1
+#define SHOULDER "0"
+#define ELBOW "1"
 
-// ----------- OTHER -----------
+// ----------- BUFFERS -----------
 #define MSG_BUFFER 254
+#define JSON_BUFFER 300
+
+// ----------- PERIEODS -----------
+#define COMMS_PERIOD 100
+#define COMMS_CORE 1
 #define BAUD 115200
 
+// ----------- START CMD AND DATA -----------
 constexpr BrutusCommsCmd START_CMD {0, 0.0, 0.0, STANDING_POSE};
 constexpr BrutusCommsData START_DATA {STANDING_POSE, 0.0, 0.0, 0.0};
-
 
 #endif
