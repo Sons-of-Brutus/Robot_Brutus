@@ -58,6 +58,7 @@ void setup() {
   
   brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
 
+  /*
   xTaskCreatePinnedToCore(
     &serial_command,
     "SerialTask",
@@ -67,6 +68,7 @@ void setup() {
     &serial_task_handle,
     LOGIC_CORE
   );
+  */
 }
 
 void loop() {}

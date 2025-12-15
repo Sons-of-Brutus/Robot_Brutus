@@ -61,16 +61,16 @@
 
 
 #define SHOULDER_BACK_LEFT_ANGLE_OFFSET 0.0
-#define ELBOW_BACK_LEFT_ANGLE_OFFSET    0.0
+#define ELBOW_BACK_LEFT_ANGLE_OFFSET    -10.0
 
-#define SHOULDER_BACK_RIGHT_ANGLE_OFFSET 0.0
+#define SHOULDER_BACK_RIGHT_ANGLE_OFFSET -10.0
 #define ELBOW_BACK_RIGHT_ANGLE_OFFSET    0.0
 
 #define SHOULDER_FRONT_LEFT_ANGLE_OFFSET 0.0
 #define ELBOW_FRONT_LEFT_ANGLE_OFFSET    0.0
 
 #define SHOULDER_FRONT_RIGHT_ANGLE_OFFSET 0.0
-#define ELBOW_FRONT_RIGHT_ANGLE_OFFSET    0.0
+#define ELBOW_FRONT_RIGHT_ANGLE_OFFSET    -3.0
 
 
 
@@ -108,6 +108,29 @@ constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
                                     STANDING_FL_STATE,
                                     STANDING_BR_STATE,
                                     STANDING_BL_STATE};
+
+#define N_GAIT_STEPS 3
+
+constexpr BrutusLegState BACK_DOWN_STATE {0,-20};
+constexpr BrutusLegState MID_UP_STATE {20,10};
+constexpr BrutusLegState FORWARD_DOWN_STATE {40,-20};
+
+constexpr BrutusPose GAIT_1 {BACK_DOWN_STATE,
+                             FORWARD_DOWN_STATE,
+                             FORWARD_DOWN_STATE,
+                             BACK_DOWN_STATE};
+
+constexpr BrutusPose GAIT_2 {MID_UP_STATE,
+                             BACK_DOWN_STATE,
+                             BACK_DOWN_STATE,
+                             MID_UP_STATE};
+
+constexpr BrutusPose GAIT_3 {FORWARD_DOWN_STATE,
+                             MID_UP_STATE,
+                             MID_UP_STATE,
+                             FORWARD_DOWN_STATE};
+
+constexpr BrutusPose GAIT_STEPS[3] {GAIT_1, GAIT_2, GAIT_3};
 // -----------------------
 
 #endif // BRUTUS_PARAMS__H

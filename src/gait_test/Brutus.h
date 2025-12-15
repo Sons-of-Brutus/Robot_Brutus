@@ -322,11 +322,16 @@ public:
 
     int i = 0;
 
+    BrutusPose new_pose;
+
     last_wake_time = xTaskGetTickCount();
 
     while (true) {
       this->set_pose(target_pose_,true);
 
+      this->change_target_pose(GAIT_STEPS[i%N_GAIT_STEPS]);
+      i++;
+      
       vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(motion_task_period_));
     }
   }
@@ -486,7 +491,7 @@ public:
 
     for (int i = 0; i < 4; i++)
     {
-        legs[i]->set_leg_state(states[i], apply_inversion);
+      legs[i]->set_leg_state(states[i], apply_inversion);
     }
   }
 
