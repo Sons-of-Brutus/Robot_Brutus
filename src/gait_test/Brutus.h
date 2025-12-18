@@ -137,8 +137,8 @@ public:
                              int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                              int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                              int elbow_min_servo_angle, int elbow_max_servo_angle,
-                             float elbow_offset, float shoulder_offset,
-                             bool elbow_is_inverted, bool shoulder_is_inverted)
+                             float shoulder_offset, float elbow_offset,
+                             bool shoulder_is_inverted, bool elbow_is_inverted)
   {
     front_right_leg_.setup_shoulder(
       shoulder_pca_pin,
@@ -147,12 +147,16 @@ public:
       shoulder_is_inverted
     );
 
+    this->fr_offsets_.shoulder_angle = shoulder_offset;
+
     front_right_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
       elbow_min_servo_angle, elbow_max_servo_angle,
       elbow_is_inverted
     );
+
+    this->fr_offsets_.elbow_angle = elbow_offset;
 
     fr_leg_is_setup_ = true;
   }
@@ -162,8 +166,8 @@ public:
                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                             int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                             int elbow_min_servo_angle, int elbow_max_servo_angle,
-                            float elbow_offset, float shoulder_offset,
-                            bool elbow_is_inverted, bool shoulder_is_inverted)
+                            float shoulder_offset, float elbow_offset,
+                            bool shoulder_is_inverted, bool elbow_is_inverted)
   {
     front_left_leg_.setup_shoulder(
       shoulder_pca_pin,
@@ -172,12 +176,16 @@ public:
       shoulder_is_inverted
     );
 
+    this->fl_offsets_.shoulder_angle = shoulder_offset;
+
     front_left_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
       elbow_min_servo_angle, elbow_max_servo_angle,
       elbow_is_inverted
     );
+
+    this->fl_offsets_.elbow_angle = elbow_offset;
 
     fl_leg_is_setup_ = true;
   }
@@ -187,8 +195,8 @@ public:
                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                             int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                             int elbow_min_servo_angle, int elbow_max_servo_angle,
-                            float elbow_offset, float shoulder_offset,
-                            bool elbow_is_inverted, bool shoulder_is_inverted)
+                            float shoulder_offset, float elbow_offset,
+                            bool shoulder_is_inverted, bool elbow_is_inverted)
   {
     back_right_leg_.setup_shoulder(
       shoulder_pca_pin,
@@ -197,12 +205,16 @@ public:
       shoulder_is_inverted
     );
 
+    this->br_offsets_.shoulder_angle = shoulder_offset;
+
     back_right_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
       elbow_min_servo_angle, elbow_max_servo_angle,
       elbow_is_inverted
     );
+
+    this->br_offsets_.elbow_angle = elbow_offset;
 
     br_leg_is_setup_ = true;
   }
@@ -212,8 +224,8 @@ public:
                            int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
                            int shoulder_min_servo_angle, int shoulder_max_servo_angle,
                            int elbow_min_servo_angle, int elbow_max_servo_angle,
-                           float elbow_offset, float shoulder_offset,
-                           bool elbow_is_inverted, bool shoulder_is_inverted)
+                           float shoulder_offset, float elbow_offset,
+                           bool shoulder_is_inverted, bool elbow_is_inverted)
   {
     back_left_leg_.setup_shoulder(
       shoulder_pca_pin,
@@ -222,12 +234,16 @@ public:
       shoulder_is_inverted
     );
 
+    this->bl_offsets_.shoulder_angle = shoulder_offset;
+
     back_left_leg_.setup_elbow(
       elbow_pca_pin,
       elbow_min_servo_pwm_pulse_us, elbow_max_servo_pwm_pulse_us,
       elbow_min_servo_angle, elbow_max_servo_angle,
       elbow_is_inverted
     );
+
+    this->bl_offsets_.elbow_angle = elbow_offset;
 
     bl_leg_is_setup_ = true;
   }
@@ -327,6 +343,10 @@ public:
     last_wake_time = xTaskGetTickCount();
 
     while (true) {
+      //this->check_pose(true).print();
+      Serial.print("i: ");
+      Serial.println(i);
+      target_pose_.print();
       this->set_pose(target_pose_,true);
 
       this->change_target_pose(GAIT_STEPS[i%N_GAIT_STEPS]);
@@ -357,7 +377,7 @@ public:
       core
     );
 
-    motion_task_period_ = MOTION_PERIOD;
+    motion_task_period_ = task_period;
   }
 
   // ---------- SPEED -----------
@@ -445,17 +465,17 @@ public:
   change_target_pose(BrutusPose pose)
   {
     xSemaphoreTake(motion_mutex_, portMAX_DELAY);
-    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle + this->fr_offsets_.shoulder_angle,
-                         pose.fr_leg_state.elbow_angle + this->fr_offsets_.elbow_angle};
+    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle,
+                         pose.fr_leg_state.elbow_angle};
     
-    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle + this->fl_offsets_.shoulder_angle,
-                         pose.fl_leg_state.elbow_angle + this->fl_offsets_.elbow_angle};
+    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle,
+                         pose.fl_leg_state.elbow_angle};
 
-    BrutusLegState br = {pose.br_leg_state.shoulder_angle + this->br_offsets_.shoulder_angle,
-                         pose.br_leg_state.elbow_angle + this->br_offsets_.elbow_angle};
+    BrutusLegState br = {pose.br_leg_state.shoulder_angle,
+                         pose.br_leg_state.elbow_angle};
     
-    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle + this->bl_offsets_.shoulder_angle,
-                         pose.bl_leg_state.elbow_angle + this->bl_offsets_.elbow_angle};
+    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle,
+                         pose.bl_leg_state.elbow_angle};
  
     this->target_pose_.fr_leg_state = fr;
     this->target_pose_.fl_leg_state = fl;

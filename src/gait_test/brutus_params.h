@@ -61,23 +61,22 @@
 
 
 #define SHOULDER_BACK_LEFT_ANGLE_OFFSET 0.0
-#define ELBOW_BACK_LEFT_ANGLE_OFFSET    -10.0
+#define ELBOW_BACK_LEFT_ANGLE_OFFSET    -12.0
 
-#define SHOULDER_BACK_RIGHT_ANGLE_OFFSET -10.0
+#define SHOULDER_BACK_RIGHT_ANGLE_OFFSET 0.0
 #define ELBOW_BACK_RIGHT_ANGLE_OFFSET    0.0
 
 #define SHOULDER_FRONT_LEFT_ANGLE_OFFSET 0.0
 #define ELBOW_FRONT_LEFT_ANGLE_OFFSET    0.0
 
 #define SHOULDER_FRONT_RIGHT_ANGLE_OFFSET 0.0
-#define ELBOW_FRONT_RIGHT_ANGLE_OFFSET    -3.0
+#define ELBOW_FRONT_RIGHT_ANGLE_OFFSET    0.0
 
 
-
-#define SHOULDER_BACK_LEFT_INVERTED true
+#define SHOULDER_BACK_LEFT_INVERTED false
 #define ELBOW_BACK_LEFT_INVERTED    true
 
-#define SHOULDER_BACK_RIGHT_INVERTED false
+#define SHOULDER_BACK_RIGHT_INVERTED true
 #define ELBOW_BACK_RIGHT_INVERTED    false
 
 #define SHOULDER_FRONT_LEFT_INVERTED false
@@ -92,7 +91,7 @@
 
 // -------- FreeRTOS -----------
 #define MOTION_CORE  0
-#define MOTION_PERIOD 1000 // [ms]
+#define DEFAULT_MOTION_PERIOD 2000 // [ms]
 
 #define LOGIC_CORE 1
 // -----------------------------
@@ -101,36 +100,102 @@
 // ------- POSES ---------
 constexpr BrutusLegState STANDING_FR_STATE {20, -20};
 constexpr BrutusLegState STANDING_FL_STATE {20, -20};
-constexpr BrutusLegState STANDING_BR_STATE {20, -20};
-constexpr BrutusLegState STANDING_BL_STATE {20, -20};
+constexpr BrutusLegState STANDING_BR_STATE {-20, -20};
+constexpr BrutusLegState STANDING_BL_STATE {-20, -20};
 
 constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
                                     STANDING_FL_STATE,
                                     STANDING_BR_STATE,
                                     STANDING_BL_STATE};
 
+
+
 #define N_GAIT_STEPS 3
 
-constexpr BrutusLegState BACK_DOWN_STATE {0,-20};
-constexpr BrutusLegState MID_UP_STATE {20,10};
-constexpr BrutusLegState FORWARD_DOWN_STATE {40,-20};
+constexpr BrutusLegState FRONT_FORWARD_UP_STATE {60,20};
+constexpr BrutusLegState FRONT_FORWARD_DOWN_STATE {60,-20};
 
-constexpr BrutusPose GAIT_1 {BACK_DOWN_STATE,
-                             FORWARD_DOWN_STATE,
-                             FORWARD_DOWN_STATE,
-                             BACK_DOWN_STATE};
+constexpr BrutusLegState BACK_FORWARD_UP_STATE {-10,20};
+constexpr BrutusLegState BACK_FORWARD_DOWN_STATE {-10,-20};
 
-constexpr BrutusPose GAIT_2 {MID_UP_STATE,
-                             BACK_DOWN_STATE,
-                             BACK_DOWN_STATE,
-                             MID_UP_STATE};
+constexpr BrutusLegState FRONT_BACK_UP_STATE {-10,20};
+constexpr BrutusLegState FRONT_BACK_DOWN_STATE {-10,-20};
 
-constexpr BrutusPose GAIT_3 {FORWARD_DOWN_STATE,
-                             MID_UP_STATE,
-                             MID_UP_STATE,
-                             FORWARD_DOWN_STATE};
+constexpr BrutusLegState BACK_BACK_UP_STATE {-50,20};
+constexpr BrutusLegState BACK_BACK_DOWN_STATE {-50,-20};
 
-constexpr BrutusPose GAIT_STEPS[3] {GAIT_1, GAIT_2, GAIT_3};
+constexpr BrutusLegState FRONT_MID_UP_STATE {20,20};
+constexpr BrutusLegState BACK_MID_UP_STATE {-20,20};
+
+constexpr BrutusPose TURN_1 {FRONT_BACK_DOWN_STATE,
+                             FRONT_FORWARD_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE};
+
+constexpr BrutusPose TURN_2 {FRONT_MID_UP_STATE,
+                             FRONT_BACK_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE,
+                             BACK_MID_UP_STATE};
+
+constexpr BrutusPose TURN_3 {FRONT_FORWARD_DOWN_STATE,
+                             FRONT_MID_UP_STATE,
+                             BACK_MID_UP_STATE,
+                             BACK_FORWARD_DOWN_STATE};
+
+constexpr BrutusPose TURN_STEPS[3] {TURN_1, TURN_2, TURN_3};
+
+// Step where all feet are on the ground
+#define TURN_STAND_STEP 0 // TURN_1
+
+/*
+constexpr BrutusPose GAIT_1 {FRONT_BACK_DOWN_STATE,
+                             FRONT_FORWARD_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE};
+
+constexpr BrutusPose GAIT_2 {FRONT_MID_UP_STATE,
+                             FRONT_BACK_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE,
+                             BACK_MID_UP_STATE};
+
+constexpr BrutusPose GAIT_3 {FRONT_FORWARD_DOWN_STATE,
+                             FRONT_MID_UP_STATE,
+                             BACK_MID_UP_STATE,
+                             BACK_FORWARD_DOWN_STATE};
+*/
+
+constexpr BrutusPose GAIT_1 {FRONT_FORWARD_UP_STATE,
+                             FRONT_BACK_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE,
+                             BACK_FORWARD_UP_STATE};
+
+constexpr BrutusPose GAIT_2 {FRONT_FORWARD_DOWN_STATE,
+                             FRONT_BACK_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE};
+
+constexpr BrutusPose GAIT_3 {FRONT_FORWARD_DOWN_STATE,
+                             FRONT_BACK_UP_STATE,
+                             BACK_BACK_UP_STATE,
+                             BACK_FORWARD_DOWN_STATE};
+
+constexpr BrutusPose GAIT_4 {FRONT_BACK_DOWN_STATE,
+                             FRONT_FORWARD_UP_STATE,
+                             BACK_FORWARD_UP_STATE,
+                             BACK_BACK_DOWN_STATE};
+
+constexpr BrutusPose GAIT_5 {FRONT_BACK_DOWN_STATE,
+                             FRONT_FORWARD_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE};
+
+constexpr BrutusPose GAIT_6 {FRONT_BACK_UP_STATE,
+                             FRONT_FORWARD_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE,
+                             BACK_BACK_UP_STATE};
+
+constexpr BrutusPose GAIT_STEPS[6] {GAIT_1, GAIT_2, GAIT_3, GAIT_4, GAIT_5, GAIT_6};
+#define GAIT_TURN_STEP 0 // GAIT_1
 // -----------------------
 
 #endif // BRUTUS_PARAMS__H

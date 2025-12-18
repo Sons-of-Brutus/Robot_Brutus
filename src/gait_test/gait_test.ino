@@ -7,7 +7,7 @@ Brutus brutus;
 TaskHandle_t serial_task_handle;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   brutus.setup(&pca,
                PCA9685_OE,
@@ -56,7 +56,7 @@ void setup() {
 
   Serial.println("<START>");
   
-  brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
+  brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
 
   /*
   xTaskCreatePinnedToCore(
@@ -69,9 +69,12 @@ void setup() {
     LOGIC_CORE
   );
   */
+  
 }
 
-void loop() {}
+void loop() {
+
+}
 
 void
 serial_command(void* pvParameters)
@@ -117,6 +120,6 @@ serial_command(void* pvParameters)
       }
     }
 
-    vTaskDelay(pdMS_TO_TICKS(200));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

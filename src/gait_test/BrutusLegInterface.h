@@ -96,8 +96,8 @@ public:
       elbow_angle = leg_state.elbow_angle;
     }
 
-    shoulder_.set_angle(shoulder_angle);
     elbow_.set_angle(elbow_angle);
+    shoulder_.set_angle(shoulder_angle);
   }
 };
 
