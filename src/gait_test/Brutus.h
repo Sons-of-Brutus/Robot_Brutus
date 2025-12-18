@@ -332,45 +332,6 @@ public:
 
   // ---------- MOTION -------------
 
-  void
-  motion_task()
-  {
-    TickType_t last_wake_time;
-
-    int i = 0, j = 0;
-
-    int INTERPOLATION_STEPS = 1;
-    int interpolation_period = motion_task_period_ / INTERPOLATION_STEPS;
-    float interpolation_alpha = (float)interpolation_period / (float)motion_task_period_;
-
-    BrutusPose new_pose = this->check_pose(true);
-
-    last_wake_time = xTaskGetTickCount();
-
-    while (true) {
-      //this->check_pose(true).print();
-      Serial.print("i: ");
-      Serial.print(i);
-      Serial.print(", j: ");
-      Serial.println(j);
-
-      new_pose = new_pose.interpolate(GAIT_STEPS[i%N_GAIT_STEPS], interpolation_alpha);
-      this->change_target_pose(new_pose);
-      
-      this->set_pose(target_pose_,true);
-
-      j++;
-
-      if (j >= INTERPOLATION_STEPS) {
-        //target_pose_.print();
-        j = 0;
-        i++;
-      }
-
-      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(interpolation_period));
-    }
-  }
-
   static void 
   motion_task_wrapper(void *pvParameters)
   {
@@ -393,6 +354,51 @@ public:
     );
 
     motion_task_period_ = task_period;
+  }
+
+  void
+  motion_task()
+  {
+    TickType_t last_wake_time;
+
+    int i = 0, j = 0;
+
+    BrutusPose pose;
+
+    last_wake_time = xTaskGetTickCount();
+
+    while (true) {
+      //this->check_pose(true).print();
+
+
+
+      this->change_target_pose(GAIT_STEPS[i%N_GAIT_STEPS]);
+      this->set_pose(target_pose_,true);
+
+      i++;
+
+      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(interpolation_period));
+    }
+  }
+
+  BrutusPose
+  process_speeds(BrutusPose & pose_0)
+  {
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+
+    float v = constrain(v, MIN_V, MAX_V);
+    float w = constrain(w, MIN_W, MAX_W);
+
+    float v_terms[4] = {
+      pose_0.fr_leg_state.shoulder_angle * v,
+      pose_0.fl_leg_state.shoulder_angle * v,
+      pose_0.br_leg_state.shoulder_angle * v,
+      pose_0.bl_leg_state.shoulder_angle * v
+    };
+
+    pose_0.fr_leg_state.shoulder_angle = v_terms[0] * 
+
+    xSemaphoreGive(motion_mutex_);
   }
 
   // ---------- POSES -----------

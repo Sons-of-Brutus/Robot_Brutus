@@ -52,7 +52,7 @@ void setup() {
 
   brutus.start();
 
-  delay(100);
+  delay(3000);
 
   Serial.println("<START>");
   
@@ -69,7 +69,6 @@ void setup() {
     LOGIC_CORE
   );
   */
-  
 }
 
 void loop() {
