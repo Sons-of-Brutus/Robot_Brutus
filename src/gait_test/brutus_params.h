@@ -91,7 +91,7 @@
 
 // -------- FreeRTOS -----------
 #define MOTION_CORE  0
-#define DEFAULT_MOTION_PERIOD 2000 // [ms]
+#define DEFAULT_MOTION_PERIOD 500 // [ms]
 
 #define LOGIC_CORE 1
 // -----------------------------
@@ -109,9 +109,6 @@ constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
                                     STANDING_BL_STATE};
 
 
-
-#define N_GAIT_STEPS 3
-
 constexpr BrutusLegState FRONT_FORWARD_UP_STATE {60,20};
 constexpr BrutusLegState FRONT_FORWARD_DOWN_STATE {60,-20};
 
@@ -127,25 +124,7 @@ constexpr BrutusLegState BACK_BACK_DOWN_STATE {-50,-20};
 constexpr BrutusLegState FRONT_MID_UP_STATE {20,20};
 constexpr BrutusLegState BACK_MID_UP_STATE {-20,20};
 
-constexpr BrutusPose TURN_1 {FRONT_BACK_DOWN_STATE,
-                             FRONT_FORWARD_DOWN_STATE,
-                             BACK_FORWARD_DOWN_STATE,
-                             BACK_BACK_DOWN_STATE};
-
-constexpr BrutusPose TURN_2 {FRONT_MID_UP_STATE,
-                             FRONT_BACK_DOWN_STATE,
-                             BACK_BACK_DOWN_STATE,
-                             BACK_MID_UP_STATE};
-
-constexpr BrutusPose TURN_3 {FRONT_FORWARD_DOWN_STATE,
-                             FRONT_MID_UP_STATE,
-                             BACK_MID_UP_STATE,
-                             BACK_FORWARD_DOWN_STATE};
-
-constexpr BrutusPose TURN_STEPS[3] {TURN_1, TURN_2, TURN_3};
-
-// Step where all feet are on the ground
-#define TURN_STAND_STEP 0 // TURN_1
+#define N_GAIT_STEPS 6
 
 /*
 constexpr BrutusPose GAIT_1 {FRONT_BACK_DOWN_STATE,
@@ -162,6 +141,8 @@ constexpr BrutusPose GAIT_3 {FRONT_FORWARD_DOWN_STATE,
                              FRONT_MID_UP_STATE,
                              BACK_MID_UP_STATE,
                              BACK_FORWARD_DOWN_STATE};
+
+constexpr BrutusPose GAIT_STEPS[3] {GAIT_1, GAIT_2, GAIT_3};
 */
 
 constexpr BrutusPose GAIT_1 {FRONT_FORWARD_UP_STATE,
@@ -195,6 +176,8 @@ constexpr BrutusPose GAIT_6 {FRONT_BACK_UP_STATE,
                              BACK_BACK_UP_STATE};
 
 constexpr BrutusPose GAIT_STEPS[6] {GAIT_1, GAIT_2, GAIT_3, GAIT_4, GAIT_5, GAIT_6};
+
+
 #define GAIT_TURN_STEP 0 // GAIT_1
 // -----------------------
 

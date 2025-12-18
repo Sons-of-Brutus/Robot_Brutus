@@ -331,28 +331,43 @@ public:
   // ---------- MUTEX -------------
 
   // ---------- MOTION -------------
+
   void
   motion_task()
   {
     TickType_t last_wake_time;
 
-    int i = 0;
+    int i = 0, j = 0;
 
-    BrutusPose new_pose;
+    int INTERPOLATION_STEPS = 1;
+    int interpolation_period = motion_task_period_ / INTERPOLATION_STEPS;
+    float interpolation_alpha = (float)interpolation_period / (float)motion_task_period_;
+
+    BrutusPose new_pose = this->check_pose(true);
 
     last_wake_time = xTaskGetTickCount();
 
     while (true) {
       //this->check_pose(true).print();
       Serial.print("i: ");
-      Serial.println(i);
-      target_pose_.print();
+      Serial.print(i);
+      Serial.print(", j: ");
+      Serial.println(j);
+
+      new_pose = new_pose.interpolate(GAIT_STEPS[i%N_GAIT_STEPS], interpolation_alpha);
+      this->change_target_pose(new_pose);
+      
       this->set_pose(target_pose_,true);
 
-      this->change_target_pose(GAIT_STEPS[i%N_GAIT_STEPS]);
-      i++;
-      
-      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(motion_task_period_));
+      j++;
+
+      if (j >= INTERPOLATION_STEPS) {
+        //target_pose_.print();
+        j = 0;
+        i++;
+      }
+
+      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(interpolation_period));
     }
   }
 
@@ -378,6 +393,83 @@ public:
     );
 
     motion_task_period_ = task_period;
+  }
+
+  // ---------- POSES -----------
+  void
+  change_target_pose(BrutusPose pose)
+  {
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle,
+                         pose.fr_leg_state.elbow_angle};
+    
+    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle,
+                         pose.fl_leg_state.elbow_angle};
+
+    BrutusLegState br = {pose.br_leg_state.shoulder_angle,
+                         pose.br_leg_state.elbow_angle};
+    
+    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle,
+                         pose.bl_leg_state.elbow_angle};
+ 
+    this->target_pose_.fr_leg_state = fr;
+    this->target_pose_.fl_leg_state = fl;
+    this->target_pose_.br_leg_state = br;
+    this->target_pose_.bl_leg_state = bl;
+
+    xSemaphoreGive(motion_mutex_);
+  }
+
+  void
+  set_pose(BrutusPose & pose, bool apply_inversion)
+  {
+    BrutusLegInterface* legs[4] = {
+        &this->front_right_leg_,
+        &this->front_left_leg_,
+        &this->back_right_leg_,
+        &this->back_left_leg_
+    };
+
+    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle + this->fr_offsets_.shoulder_angle,
+                         pose.fr_leg_state.elbow_angle + this->fr_offsets_.elbow_angle};
+    
+    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle + this->fl_offsets_.shoulder_angle,
+                         pose.fl_leg_state.elbow_angle + this->fl_offsets_.elbow_angle};
+
+    BrutusLegState br = {pose.br_leg_state.shoulder_angle + this->br_offsets_.shoulder_angle,
+                         pose.br_leg_state.elbow_angle + this->br_offsets_.elbow_angle};
+    
+    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle + this->bl_offsets_.shoulder_angle,
+                         pose.bl_leg_state.elbow_angle + this->bl_offsets_.elbow_angle};
+
+    BrutusLegState states[4] = {fr,fl,br,bl};
+
+    for (int i = 0; i < 4; i++)
+    {
+      legs[i]->set_leg_state(states[i], apply_inversion);
+    }
+  }
+
+  BrutusPose
+  check_pose(bool apply_inversion)
+  {
+    auto fr_state = front_right_leg_.get_leg_state(apply_inversion);
+    auto fl_state = front_left_leg_.get_leg_state(apply_inversion);
+    auto br_state = back_right_leg_.get_leg_state(apply_inversion);
+    auto bl_state = back_left_leg_.get_leg_state(apply_inversion);
+
+    BrutusPose pose = {fr_state, fl_state, br_state, bl_state};
+
+    return pose;
+  }
+
+  void
+  change_standing_pose(BrutusPose & pose)
+  {
+    this->standing_pose_.fr_leg_state = pose.fr_leg_state;
+    this->standing_pose_.fl_leg_state = pose.fl_leg_state;
+    this->standing_pose_.br_leg_state = pose.br_leg_state;
+    this->standing_pose_.bl_leg_state = pose.bl_leg_state;
   }
 
   // ---------- SPEED -----------
@@ -460,82 +552,6 @@ public:
     return w;
   }
 
-  // ---------- POSES -----------
-  void
-  change_target_pose(BrutusPose pose)
-  {
-    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
-    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle,
-                         pose.fr_leg_state.elbow_angle};
-    
-    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle,
-                         pose.fl_leg_state.elbow_angle};
-
-    BrutusLegState br = {pose.br_leg_state.shoulder_angle,
-                         pose.br_leg_state.elbow_angle};
-    
-    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle,
-                         pose.bl_leg_state.elbow_angle};
- 
-    this->target_pose_.fr_leg_state = fr;
-    this->target_pose_.fl_leg_state = fl;
-    this->target_pose_.br_leg_state = br;
-    this->target_pose_.bl_leg_state = bl;
-
-    xSemaphoreGive(motion_mutex_);
-  }
-
-  void
-  set_pose(BrutusPose & pose, bool apply_inversion)
-  {
-    BrutusLegInterface* legs[4] = {
-        &this->front_right_leg_,
-        &this->front_left_leg_,
-        &this->back_right_leg_,
-        &this->back_left_leg_
-    };
-
-    BrutusLegState fr = {pose.fr_leg_state.shoulder_angle + this->fr_offsets_.shoulder_angle,
-                         pose.fr_leg_state.elbow_angle + this->fr_offsets_.elbow_angle};
-    
-    BrutusLegState fl = {pose.fl_leg_state.shoulder_angle + this->fl_offsets_.shoulder_angle,
-                         pose.fl_leg_state.elbow_angle + this->fl_offsets_.elbow_angle};
-
-    BrutusLegState br = {pose.br_leg_state.shoulder_angle + this->br_offsets_.shoulder_angle,
-                         pose.br_leg_state.elbow_angle + this->br_offsets_.elbow_angle};
-    
-    BrutusLegState bl = {pose.bl_leg_state.shoulder_angle + this->bl_offsets_.shoulder_angle,
-                         pose.bl_leg_state.elbow_angle + this->bl_offsets_.elbow_angle};
-
-    BrutusLegState states[4] = {fr,fl,br,bl};
-
-    for (int i = 0; i < 4; i++)
-    {
-      legs[i]->set_leg_state(states[i], apply_inversion);
-    }
-  }
-
-  BrutusPose
-  check_pose(bool apply_inversion)
-  {
-    auto fr_state = front_right_leg_.get_leg_state(apply_inversion);
-    auto fl_state = front_left_leg_.get_leg_state(apply_inversion);
-    auto br_state = back_right_leg_.get_leg_state(apply_inversion);
-    auto bl_state = back_left_leg_.get_leg_state(apply_inversion);
-
-    BrutusPose pose = {fr_state, fl_state, br_state, bl_state};
-
-    return pose;
-  }
-
-  void
-  change_standing_pose(BrutusPose & pose)
-  {
-    this->standing_pose_.fr_leg_state = pose.fr_leg_state;
-    this->standing_pose_.fl_leg_state = pose.fl_leg_state;
-    this->standing_pose_.br_leg_state = pose.br_leg_state;
-    this->standing_pose_.bl_leg_state = pose.bl_leg_state;
-  }
 };
 
 
