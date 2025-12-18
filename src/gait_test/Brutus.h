@@ -262,72 +262,6 @@ public:
     digitalWrite(this->pca_oe_pin_, HIGH);
   }
 
-  // -------- Eyes color --------
-
-  void
-  eyes_red()
-  {
-    digitalWrite(this->eyes_r_pin_, HIGH);
-    digitalWrite(this->eyes_b_pin_, LOW);
-    digitalWrite(this->eyes_g_pin_, LOW);
-  }
-
-  void
-  eyes_blue()
-  {
-    digitalWrite(this->eyes_r_pin_, LOW);
-    digitalWrite(this->eyes_b_pin_, HIGH);
-    digitalWrite(this->eyes_g_pin_, LOW);
-  }
-
-  void
-  eyes_green()
-  {
-    digitalWrite(this->eyes_r_pin_, LOW);
-    digitalWrite(this->eyes_b_pin_, LOW);
-    digitalWrite(this->eyes_g_pin_, HIGH);
-  }
-
-  void
-  eyes_magenta()
-  {
-    digitalWrite(this->eyes_r_pin_, HIGH);
-    digitalWrite(this->eyes_b_pin_, HIGH);
-    digitalWrite(this->eyes_g_pin_, LOW);
-  }
-
-  void
-  eyes_cyan()
-  {
-    digitalWrite(this->eyes_r_pin_, LOW);
-    digitalWrite(this->eyes_b_pin_, HIGH);
-    digitalWrite(this->eyes_g_pin_, HIGH);
-  }
-
-  void
-  eyes_yellow()
-  {
-    digitalWrite(this->eyes_r_pin_, HIGH);
-    digitalWrite(this->eyes_b_pin_, LOW);
-    digitalWrite(this->eyes_g_pin_, HIGH);
-  }
-
-  void
-  eyes_white()
-  {
-    digitalWrite(this->eyes_r_pin_, HIGH);
-    digitalWrite(this->eyes_b_pin_, HIGH);
-    digitalWrite(this->eyes_g_pin_, HIGH);
-  }
-
-  void
-  eyes_off()
-  {
-    digitalWrite(this->eyes_r_pin_, LOW);
-    digitalWrite(this->eyes_b_pin_, LOW);
-    digitalWrite(this->eyes_g_pin_, LOW);
-  }
-
   // ---------- MUTEX -------------
 
   // ---------- MOTION -------------
@@ -367,10 +301,12 @@ public:
 
     last_wake_time = xTaskGetTickCount();
 
-    this->set_linear_speed_ts(1.0);
+    this->set_linear_speed_ts(0.0);
     this->set_angular_speed_ts(1.0);
     
     float v, w;
+
+    int period;
 
     while (true) {
       //this->check_pose(true).print();
@@ -380,57 +316,87 @@ public:
       v = this->get_linear_speed_ts();
       w = this->get_angular_speed_ts();
 
-      pose = process_speeds(GAIT_STEPS[i%N_GAIT_STEPS], v, w);
 
       //GAIT_STEPS[i%N_GAIT_STEPS].print();
       //pose.print();
 
+      if (v > 0) {
+        pose = process_angular_speed(GAIT_STEPS[i%N_GAIT_STEPS], w);
+      } else if (v < 0) {
+        pose = process_angular_speed(BACKWARD_GAIT_STEPS[i%N_GAIT_STEPS], w);
+      } else {
+        if (w > 0) {
+          pose = process_angular_speed(SPIN_STEPS[i%N_SPIN_STEPS], w);
+        } else if (w < 0) {
+          pose = process_angular_speed(CCW_SPIN_STEPS[i%N_SPIN_STEPS], w);
+        } else {
+          pose = GAIT_STEPS[GAIT_STAY_STEP];
+        }
+      }
+
       this->change_target_pose(pose);
       this->set_pose(target_pose_,true);
-
+      //this->front_left_leg_.set_leg_state(target_pose_.fl_leg_state,true);
+      
       i++;
 
       vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(motion_task_period_));
     }
   }
 
-  BrutusPose
-  process_speeds(BrutusPose pose_0, float v, float w)
+  float
+  linear_interpolation(float v0, float vf, float alpha)
   {
-    v = constrain(v, MIN_V, MAX_V);
+    return v0 + alpha * (vf - v0);
+  }
+
+  BrutusPose
+  process_angular_speed(BrutusPose pose_0, float w)
+  {
     w = constrain(w, MIN_W, MAX_W);
 
     BrutusPose pose = pose_0;
 
-    float turn = abs(w);
+    float turn = fabs(w);
 
-    float right_gain = (w > 0) ? (1.0f - turn) : 1.0f;
-    float left_gain  = (w < 0) ? (1.0f - turn) : 1.0f;
+    float inner_scale = 1.0f - turn;
+    float outer_scale = 1.0f + turn;
 
+    float right_scale, left_scale;
 
-    // ---------- FRONT ----------
+    if (w > 0) {
+      right_scale = inner_scale;
+    } else {
+      right_scale = outer_scale;
+    }
 
-    // Front Right
+    if (w < 0) {
+      left_scale = inner_scale;
+    } else {
+      left_scale = outer_scale;
+    }
+
+    // FRONT
     pose.fr_leg_state.shoulder_angle =
-      FRONT_MID_SHOULDER +
-      right_gain * (pose_0.fr_leg_state.shoulder_angle - FRONT_MID_SHOULDER);
+      linear_interpolation(FRONT_MID_SHOULDER,
+                           pose_0.fr_leg_state.shoulder_angle,
+                           right_scale);
 
-    // Front Left
     pose.fl_leg_state.shoulder_angle =
-      FRONT_MID_SHOULDER +
-      left_gain * (pose_0.fl_leg_state.shoulder_angle - FRONT_MID_SHOULDER);
+      linear_interpolation(FRONT_MID_SHOULDER,
+                           pose_0.fl_leg_state.shoulder_angle,
+                           left_scale);
 
-    // ---------- BACK ----------
-
-    // Back Right
+    // BACK
     pose.br_leg_state.shoulder_angle =
-      BACK_MID_SHOULDER +
-      right_gain * (pose_0.br_leg_state.shoulder_angle - BACK_MID_SHOULDER);
+      linear_interpolation(BACK_MID_SHOULDER,
+                           pose_0.br_leg_state.shoulder_angle,
+                           right_scale);
 
-    // Back Left
     pose.bl_leg_state.shoulder_angle =
-      BACK_MID_SHOULDER +
-      left_gain * (pose_0.bl_leg_state.shoulder_angle - BACK_MID_SHOULDER);
+      linear_interpolation(BACK_MID_SHOULDER,
+                           pose_0.bl_leg_state.shoulder_angle,
+                           left_scale);
 
     return pose;
   }
@@ -592,9 +558,73 @@ public:
     return w;
   }
 
+  // -------- Eyes color --------
+
+  void
+  eyes_red()
+  {
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, LOW);
+  }
+
+  void
+  eyes_blue()
+  {
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, LOW);
+  }
+
+  void
+  eyes_green()
+  {
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, HIGH);
+  }
+
+  void
+  eyes_magenta()
+  {
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, LOW);
+  }
+
+  void
+  eyes_cyan()
+  {
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, HIGH);
+  }
+
+  void
+  eyes_yellow()
+  {
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, HIGH);
+  }
+
+  void
+  eyes_white()
+  {
+    digitalWrite(this->eyes_r_pin_, HIGH);
+    digitalWrite(this->eyes_b_pin_, HIGH);
+    digitalWrite(this->eyes_g_pin_, HIGH);
+  }
+
+  void
+  eyes_off()
+  {
+    digitalWrite(this->eyes_r_pin_, LOW);
+    digitalWrite(this->eyes_b_pin_, LOW);
+    digitalWrite(this->eyes_g_pin_, LOW);
+  }
+
 };
-
-
 
 
 #endif // BRUTUS__H
