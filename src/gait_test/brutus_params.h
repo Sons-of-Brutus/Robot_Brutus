@@ -111,11 +111,13 @@ constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
 #define ELBOW_UP 0
 #define ELBOW_DOWN -20
 
-#define FRONT_FORWARD_SHOULDER 60
-#define FRONT_BACK_SHOULDER 30
+#define FRONT_FORWARD_SHOULDER 60.0
+#define FRONT_BACK_SHOULDER 30.0
+#define FRONT_MID_SHOULDER (FRONT_FORWARD_SHOULDER + FRONT_BACK_SHOULDER) / 2.0
 
-#define BACK_FORWARD_SHOULDER -25
-#define BACK_BACK_SHOULDER -50
+#define BACK_FORWARD_SHOULDER -25.0
+#define BACK_BACK_SHOULDER -50.0
+#define BACK_MID_SHOULDER (BACK_FORWARD_SHOULDER + BACK_BACK_SHOULDER) / 2.0
 
 constexpr BrutusLegState FRONT_FORWARD_UP_STATE {60,0};
 constexpr BrutusLegState FRONT_FORWARD_DOWN_STATE {60,-20};
@@ -170,10 +172,10 @@ constexpr BrutusPose GAIT_STEPS[6] {GAIT_1, GAIT_2, GAIT_3, GAIT_4, GAIT_5, GAIT
 // -----------------------
 
 // ---------- SPEEDS -----------
-#define MIN_W 0.0f
+#define MIN_W -1.0f
 #define MAX_W 1.0f
 
-#define MIN_V 0.0f
+#define MIN_V -1.0f
 #define MAX_V 1.0f
 // -----------------------------
 

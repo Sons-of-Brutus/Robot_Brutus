@@ -367,12 +367,25 @@ public:
 
     last_wake_time = xTaskGetTickCount();
 
+    this->set_linear_speed_ts(1.0);
+    this->set_angular_speed_ts(1.0);
+    
+    float v, w;
+
     while (true) {
       //this->check_pose(true).print();
 
+      //Serial.println(i);
 
+      v = this->get_linear_speed_ts();
+      w = this->get_angular_speed_ts();
 
-      this->change_target_pose(GAIT_STEPS[i%N_GAIT_STEPS]);
+      pose = process_speeds(GAIT_STEPS[i%N_GAIT_STEPS], v, w);
+
+      //GAIT_STEPS[i%N_GAIT_STEPS].print();
+      //pose.print();
+
+      this->change_target_pose(pose);
       this->set_pose(target_pose_,true);
 
       i++;
@@ -382,23 +395,44 @@ public:
   }
 
   BrutusPose
-  process_speeds(BrutusPose & pose_0)
+  process_speeds(BrutusPose pose_0, float v, float w)
   {
-    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+    v = constrain(v, MIN_V, MAX_V);
+    w = constrain(w, MIN_W, MAX_W);
 
-    float v = constrain(v, MIN_V, MAX_V);
-    float w = constrain(w, MIN_W, MAX_W);
+    BrutusPose pose = pose_0;
 
-    float v_terms[4] = {
-      pose_0.fr_leg_state.shoulder_angle * v,
-      pose_0.fl_leg_state.shoulder_angle * v,
-      pose_0.br_leg_state.shoulder_angle * v,
-      pose_0.bl_leg_state.shoulder_angle * v
-    };
+    float turn = abs(w);
 
-    pose_0.fr_leg_state.shoulder_angle = v_terms[0] * 
+    float right_gain = (w > 0) ? (1.0f - turn) : 1.0f;
+    float left_gain  = (w < 0) ? (1.0f - turn) : 1.0f;
 
-    xSemaphoreGive(motion_mutex_);
+
+    // ---------- FRONT ----------
+
+    // Front Right
+    pose.fr_leg_state.shoulder_angle =
+      FRONT_MID_SHOULDER +
+      right_gain * (pose_0.fr_leg_state.shoulder_angle - FRONT_MID_SHOULDER);
+
+    // Front Left
+    pose.fl_leg_state.shoulder_angle =
+      FRONT_MID_SHOULDER +
+      left_gain * (pose_0.fl_leg_state.shoulder_angle - FRONT_MID_SHOULDER);
+
+    // ---------- BACK ----------
+
+    // Back Right
+    pose.br_leg_state.shoulder_angle =
+      BACK_MID_SHOULDER +
+      right_gain * (pose_0.br_leg_state.shoulder_angle - BACK_MID_SHOULDER);
+
+    // Back Left
+    pose.bl_leg_state.shoulder_angle =
+      BACK_MID_SHOULDER +
+      left_gain * (pose_0.bl_leg_state.shoulder_angle - BACK_MID_SHOULDER);
+
+    return pose;
   }
 
   // ---------- POSES -----------
@@ -552,7 +586,7 @@ public:
 
     xSemaphoreTake(motion_mutex_, portMAX_DELAY);
     this->eyes_yellow();
-    w = lin_speed_;
+    w = ang_speed_;
     xSemaphoreGive(motion_mutex_);
 
     return w;
