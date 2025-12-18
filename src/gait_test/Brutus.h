@@ -377,7 +377,7 @@ public:
 
       i++;
 
-      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(interpolation_period));
+      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(motion_task_period_));
     }
   }
 
