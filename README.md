@@ -10,16 +10,15 @@ Proyecto final de Mecatronica de 4º de Ingeniería Robótica Software
 Como es para nosotros, no voy a añadir ciertos detalles de las funciones y demás porque eso ya es más para el usuario final y esto quiero que sea para programar bien la lógica.
 
 ## Inicialización
-Hay que hacer lo que está en [`brutus_esp32.ino`](src/brutus_esp32/brutus_esp32.ino) de la rama `gait`.
+Hay que hacer lo que está en [`brutus_esp32.ino`](src/brutus_esp32/brutus_esp32.ino) de la rama `gait.
 
-**Antes del setup() de `brutus_esp32.ino`.**
-1. Inicializar la PCA y llamar al constructor del objeto de tipo Brutus.
+1. [**Antes del setup() de `brutus_esp32.ino`.**] Inicializar la PCA y llamar al constructor del objeto de tipo Brutus.
 ```cpp
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 Brutus brutus;
 ```
-**En el setup() del `brutus_esp32.ino`.**
-2. Llamar al setup de brutus.
+
+2. [**En el setup() del `brutus_esp32.ino`.**] Llamar al setup de brutus.
 Los valores de las constantes están en [`brutus_params.h`](src/brutus_esp32/brutus_params.h)
 ```cpp
 brutus.setup(&pca,
@@ -30,7 +29,7 @@ brutus.setup(&pca,
              PWM_SERVO_FREQ);
 ```
 
-3. Llamar a los setups de las patas.
+3. [**En el setup() del `brutus_esp32.ino`.**] Llamar a los setups de las patas.
 ```cpp
 brutus.setup_front_right_leg(...);
 
@@ -41,9 +40,9 @@ brutus.setup_back_right_leg(...);
 brutus.setup_back_left_leg(...);
 ```
 
-4. Llamar a `brutus.start()`.
+4. [**En el setup() del `brutus_esp32.ino`.**] Llamar a `brutus.start()`.
 
-5. Crear la task de movimiento.
+5. [**En el setup() del `brutus_esp32.ino`.**] Crear la task de movimiento.
 ```cpp
 brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
 ```
