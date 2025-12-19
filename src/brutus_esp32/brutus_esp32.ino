@@ -1,10 +1,7 @@
 #include "Brutus.h"
 
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
-
 Brutus brutus;
-
-TaskHandle_t serial_task_handle;
 
 void setup() {
   Serial.begin(9600);
