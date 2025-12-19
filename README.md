@@ -54,9 +54,14 @@ brutus.setup_perception(US_R_TRIG,
 
 5. Configuración de comunicaciones, tasks de lógica, etc.
 
-6. [**En el setup() del `brutus_esp32.ino`**] Crear la task de movimiento.
+6. [**En el setup() del `brutus_esp32.ino`**] Crear la task de locomoción.
 ```cpp
 brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
+```
+
+7. [**En el setup() del `brutus_esp32.ino`**] Crear la task de percepción.
+```cpp
+brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
 ```
 
 ## Constantes que debeis tener en cuenta ([`brutus_params.h`](src/brutus_esp32/brutus_params.h))
@@ -98,10 +103,15 @@ Por si quereis intentar que se mueva más rapido, la **task de locomoción** se 
 
 *OJO: No es la frecuecia de trabajo, si `DEFAULT_MOTION_PERIOD` disminuye, la task de locomoción se ejecuta más rápido.*
 
+**PERCEPTION_PERIOD**
+
+A ver si conseguimos que el periodo sea más alto (frecuencia más baja) sin sacrificar mucha robustez.
+
 **Los SPINS**
+
 Arreglad los pasos `SPIN_1`, `SPIN_2`, `SPIN_3`, `SPIN_4`, `SPIN_5` y `SPIN_6` para que gire bien sobre sí mismo.
 
-## COSAS DE LA CLASE `Brutus` PARA LA LÓGICA QUE QUEREMOS HACER
+## COSAS DE LA CLASE `Brutus` IMPORTANTES TANTO PARA LA LÓGICA COMO LAS COMUNICACIÓNES
 + **ESTABLECER LA VELOCIDAD LINEAL/ANGULAR:**
   - Velocidad lineal: `set_linear_speed_ts`
   - Velocidad angular: `set_angular_speed_ts`
@@ -122,3 +132,6 @@ Arreglad los pasos `SPIN_1`, `SPIN_2`, `SPIN_3`, `SPIN_4`, `SPIN_5` y `SPIN_6` p
   - *Métodos del modo de movimiento:*
     * `set_motion_control_mode`
     * `get_motion_control_mode`
++ **PERCEPCIÓN:**
+  - Struct `BrutusPerception` que contiene las ultimas mediciones de los 3 sensores.
+  - Método `get_perception_data`.

@@ -62,6 +62,7 @@ void setup() {
   
   brutus.set_motion_control_mode(POSE_CONTROL);
   brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
+  brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
 }
 
 void loop() {}

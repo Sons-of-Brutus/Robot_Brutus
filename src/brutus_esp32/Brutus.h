@@ -4,7 +4,7 @@
 #include "brutus_params.h"
 #include "BrutusLegInterface.h"
 #include "BrutusPose.h"
-#include "BrutusPerception.h"
+#include "brutus_perception.h"
 
 #define JOINTS_PER_LEG 2
 #define N_LEGS 4
@@ -71,14 +71,15 @@ private:
   int motion_task_period_;
   enum BrutusMotionControlMode motion_mode_ = POSE_CONTROL;
 
+  TaskHandle_t perception_task_handle_;
+  SemaphoreHandle_t perception_mutex_;
   BrutusPerception perception_data_ = {0.0, 0.0, 0.0};
-  int right_trig_pin_;
-  int right_echo_pin_;
-  int left_trig_pin_;
-  int left_echo_pin_;
-  int front_trig_pin_;
-  int front_echo_pin_;
   bool perception_is_setup_ = false;
+  int perception_task_period_;
+
+  UltrasonicSensorPins right_us_ = {0,0};
+  UltrasonicSensorPins left_us_ = {0,0};
+  UltrasonicSensorPins front_us_ = {0,0};
 
 public:
   /**
@@ -134,6 +135,7 @@ public:
     this->eyes_yellow();
 
     this->motion_mutex_ = xSemaphoreCreateMutex();
+    this->perception_mutex_ = xSemaphoreCreateMutex();
 
     delay(100);
 
@@ -198,14 +200,11 @@ public:
     pinMode(front_trig_pin, OUTPUT);
     pinMode(front_echo_pin, INPUT);
 
-    right_trig_pin_ = right_trig_pin;
-    right_echo_pin_ = right_echo_pin;
-    left_trig_pin_ = left_trig_pin;
-    left_echo_pin_ = left_echo_pin;
-    front_trig_pin_ = front_trig_pin;
-    front_echo_pin_ = front_echo_pin;
+    right_us_ = {right_trig_pin, right_echo_pin};
+    left_us_ = {left_trig_pin, left_echo_pin};
+    front_us_ = {front_trig_pin, front_echo_pin};
 
-    perception_is_setup_ = false;
+    perception_is_setup_ = true;
   }
 
   /**
@@ -897,6 +896,161 @@ public:
     xSemaphoreGive(motion_mutex_);
 
     return w;
+  }
+
+  // -------- Perception ---------
+
+  /**
+   * @brief Reads the echo pulse duration in microseconds using polling.
+   *
+   * @param echo_pin ECHO pin number
+   * @param timeout_us Maximum time to wait for echo [ms]
+   * @return Pulse duration in microseconds, or -1 on timeout
+   */
+  int32_t
+  read_echo_pulse_safe(int echo_pin, uint32_t timeout_us)
+  {
+    uint32_t start = micros();
+
+    // Wait for rising edge (pulse start)
+    while (digitalRead(echo_pin) == LOW) {
+      if (micros() - start > timeout_us) {
+        return -1;
+      }
+
+      taskYIELD();
+    }
+
+    uint32_t pulse_start = micros();
+
+    // Wait for falling edge (pulse end)
+    while (digitalRead(echo_pin) == HIGH) {
+      if (micros() - pulse_start > timeout_us) {
+        return -1;
+      }
+
+      taskYIELD();
+    }
+
+    return micros() - pulse_start;
+  }
+
+  /**
+   * @brief Sends a FreeRTOS-safe trigger pulse to the ultrasonic sensor.
+   *
+   * @param sendor_side BrutusPerceptionSide sensor
+   */
+  void
+  trigger_ultrasonic_safe(int trigger)
+  {
+    digitalWrite(trigger, LOW);
+    uint32_t start = micros();
+    while (micros() - start < 2) {
+      taskYIELD(); // Wait 2 µs
+    }
+
+    digitalWrite(trigger, HIGH);
+    start = micros();
+    while (micros() - start < 10) {
+      taskYIELD(); // Wait 10 µs
+    }
+
+    digitalWrite(trigger, LOW);
+  }
+
+  /**
+   * @brief Reads the distance in cm from an ultrasonic sensor.
+   *
+   * @param sensor UltrasonicSensor struct
+   * @param timeout_us Maximum wait time for the echo
+   * @return Distance [cm], or -1 on timeout/error
+   */
+  float
+  read_ultrasonic_distance(UltrasonicSensorPins & sensor, uint32_t timeout_us)
+  {
+      trigger_ultrasonic_safe(sensor.trigger); // Send trigger
+      int32_t duration = read_echo_pulse_safe(sensor.echo, timeout_us); // Measure echo
+
+      if (duration < 0) {
+        return -1.0f; // Timeout
+      }
+
+      return duration * 0.034f / 2.0f; // Convert µs to cm (sound speed)
+  }
+
+  /**
+  * @brief Task example to read multiple ultrasonic sensors.
+  */
+  void
+  perception_task()
+  {
+    float dist_right, dist_left, dist_front;
+
+    TickType_t last_wake_time = xTaskGetTickCount();
+
+    uint32_t perception_timeout =
+      (uint32_t) max((perception_task_period_ * 1e3) / N_DISTANCE_SENSORS, MIN_PERCEPTION_TIMEOUT); // [us]
+
+    while (true) {
+      dist_right = read_ultrasonic_distance(this->right_us_, perception_timeout);
+      dist_left  = read_ultrasonic_distance(this->left_us_, perception_timeout);
+      dist_front = read_ultrasonic_distance(this->front_us_, perception_timeout);
+
+      xSemaphoreTake(perception_mutex_, portMAX_DELAY);
+      this->perception_data_.right_dist = dist_right;
+      this->perception_data_.left_dist = dist_left;
+      this->perception_data_.front_dist = dist_front;
+      xSemaphoreGive(perception_mutex_);
+
+      vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(perception_task_period_));
+    }
+  }
+
+  BrutusPerception
+  get_perception_data()
+  {
+    BrutusPerception data;
+    
+    xSemaphoreTake(perception_mutex_, portMAX_DELAY);
+    data = this->perception_data_;
+    xSemaphoreGive(perception_mutex_);
+    
+    return data;
+  }
+
+  /**
+   * @brief FreeRTOS wrapper for the perception task.
+   *
+   * @param pvParameters Pointer to the Brutus instance.
+   */
+  static void 
+  perception_task_wrapper(void *pvParameters)
+  {
+    Brutus *const self = static_cast<Brutus *>(pvParameters);
+
+    self->perception_task();
+  }
+
+  /**
+   * @brief Creates the perception task.
+   *
+   * @param task_period Task execution period. [ms]
+   * @param core ESP32's CPU core to pin the task to.
+   */
+  void
+  create_perception_task(int task_period, int core, int priority)
+  {
+    xTaskCreatePinnedToCore(
+      (TaskFunction_t)Brutus::perception_task_wrapper,
+      "MotionTask",
+      2048,
+      (void*)this,
+      priority,
+      &this->perception_task_handle_,
+      core
+    );
+
+    perception_task_period_ = task_period;
   }
 
   // -------- Eyes color --------

@@ -230,4 +230,13 @@ constexpr BrutusPose CCW_SPIN_STEPS[6] {SPIN_6, SPIN_5, SPIN_4, SPIN_3, SPIN_2, 
 #define MAX_V 1.0f
 // -----------------------------
 
+// ---------- PERCEPTION ----------
+#define N_DISTANCE_SENSORS 3
+
+#define PERCEPTION_PERIOD 150 // [ms]
+#define PERCEPTION_PRIO 3
+
+#define MIN_PERCEPTION_TIMEOUT 3 * 1e4
+// --------------------------------
+
 #endif // BRUTUS_PARAMS__H
