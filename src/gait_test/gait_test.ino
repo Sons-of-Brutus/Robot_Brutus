@@ -56,9 +56,9 @@ void setup() {
 
   Serial.println("<START>");
   
+  brutus.set_motion_control_mode(POSE_CONTROL);
   brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
 
-  /*
   xTaskCreatePinnedToCore(
     &serial_command,
     "SerialTask",
@@ -68,7 +68,6 @@ void setup() {
     &serial_task_handle,
     LOGIC_CORE
   );
-  */
 }
 
 void loop() {

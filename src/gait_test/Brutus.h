@@ -8,6 +8,11 @@
 #define JOINTS_PER_LEG 2
 #define N_LEGS 4
 
+enum BrutusMotionControlMode {
+  POSE_CONTROL = 0,
+  SPEED_CONTROL = 1
+};
+
 class Brutus {
 
 private:
@@ -48,6 +53,7 @@ private:
 
   TaskHandle_t motion_task_handle_;
   int motion_task_period_;
+  enum BrutusMotionControlMode motion_mode_ = POSE_CONTROL;
 
 public:
   Brutus()
@@ -262,8 +268,6 @@ public:
     digitalWrite(this->pca_oe_pin_, HIGH);
   }
 
-  // ---------- MUTEX -------------
-
   // ---------- MOTION -------------
 
   static void 
@@ -291,11 +295,29 @@ public:
   }
 
   void
+  set_motion_control_mode(enum BrutusMotionControlMode new_mode)
+  {
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+    motion_mode_ = new_mode;
+    xSemaphoreGive(motion_mutex_);
+  }
+
+  enum BrutusMotionControlMode
+  get_motion_control_mode()
+  {
+    enum BrutusMotionControlMode ctrl_mode;
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+    ctrl_mode = motion_mode_;
+    xSemaphoreGive(motion_mutex_);
+    return ctrl_mode;
+  }
+  
+  void
   motion_task()
   {
     TickType_t last_wake_time;
 
-    int i = 0, j = 0;
+    int i = 0;
 
     BrutusPose pose;
 
@@ -308,37 +330,58 @@ public:
 
     int period;
 
+    enum BrutusMotionControlMode ctrl_mode = this->get_motion_control_mode(), last_mode = ctrl_mode;
+
     while (true) {
-      //this->check_pose(true).print();
+      ctrl_mode = this->get_motion_control_mode();
 
-      //Serial.println(i);
+      switch(ctrl_mode) {
+        case POSE_CONTROL:
+          if (last_mode == SPEED_CONTROL) {
+            this->eyes_blue();
+            last_mode = ctrl_mode;
+          }
 
-      v = this->get_linear_speed_ts();
-      w = this->get_angular_speed_ts();
+          this->set_pose(target_pose_,true);
+          break;
+        
+        case SPEED_CONTROL:
+          if (last_mode == POSE_CONTROL) {
+            i = 0;
+            last_mode = ctrl_mode;
+            this->eyes_magenta();
+          }
 
+          //this->check_pose(true).print();
+          //Serial.println(i);
 
-      //GAIT_STEPS[i%N_GAIT_STEPS].print();
-      //pose.print();
+          v = this->get_linear_speed_ts();
+          w = this->get_angular_speed_ts();
 
-      if (v > 0) {
-        pose = process_angular_speed(GAIT_STEPS[i%N_GAIT_STEPS], w);
-      } else if (v < 0) {
-        pose = process_angular_speed(BACKWARD_GAIT_STEPS[i%N_GAIT_STEPS], w);
-      } else {
-        if (w > 0) {
-          pose = process_angular_speed(SPIN_STEPS[i%N_SPIN_STEPS], w);
-        } else if (w < 0) {
-          pose = process_angular_speed(CCW_SPIN_STEPS[i%N_SPIN_STEPS], w);
-        } else {
-          pose = GAIT_STEPS[GAIT_STAY_STEP];
-        }
+          //GAIT_STEPS[i%N_GAIT_STEPS].print();
+          //pose.print();
+
+          if (v > 0) {
+            pose = process_angular_speed(GAIT_STEPS[i%N_GAIT_STEPS], w);
+          } else if (v < 0) {
+            pose = process_angular_speed(BACKWARD_GAIT_STEPS[i%N_GAIT_STEPS], w);
+          } else {
+            if (w > 0) {
+              pose = process_angular_speed(SPIN_STEPS[i%N_SPIN_STEPS], w);
+            } else if (w < 0) {
+              pose = process_angular_speed(CCW_SPIN_STEPS[i%N_SPIN_STEPS], w);
+            } else {
+              pose = GAIT_STEPS[GAIT_STAY_STEP];
+            }
+          }
+
+          this->change_target_pose(pose);
+          this->set_pose(target_pose_,true);
+          //this->front_left_leg_.set_leg_state(target_pose_.fl_leg_state,true);
+          
+          i++;
+          break;
       }
-
-      this->change_target_pose(pose);
-      this->set_pose(target_pose_,true);
-      //this->front_left_leg_.set_leg_state(target_pose_.fl_leg_state,true);
-      
-      i++;
 
       vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(motion_task_period_));
     }
@@ -492,7 +535,6 @@ public:
   set_linear_speed_ts(float v)
   {
     xSemaphoreTake(motion_mutex_, portMAX_DELAY);
-    this->eyes_green();
     lin_speed_ = v;
     xSemaphoreGive(motion_mutex_);
   }
@@ -511,7 +553,6 @@ public:
     float v;
 
     xSemaphoreTake(motion_mutex_, portMAX_DELAY);
-    this->eyes_cyan();
     v = lin_speed_;
     xSemaphoreGive(motion_mutex_);
 
@@ -532,7 +573,6 @@ public:
   set_angular_speed_ts(float w)
   {
     xSemaphoreTake(motion_mutex_, portMAX_DELAY);
-    this->eyes_red();
     ang_speed_ = w;
     xSemaphoreGive(motion_mutex_);
   }
@@ -551,7 +591,6 @@ public:
     float w;
 
     xSemaphoreTake(motion_mutex_, portMAX_DELAY);
-    this->eyes_yellow();
     w = ang_speed_;
     xSemaphoreGive(motion_mutex_);
 
