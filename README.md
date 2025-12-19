@@ -63,7 +63,7 @@ brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
 
 **PINES DE LOS ULTRASONIDOS**
 
-Aquí hay un TODO que indica que hay que asignar cada par de pines TRIGGER y ECHO a *frente*, *izquierda* y *derecha*, que todavía están sin asignar.
+Aquí hay un TODO que indica que todavía hay que asignar cada par de pines TRIGGER y ECHO a *frente*, *izquierda* y *derecha*, que todavía están sin asignar.
 
 ```cpp
 #define US_1_TRIG 15
@@ -91,3 +91,34 @@ La cosa es que ASIGNEIS los valores que hay en 1,2 y 3 en las constantes que tie
 
 + `MOTION_CORE`: core que utiliza la task de locomoción de Brutus.
 + `LOGIN_CORE`: core que utilizan todas las tasks que no son de locomoción de Brutus.
+
+**DEFAULT_MOTION_PERIOD**
+
+Por si quereis intentar que se mueva más rapido, la **task de locomoción** se ejecuta cada `DEFAULT_MOTION_PERIOD` milisegundos.
+
+*OJO: No es la frecuecia de trabajo, si `DEFAULT_MOTION_PERIOD` disminuye, la task de locomoción se ejecuta más rápido.*
+
+**Los SPINS**
+Arreglad los pasos `SPIN_1`, `SPIN_2`, `SPIN_3`, `SPIN_4`, `SPIN_5` y `SPIN_6` para que gire bien sobre sí mismo.
+
+## COSAS DE LA CLASE `Brutus` PARA LA LÓGICA QUE QUEREMOS HACER
++ **ESTABLECER LA VELOCIDAD LINEAL/ANGULAR:**
+  - Velocidad lineal: `set_linear_speed_ts`
+  - Velocidad angular: `set_angular_speed_ts`
++ **LEER LA VELOCIDAD LINEAL/ANGULAR:**
+  - Velocidad lineal: `get_linear_speed_ts`
+  - Velocidad angular: `get_angular_speed_ts`
++ **OBTENER LA POSE ACTUAL DEL ROBOT:**
+  - `check_pose(true)`. El true es para que os devuelva los ángulos con la inversión aplicada, ponedlo.
++ **ESTABLECER UNA POSE:**
+  - El método que TIENE QUE USAR la LÓGICA: `change_target_pose`
+    * Esto es porque `change_target_pose` actualiza un atributo `target_pose_` que es el que utiliza la task de locomoción para moverse.
+  - !!!!!!!!!!! **NO SE DEBE USAR `set_pose` MIENTRAS SE EJECUTA LA TASK DE LOCOMOCIÓN** !!!!!!!!!!!
++ **MODO DE MOVIMIENTO:**
+  - El **modo de movimiento** es el que utiliza la task de locomoción. (NO TIENE NADA QUE VER CON LOS MODOS DE LA LÓGICA)
+  - `enum BrutusMotionControlMode`:
+    * `POSE_CONTROL = 0`: Control de Brutus por pose (Usar `change_target_pose`).
+    * `SPEED_CONTROL = 1`: Control de Brutus por velocidad (Usar los métodos para establecer velocidades).
+  - *Métodos del modo de movimiento:*
+    * `set_motion_control_mode`
+    * `get_motion_control_mode`

@@ -729,10 +729,12 @@ public:
 
     BrutusLegState states[4] = {fr,fl,br,bl};
 
-    for (int i = 0; i < 4; i++)
-    {
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
+    for (int i = 0; i < 4; i++) {
       legs[i]->set_leg_state(states[i], apply_inversion);
     }
+    xSemaphoreGive(motion_mutex_);
+
   }
 
   /**
@@ -744,10 +746,12 @@ public:
   BrutusPose
   check_pose(bool apply_inversion)
   {
+    xSemaphoreTake(motion_mutex_, portMAX_DELAY);
     auto fr_state = front_right_leg_.get_leg_state(apply_inversion);
     auto fl_state = front_left_leg_.get_leg_state(apply_inversion);
     auto br_state = back_right_leg_.get_leg_state(apply_inversion);
     auto bl_state = back_left_leg_.get_leg_state(apply_inversion);
+    xSemaphoreGive(motion_mutex_);
 
     BrutusPose pose = {fr_state, fl_state, br_state, bl_state};
 
