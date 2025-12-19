@@ -2,7 +2,7 @@
 Proyecto final de Mecatronica de 4º de Ingeniería Robótica Software
 
 # QUÉ TENEIS QUE HACER PRIMERO
-1. Copiar de la rama `gait_test` a la rama `software` todos los `.h` del directorio [`src/brutus_esp32`](src/brutus_esp32/), incluso recomiendo copiar también [`brutus_esp32.ino`](src/brutus_esp32/brutus_esp32.ino).
+1. Copiar de la rama `gait` a la rama `software` todos los `.h` del directorio [`src/brutus_esp32`](src/brutus_esp32/), incluso recomiendo copiar también [`brutus_esp32.ino`](src/brutus_esp32/brutus_esp32.ino).
 2. **YA EN LA RAMA `software`** tener en cuenta todo lo que he dicho para programar la lógica, comunicaciones, etc.
 
 # GUIA PARA USAR BRUTUS *(para nosotros)*
@@ -10,7 +10,7 @@ Proyecto final de Mecatronica de 4º de Ingeniería Robótica Software
 Como es para nosotros, no voy a añadir ciertos detalles de las funciones y demás porque eso ya es más para el usuario final y esto quiero que sea para programar bien la lógica.
 
 ## Inicialización
-Hay que hacer lo que está en [`brutus_esp32.ino`](src/brutus_esp32/brutus_esp32.ino) de la rama `gait_test`.
+Hay que hacer lo que está en [`brutus_esp32.ino`](src/brutus_esp32/brutus_esp32.ino) de la rama `gait`.
 
 **Antes del setup() de `brutus_esp32.ino`.**
 1. Inicializar la PCA y llamar al constructor del objeto de tipo Brutus.
