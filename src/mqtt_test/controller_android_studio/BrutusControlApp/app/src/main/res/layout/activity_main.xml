@@ -88,7 +88,7 @@
         <TextView
             android:id="@+id/tvReceived"
             android:layout_width="match_parent"
-            android:layout_height="290dp"
+            android:layout_height="310dp"
             android:scrollbars="vertical"
             android:textSize="14sp"
             android:padding="8dp"

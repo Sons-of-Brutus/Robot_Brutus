@@ -219,4 +219,3 @@ class MainActivity : AppCompatActivity() {
         publishMessage(TOPIC_CMD_POSE, json)
     }
 }
-
