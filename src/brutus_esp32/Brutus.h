@@ -520,9 +520,6 @@ public:
     BrutusPose pose;
 
     last_wake_time = xTaskGetTickCount();
-
-    this->set_linear_speed_ts(0.0);
-    this->set_angular_speed_ts(1.0);
     
     float v, w;
 
