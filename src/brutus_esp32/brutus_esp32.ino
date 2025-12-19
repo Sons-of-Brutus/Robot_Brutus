@@ -4,10 +4,10 @@ Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
 Brutus brutus;
 
-TaskHandle_t mqtt_task_handle;
+TaskHandle_t serial_task_handle;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   brutus.setup(&pca,
                PCA9685_OE,
@@ -52,27 +52,30 @@ void setup() {
 
   brutus.start();
 
-  delay(100);
+  delay(3000);
 
   Serial.println("<START>");
   
-  brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
+  brutus.set_motion_control_mode(POSE_CONTROL);
+  brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
 
   xTaskCreatePinnedToCore(
-    &mqtt_command,
-    "MqttTask",
+    &serial_command,
+    "SerialTask",
     4096,
     NULL,
-    0,
-    &mqtt_task_handle,
+    1,
+    &serial_task_handle,
     LOGIC_CORE
   );
 }
 
-void loop() {}
+void loop() {
+
+}
 
 void
-mqtt_command(void* pvParameters)
+serial_command(void* pvParameters)
 {
   while (true) {
     if (Serial.available() > 0)
@@ -115,6 +118,6 @@ mqtt_command(void* pvParameters)
       }
     }
 
-    vTaskDelay(pdMS_TO_TICKS(200));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
