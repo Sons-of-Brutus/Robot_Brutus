@@ -8,11 +8,26 @@
 #define JOINTS_PER_LEG 2
 #define N_LEGS 4
 
+/**
+ * @enum BrutusMotionControlMode
+ * @brief Motion control modes supported by Brutus's motion task.
+ */
 enum BrutusMotionControlMode {
-  POSE_CONTROL = 0,
-  SPEED_CONTROL = 1
+  POSE_CONTROL = 0,   /**< Direct pose control */
+  SPEED_CONTROL = 1   /**< Velocity-based gait control */
 };
 
+/**
+ * @class Brutus
+ * @brief Main control/interface class for the Brutus quadruped robot.
+ *
+ * This class manages:
+ * - Four leg interfaces
+ * - FreeRTOS motion task for motion control (pose and speed based)
+ * - RGB eye status indicators
+ *
+ * Brutus supports both direct pose control and speed-based gait generation.
+ */
 class Brutus {
 
 private:
@@ -56,6 +71,14 @@ private:
   enum BrutusMotionControlMode motion_mode_ = POSE_CONTROL;
 
 public:
+  /**
+   * @brief Default constructor.
+   *
+   * Methods that need to be called for using Brutus class:
+   * 1. setup
+   * 2. All legs setup
+   * 3. start
+   */
   Brutus()
   : pca_(NULL),
     mutex_is_locked_(false),
@@ -69,6 +92,16 @@ public:
     eyes_g_pin_(0)
   {}
 
+  /**
+   * @brief Initializes hardware and internal subsystems.
+   *
+   * @param pca Pointer to an initialized PCA9685 driver.
+   * @param pca_oe_pin Output enable pin for the PCA9685.
+   * @param eyes_r_pin Red LED pin.
+   * @param eyes_b_pin Blue LED pin.
+   * @param eyes_g_pin Green LED pin.
+   * @param pwm_servo_frequency Servo PWM frequency.
+   */
   void
   setup(Adafruit_PWMServoDriver* pca,
         int pca_oe_pin,
@@ -120,6 +153,12 @@ public:
     brutus_is_setup_ = false;
   }
 
+  /**
+   * @brief Finalizes setup and moves the robot to the standing pose.
+   *
+   * Correct previous initialization: Magenta eyes
+   * Incorrect previous intialization: Red eyes
+   */
   void
   start()
   {
@@ -138,6 +177,24 @@ public:
 
   // --------- LEGS -----------
 
+  /**
+   * @brief Configures the FRONT RIGHT LEG.
+   *
+   * @param shoulder_pca_pin PCA channel/pin for shoulder servo.
+   * @param elbow_pca_pin PCA channel/pin for elbow servo.
+   * @param shoulder_min_servo_pwm_pulse_us Minimum shoulder PWM pulse period. [μs]
+   * @param shoulder_max_servo_pwm_pulse_us Maximum shoulder PWM pulse period. [μs]
+   * @param elbow_min_servo_pwm_pulse_us Minimum elbow PWM pulse period. [μs]
+   * @param elbow_max_servo_pwm_pulse_us Maximum elbow PWM pulse period. [μs]
+   * @param shoulder_min_servo_angle Minimum shoulder angle. [degrees]
+   * @param shoulder_max_servo_angle Maximum shoulder angle. [degrees]
+   * @param elbow_min_servo_angle Minimum elbow angle. [degrees]
+   * @param elbow_max_servo_angle Maximum elbow angle. [degrees]
+   * @param shoulder_offset Shoulder angle offset. [degrees]
+   * @param elbow_offset Elbow angle offset. [degrees] 
+   * @param shoulder_is_inverted Shoulder inversion flag.
+   * @param elbow_is_inverted Elbow inversion flag.
+   */
   void setup_front_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
                              int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
                              int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
@@ -167,6 +224,24 @@ public:
     fr_leg_is_setup_ = true;
   }
 
+  /**
+   * @brief Configures the FRONT LEFT LEG.
+   *
+   * @param shoulder_pca_pin PCA channel/pin for shoulder servo.
+   * @param elbow_pca_pin PCA channel/pin for elbow servo.
+   * @param shoulder_min_servo_pwm_pulse_us Minimum shoulder PWM pulse period. [μs]
+   * @param shoulder_max_servo_pwm_pulse_us Maximum shoulder PWM pulse period. [μs]
+   * @param elbow_min_servo_pwm_pulse_us Minimum elbow PWM pulse period. [μs]
+   * @param elbow_max_servo_pwm_pulse_us Maximum elbow PWM pulse period. [μs]
+   * @param shoulder_min_servo_angle Minimum shoulder angle. [degrees]
+   * @param shoulder_max_servo_angle Maximum shoulder angle. [degrees]
+   * @param elbow_min_servo_angle Minimum elbow angle. [degrees]
+   * @param elbow_max_servo_angle Maximum elbow angle. [degrees]
+   * @param shoulder_offset Shoulder angle offset. [degrees]
+   * @param elbow_offset Elbow angle offset. [degrees] 
+   * @param shoulder_is_inverted Shoulder inversion flag.
+   * @param elbow_is_inverted Elbow inversion flag.
+   */
   void setup_front_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
                             int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
@@ -196,6 +271,24 @@ public:
     fl_leg_is_setup_ = true;
   }
 
+  /**
+   * @brief Configures the BACK RIGHT LEG.
+   *
+   * @param shoulder_pca_pin PCA channel/pin for shoulder servo.
+   * @param elbow_pca_pin PCA channel/pin for elbow servo.
+   * @param shoulder_min_servo_pwm_pulse_us Minimum shoulder PWM pulse period. [μs]
+   * @param shoulder_max_servo_pwm_pulse_us Maximum shoulder PWM pulse period. [μs]
+   * @param elbow_min_servo_pwm_pulse_us Minimum elbow PWM pulse period. [μs]
+   * @param elbow_max_servo_pwm_pulse_us Maximum elbow PWM pulse period. [μs]
+   * @param shoulder_min_servo_angle Minimum shoulder angle. [degrees]
+   * @param shoulder_max_servo_angle Maximum shoulder angle. [degrees]
+   * @param elbow_min_servo_angle Minimum elbow angle. [degrees]
+   * @param elbow_max_servo_angle Maximum elbow angle. [degrees]
+   * @param shoulder_offset Shoulder angle offset. [degrees]
+   * @param elbow_offset Elbow angle offset. [degrees] 
+   * @param shoulder_is_inverted Shoulder inversion flag.
+   * @param elbow_is_inverted Elbow inversion flag.
+   */
   void setup_back_right_leg(int shoulder_pca_pin, int elbow_pca_pin,
                             int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
                             int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
@@ -225,6 +318,24 @@ public:
     br_leg_is_setup_ = true;
   }
 
+  /**
+   * @brief Configures the BACK LEFT LEG.
+   *
+   * @param shoulder_pca_pin PCA channel/pin for shoulder servo.
+   * @param elbow_pca_pin PCA channel/pin for elbow servo.
+   * @param shoulder_min_servo_pwm_pulse_us Minimum shoulder PWM pulse period. [μs]
+   * @param shoulder_max_servo_pwm_pulse_us Maximum shoulder PWM pulse period. [μs]
+   * @param elbow_min_servo_pwm_pulse_us Minimum elbow PWM pulse period. [μs]
+   * @param elbow_max_servo_pwm_pulse_us Maximum elbow PWM pulse period. [μs]
+   * @param shoulder_min_servo_angle Minimum shoulder angle. [degrees]
+   * @param shoulder_max_servo_angle Maximum shoulder angle. [degrees]
+   * @param elbow_min_servo_angle Minimum elbow angle. [degrees]
+   * @param elbow_max_servo_angle Maximum elbow angle. [degrees]
+   * @param shoulder_offset Shoulder angle offset. [degrees]
+   * @param elbow_offset Elbow angle offset. [degrees] 
+   * @param shoulder_is_inverted Shoulder inversion flag.
+   * @param elbow_is_inverted Elbow inversion flag.
+   */
   void setup_back_left_leg(int shoulder_pca_pin, int elbow_pca_pin,
                            int shoulder_min_servo_pwm_pulse_us, int shoulder_max_servo_pwm_pulse_us,
                            int elbow_min_servo_pwm_pulse_us, int elbow_max_servo_pwm_pulse_us,
@@ -256,12 +367,18 @@ public:
 
   // -------- PCA9685 --------
 
+  /**
+   * @brief Enables servo outputs.
+   */
   void
   activate_motors()
   {
     digitalWrite(this->pca_oe_pin_, LOW);
   }
 
+  /**
+   * @brief Disables servo outputs.
+   */
   void
   deactivate_motors()
   {
@@ -270,6 +387,11 @@ public:
 
   // ---------- MOTION -------------
 
+  /**
+   * @brief FreeRTOS wrapper for the motion task.
+   *
+   * @param pvParameters Pointer to the Brutus instance.
+   */
   static void 
   motion_task_wrapper(void *pvParameters)
   {
@@ -278,6 +400,12 @@ public:
     self->motion_task();
   }
 
+  /**
+   * @brief Creates the motion control task.
+   *
+   * @param task_period Task execution period. [ms]
+   * @param core ESP32's CPU core to pin the task to.
+   */
   void
   create_motion_task(int task_period, int core)
   {
@@ -294,6 +422,11 @@ public:
     motion_task_period_ = task_period;
   }
 
+  /**
+   * @brief Sets the motion control mode in a thread-safe way.
+   *
+   * @param new_mode Desired motion control mode.
+   */
   void
   set_motion_control_mode(enum BrutusMotionControlMode new_mode)
   {
@@ -302,6 +435,11 @@ public:
     xSemaphoreGive(motion_mutex_);
   }
 
+  /**
+   * @brief Gets the current motion control mode.
+   *
+   * @return Current motion control mode.
+   */
   enum BrutusMotionControlMode
   get_motion_control_mode()
   {
@@ -312,6 +450,12 @@ public:
     return ctrl_mode;
   }
   
+  /**
+   * @brief Main motion control loop.
+   *
+   * Runs periodically as a FreeRTOS task and updates the robot pose
+   * according to the selected control mode.
+   */
   void
   motion_task()
   {
@@ -387,12 +531,31 @@ public:
     }
   }
 
+  /**
+   * @brief Performs a linear interpolation between two values.
+   *
+   * @param v0 Initial value.
+   * @param vf Final value.
+   * @param alpha Interpolation factor in the range [0.0, 1.0].
+   * @return Interpolated value.
+   */
   float
   linear_interpolation(float v0, float vf, float alpha)
   {
     return v0 + alpha * (vf - v0);
   }
 
+  /**
+   * @brief Modifies a pose according to the desired angular speed.
+   *
+   * This method scales the shoulder angles of the legs to simulate
+   * turning while walking. Inner legs reduce their stride while
+   * outer legs increase it, depending on the angular velocity sign.
+   *
+   * @param pose_0 Base pose to be modified.
+   * @param w Angular speed command.
+   * @return BrutusPose adjusted for angular motion.
+   */
   BrutusPose
   process_angular_speed(BrutusPose pose_0, float w)
   {
@@ -445,6 +608,15 @@ public:
   }
 
   // ---------- POSES -----------
+
+  /**
+   * @brief Updates the internal target pose. (thread-safe)
+   *
+   * Copies the given pose into the internal target pose
+   * used by the motion task.
+   *
+   * @param pose New target pose.
+   */
   void
   change_target_pose(BrutusPose pose)
   {
@@ -469,6 +641,15 @@ public:
     xSemaphoreGive(motion_mutex_);
   }
 
+  /**
+   * @brief Commands the robot to adopt a given pose.
+   *
+   * Joint offsets are applied before sending commands to the servos.
+   * Optionally, joint inversion can also be applied.
+   *
+   * @param pose Desired pose.
+   * @param apply_inversion If true, joint inversion is applied.
+   */
   void
   set_pose(BrutusPose & pose, bool apply_inversion)
   {
@@ -499,6 +680,12 @@ public:
     }
   }
 
+  /**
+   * @brief Reads the current robot pose from the servos.
+   *
+   * @param apply_inversion If true, joint inversion is applied to the read values.
+   * @return BrutusPose Current measured pose.
+   */
   BrutusPose
   check_pose(bool apply_inversion)
   {
@@ -523,14 +710,28 @@ public:
 
   // ---------- SPEED -----------
 
-  // set_linear_speed is not thread safe
+  /**
+   * @brief Sets the linear speed command.
+   *
+   * @note This method is NOT thread-safe, so it should not be used
+   *       while motion task is running.
+   *
+   * @param v Linear speed command.
+   */
   void
   set_linear_speed(float v)
   {
     lin_speed_ = v;
   }
 
-  // set_linear_speed_ts is the thread safe version of set_linear_speed()
+  /**
+   * @brief Sets the linear speed command in a thread-safe manner.
+   *
+   * @note This method IS thread-safe, so it can be used
+   *       while motion task is running.
+   *
+   * @param v Linear speed command.
+   */
   void
   set_linear_speed_ts(float v)
   {
@@ -539,14 +740,28 @@ public:
     xSemaphoreGive(motion_mutex_);
   }
 
-  // get_linear_speed is not thread safe
+  /**
+   * @brief Gets the linear speed command.
+   *
+   * @note This method is NOT thread-safe, so it should not be used
+   *       while motion task is running.
+   *
+   * @return Linear speed command.
+   */
   float
   get_linear_speed()
   {
     return lin_speed_;
   }
 
-  // get_linear_speed_ts is the thread safe version of get_linear_speed()
+  /**
+   * @brief Gets the linear speed command in a thread-safe manner.
+   *
+   * @note This method IS thread-safe, so it can be used
+   *       while motion task is running.
+   *
+   * @return Linear speed command.
+   */
   float
   get_linear_speed_ts()
   {
@@ -561,14 +776,28 @@ public:
 
 
 
-  // set_angular_speed is not thread safe
+  /**
+   * @brief Sets the angular speed command.
+   *
+   * @note This method is NOT thread-safe, so it should not be used
+   *       while motion task is running.
+   *
+   * @param w Angular speed command.
+   */
   void
   set_angular_speed(float w)
   {
     ang_speed_ = w;
   }
 
-  // set_angular_speed_ts is the thread safe version of set_angular_speed()
+  /**
+   * @brief Sets the angular speed command in a thread-safe manner.
+   *
+   * @note This method IS thread-safe, so it can be used
+   *       while motion task is running.
+   *
+   * @param w Angular speed command.
+   */
   void
   set_angular_speed_ts(float w)
   {
@@ -577,14 +806,28 @@ public:
     xSemaphoreGive(motion_mutex_);
   }
 
-  // get_angular_speed is not thread safe
+  /**
+   * @brief Gets the angular speed command.
+   *
+   * @note This method is NOT thread-safe, so it should not be used
+   *       while motion task is running.
+   *
+   * @return Angular speed command.
+   */
   float
   get_angular_speed()
   {
     return ang_speed_;
   }
 
-  // get_angular_speed_ts is the thread safe version of get_angular_speed()
+  /**
+   * @brief Gets the angular speed command in a thread-safe manner.
+   *
+   * @note This method IS thread-safe, so it can be used
+   *       while motion task is running.
+   *
+   * @return Angular speed command.
+   */
   float
   get_angular_speed_ts()
   {
@@ -599,6 +842,9 @@ public:
 
   // -------- Eyes color --------
 
+  /**
+   * @brief Sets eyes LED to RED.
+   */
   void
   eyes_red()
   {
@@ -606,7 +852,10 @@ public:
     digitalWrite(this->eyes_b_pin_, LOW);
     digitalWrite(this->eyes_g_pin_, LOW);
   }
-
+  
+  /**
+   * @brief Sets eyes LED to BLUE.
+   */
   void
   eyes_blue()
   {
@@ -615,6 +864,9 @@ public:
     digitalWrite(this->eyes_g_pin_, LOW);
   }
 
+  /**
+   * @brief Sets eyes LED to GREEN.
+   */
   void
   eyes_green()
   {
@@ -623,6 +875,9 @@ public:
     digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
+  /**
+   * @brief Sets eyes LED to MAGENTA.
+   */
   void
   eyes_magenta()
   {
@@ -631,6 +886,9 @@ public:
     digitalWrite(this->eyes_g_pin_, LOW);
   }
 
+  /**
+   * @brief Sets eyes LED to CYAN.
+   */
   void
   eyes_cyan()
   {
@@ -639,6 +897,9 @@ public:
     digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
+  /**
+   * @brief Sets eyes LED to YELLOW.
+   */
   void
   eyes_yellow()
   {
@@ -647,6 +908,9 @@ public:
     digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
+  /**
+   * @brief Sets eyes LED to WHITE.
+   */
   void
   eyes_white()
   {
@@ -655,6 +919,9 @@ public:
     digitalWrite(this->eyes_g_pin_, HIGH);
   }
 
+  /**
+   * @brief Turn off eyes LED.
+   */
   void
   eyes_off()
   {
