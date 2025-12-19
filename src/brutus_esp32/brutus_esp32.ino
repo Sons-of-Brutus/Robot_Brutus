@@ -45,6 +45,13 @@ void setup() {
                              SHOULDER_BACK_LEFT_ANGLE_OFFSET, ELBOW_BACK_LEFT_ANGLE_OFFSET,
                              SHOULDER_BACK_LEFT_INVERTED, ELBOW_BACK_LEFT_INVERTED);
 
+  brutus.setup_perception(US_R_TRIG,
+                          US_R_ECHO,
+                          US_L_TRIG,
+                          US_L_ECHO,
+                          US_F_TRIG,
+                          US_F_ECHO);
+
   delay(3000);
 
   brutus.start();

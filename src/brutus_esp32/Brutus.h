@@ -4,6 +4,7 @@
 #include "brutus_params.h"
 #include "BrutusLegInterface.h"
 #include "BrutusPose.h"
+#include "BrutusPerception.h"
 
 #define JOINTS_PER_LEG 2
 #define N_LEGS 4
@@ -69,6 +70,15 @@ private:
   TaskHandle_t motion_task_handle_;
   int motion_task_period_;
   enum BrutusMotionControlMode motion_mode_ = POSE_CONTROL;
+
+  BrutusPerception perception_data_ = {0.0, 0.0, 0.0};
+  int right_trig_pin_;
+  int right_echo_pin_;
+  int left_trig_pin_;
+  int left_echo_pin_;
+  int front_trig_pin_;
+  int front_echo_pin_;
+  bool perception_is_setup_ = false;
 
 public:
   /**
@@ -154,6 +164,51 @@ public:
   }
 
   /**
+   * @brief Initializes the perception sensors hardware.
+   *
+   * This method configures the GPIO pins used by the distance sensors
+   * (e.g. ultrasonic sensors) located on the right, left and front sides
+   * of the robot. Trigger pins are configured as outputs and echo pins
+   * as inputs.
+   *
+   * After calling this method, the perception subsystem is configured
+   * at the hardware level but not yet activated.
+   *
+   * @param right_trig_pin GPIO pin connected to the right sensor trigger.
+   * @param right_echo_pin GPIO pin connected to the right sensor echo.
+   * @param left_trig_pin GPIO pin connected to the left sensor trigger.
+   * @param left_echo_pin GPIO pin connected to the left sensor echo.
+   * @param front_trig_pin GPIO pin connected to the front sensor trigger.
+   * @param front_echo_pin GPIO pin connected to the front sensor echo.
+   */
+  void
+  setup_perception(int right_trig_pin,
+                   int right_echo_pin,
+                   int left_trig_pin,
+                   int left_echo_pin,
+                   int front_trig_pin,
+                   int front_echo_pin)
+  {
+    pinMode(right_trig_pin, OUTPUT);
+    pinMode(right_echo_pin, INPUT);
+
+    pinMode(left_trig_pin, OUTPUT);
+    pinMode(left_echo_pin, INPUT);
+
+    pinMode(front_trig_pin, OUTPUT);
+    pinMode(front_echo_pin, INPUT);
+
+    right_trig_pin_ = right_trig_pin;
+    right_echo_pin_ = right_echo_pin;
+    left_trig_pin_ = left_trig_pin;
+    left_echo_pin_ = left_echo_pin;
+    front_trig_pin_ = front_trig_pin;
+    front_echo_pin_ = front_echo_pin;
+
+    perception_is_setup_ = false;
+  }
+
+  /**
    * @brief Finalizes setup and moves the robot to the standing pose.
    *
    * Correct previous initialization: Magenta eyes
@@ -162,7 +217,7 @@ public:
   void
   start()
   {
-    if (pca_active_ && fr_leg_is_setup_ && fl_leg_is_setup_ && br_leg_is_setup_ && bl_leg_is_setup_) {
+    if (pca_active_ && fr_leg_is_setup_ && fl_leg_is_setup_ && br_leg_is_setup_ && bl_leg_is_setup_ && perception_is_setup_) {
       brutus_is_setup_ = true;
     }
 

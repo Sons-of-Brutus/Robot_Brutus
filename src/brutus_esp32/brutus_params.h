@@ -34,6 +34,15 @@
 #define US_3_TRIG 17
 #define US_3_ECHO 5
 
+#define US_R_TRIG 15
+#define US_R_ECHO 15
+
+#define US_L_TRIG 15
+#define US_L_ECHO 15
+
+#define US_F_TRIG 15
+#define US_F_ECHO 15
+
 #define R_PIN 32
 #define G_PIN 25
 #define B_PIN 33
