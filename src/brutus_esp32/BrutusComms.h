@@ -30,81 +30,18 @@ class BrutusComms {
     PubSubClient client;
     SemaphoreHandle_t cmd_mutex_;
     SemaphoreHandle_t data_mutex_;
-
-  public:
-
-    BrutusComms():
-      brutus_(nullptr),
-      cmd_(START_CMD),
-      data_(START_DATA),
-      client(espClient)
-    {};
-    
-    void start(Brutus *b){
-      Serial.begin(BAUD);
-      cmd_mutex_ = xSemaphoreCreateMutex();
-      data_mutex_ = xSemaphoreCreateMutex();
-
-      brutus_ = b;
-      this->topicHandlers_sub_ = new TopicHandler[numTopics] {
-        {CMD_POSE, TOPIC_CMD_POSE},
-        {CMD_VEL,  TOPIC_CMD_VEL},
-        {CMD_MODE, TOPIC_CMD_MODE}
-      };
-      
-      #if IS_EDUROAM
-        WiFi.begin(SSID_EDUROAM, WPA2_AUTH_PEAP, USERNAME_EDUROAM, USERNAME_EDUROAM, PASSWORD_EDUROAM);
-        Serial.print("Connecting to eduroam");
-      #else
-        WiFi.begin(SSID, PASSWORD);
-        Serial.print("Connecting to WiFi");
-      #endif
-
-      while(WiFi.status()!=WL_CONNECTED){
-        vTaskDelay(pdMS_TO_TICKS(WIFI_WAIT));
-        Serial.print(".");
-      }
-
-      Serial.println("\nWiFi connected!");
-
-      client.setServer(MQTT_SERVER, MQTT_PORT);
-      static_instance = this;
-      client.setCallback(BrutusComms::mqtt_callback_static);
+    /*
+    void upload_data(){
+      xSemaphoreTake(data_mutex_, portMAX_DELAY);
+      brutus_->getCommsData(&data_);
+      xSemaphoreGive(data_mutex_);
     }
-    
-    static void mqtt_callback_static(char* topic, byte* payload, unsigned int length) {
-      if (static_instance) {
-          static_instance->callback(topic, payload, length);
-      }
-    }
-
-    static void commsTask_static(void* param) {
-      Serial.println("commsTask_static");
-      BrutusComms* instance = static_cast<BrutusComms*>(param);
-      instance->commsTask();
-    }
-
-    void
-    create_comms_task(int core)
-    {
-      xTaskCreatePinnedToCore(
-        (TaskFunction_t)BrutusComms::commsTask_static,
-        "commsTask",
-        6000,
-        this,
-        10,
-        &this->comms_task_handle_,
-        core
-      );
-      Serial.println("TASK CREATE");
-      comms_task_period_ = COMMS_PERIOD;
-    }
+    */
 
     void
     commsTask()
     {
       while(true) {
-        // Serial.println("commsTask");
         if (!client.connected()) {
           reconnect();
         }
@@ -122,7 +59,8 @@ class BrutusComms {
         if (!client.publish(TOPIC_STATE_HEARTBEAT, heartbeat_msg)) {
           Serial.println("Error publishing STATE_HEARTBEAT");
         }
-        
+
+        //upload_data();
         xSemaphoreTake(data_mutex_, portMAX_DELAY);
         create_msg(DIST_LEFT, &data_.left_us , left_msg, MSG_BUFFER);
         create_msg(POSE, &(data_.pose), pose_msg, MSG_BUFFER);
@@ -227,7 +165,6 @@ class BrutusComms {
       }
     }
 
-
     // ----------- HANDLERS -----------
     void
     handleCmdPose(const char* msg) {
@@ -320,6 +257,83 @@ class BrutusComms {
       }
     }
 
+  public:
+
+    BrutusComms():
+      brutus_(nullptr),
+      cmd_(START_CMD),
+      data_(START_DATA),
+      client(espClient)
+    {};
+    
+    void start(Brutus *b){
+      Serial.begin(BAUD);
+      cmd_mutex_ = xSemaphoreCreateMutex();
+      data_mutex_ = xSemaphoreCreateMutex();
+
+      brutus_ = b;
+      this->topicHandlers_sub_ = new TopicHandler[numTopics] {
+        {CMD_POSE, TOPIC_CMD_POSE},
+        {CMD_VEL,  TOPIC_CMD_VEL},
+        {CMD_MODE, TOPIC_CMD_MODE}
+      };
+      
+      #if IS_EDUROAM
+        WiFi.begin(SSID_EDUROAM, WPA2_AUTH_PEAP, USERNAME_EDUROAM, USERNAME_EDUROAM, PASSWORD_EDUROAM);
+        Serial.print("Connecting to eduroam");
+      #else
+        WiFi.begin(SSID, PASSWORD);
+        Serial.print("Connecting to WiFi");
+      #endif
+
+      while(WiFi.status()!=WL_CONNECTED){
+        vTaskDelay(pdMS_TO_TICKS(WIFI_WAIT));
+        Serial.print(".");
+      }
+
+      Serial.println("\nWiFi connected!");
+
+      client.setServer(MQTT_SERVER, MQTT_PORT);
+      static_instance = this;
+      client.setCallback(BrutusComms::mqtt_callback_static);
+    }
+    
+    static void mqtt_callback_static(char* topic, byte* payload, unsigned int length) {
+      if (static_instance) {
+          static_instance->callback(topic, payload, length);
+      }
+    }
+
+    static void commsTask_static(void* param) {
+      Serial.println("commsTask_static");
+      BrutusComms* instance = static_cast<BrutusComms*>(param);
+      instance->commsTask();
+    }
+
+    void
+    create_comms_task(int core)
+    {
+      xTaskCreatePinnedToCore(
+        (TaskFunction_t)BrutusComms::commsTask_static,
+        "commsTask",
+        6000,
+        this,
+        10,
+        &this->comms_task_handle_,
+        core
+      );
+      Serial.println("TASK CREATE");
+      comms_task_period_ = COMMS_PERIOD;
+    }
+
+    BrutusCommsCmd
+    getCmd() {
+      BrutusCommsCmd cmd_copy;
+      xSemaphoreTake(cmd_mutex_, portMAX_DELAY);
+      cmd_copy = cmd_;
+      xSemaphoreGive(cmd_mutex_);
+      return cmd_copy;
+    }
 };
 
 BrutusComms* BrutusComms::static_instance = nullptr;
