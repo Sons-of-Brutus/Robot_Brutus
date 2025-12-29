@@ -1,2 +1,2 @@
 .vscode/arduino.json
-src/brutus_esp32/credentials.h
+src/brutus_esp32/credential.h

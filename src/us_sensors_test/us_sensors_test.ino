@@ -1,5 +1,5 @@
-#define TRIG_PIN 25
-#define ECHO_PIN 33
+#define TRIG_PIN 17
+#define ECHO_PIN 5
 
 void setup() {
   Serial.begin(115200);
@@ -8,6 +8,7 @@ void setup() {
 }
 
 void loop() {
+
   long duration, distance;
 
   digitalWrite(TRIG_PIN, LOW);
@@ -27,5 +28,5 @@ void loop() {
   Serial.print(distance);
   Serial.println(" cm");
 
-  delay(500);
+  delay(100);
 }
