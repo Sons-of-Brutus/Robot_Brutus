@@ -103,6 +103,8 @@
 #define DEFAULT_MOTION_PERIOD 300 // [ms]
 
 #define LOGIC_CORE 1
+
+#define MODES_PERIOD 300
 // -----------------------------
 
 

@@ -1,11 +1,20 @@
 #include "Brutus.h"
 #include "BrutusComms.h"
 
+enum FuncMode {
+  STANDING = 0,
+  EXERCISE_1 = 1,
+  EXERCISE_2 = 2,
+  LEG_CONTROL = 3,
+  VEL_CONTROL = 4
+};
+
 Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
 
 Brutus brutus;
 BrutusComms brutus_comms;
-TaskHandle_t mqtt_task_handle;
+
+TaskHandle_t mode_task_handle;
 
 void setup() {
   Serial.begin(115200);
@@ -49,6 +58,13 @@ void setup() {
                              SHOULDER_BACK_LEFT_ANGLE_OFFSET, ELBOW_BACK_LEFT_ANGLE_OFFSET,
                              SHOULDER_BACK_LEFT_INVERTED, ELBOW_BACK_LEFT_INVERTED);
 
+  brutus.setup_perception(US_R_TRIG,
+                          US_R_ECHO,
+                          US_L_TRIG,
+                          US_L_ECHO,
+                          US_F_TRIG,
+                          US_F_ECHO);
+
   delay(3000);
 
   brutus.start();
@@ -57,8 +73,81 @@ void setup() {
 
   Serial.println("<START>");
   
-  brutus.create_motion_task(MOTION_PERIOD, MOTION_CORE);
+  brutus.set_linear_speed_ts(0.0);
+  brutus.set_angular_speed_ts(0.0);
+  brutus.change_target_pose(STANDING_POSE);
+
+  brutus.set_motion_control_mode(POSE_CONTROL);
+  brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
+  //brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
   brutus_comms.create_comms_task(COMMS_CORE);
+
+  xTaskCreatePinnedToCore(
+    (TaskFunction_t)mode_task,
+    "ModeTask",
+    2048,
+    NULL,
+    2,
+    &mode_task_handle,
+    LOGIC_CORE
+  );
 }
 
 void loop() {}
+
+void
+mode_task(void* pvParameters)
+{
+  enum FuncMode mode = STANDING;
+  enum FuncMode last_mode = STANDING;
+  BrutusCommsCmd cmd;
+
+  TickType_t last_wake_time = xTaskGetTickCount();
+
+
+  while (true) {
+    cmd = brutus_comms.getCmd();
+    mode = FuncMode(cmd.mode);
+
+    switch (mode)
+    {
+      case STANDING:
+        if (mode != last_mode) {
+          brutus.eyes_blue();
+          brutus.set_motion_control_mode(POSE_CONTROL);
+          last_mode = mode;
+        }
+
+        brutus.change_target_pose(STANDING_POSE);
+        break;
+      
+      case LEG_CONTROL:
+        if (mode != last_mode) {
+          brutus.eyes_yellow();
+          brutus.set_motion_control_mode(POSE_CONTROL);
+          last_mode = mode;
+        }
+
+        brutus.change_target_pose(cmd.pose);
+        break;
+
+      case VEL_CONTROL:
+        if (mode != last_mode) {
+          brutus.eyes_green();
+          Serial.println("Mode: VEL_CONTROL");
+          brutus.set_motion_control_mode(SPEED_CONTROL);
+          last_mode = mode;
+        }
+
+        brutus.set_linear_speed_ts(cmd.v);
+        brutus.set_angular_speed_ts(cmd.w);
+        break;
+
+      default:
+        break;
+    }
+
+    vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(MODES_PERIOD));
+    
+  }
+}

@@ -533,7 +533,6 @@ public:
       switch(ctrl_mode) {
         case POSE_CONTROL:
           if (last_mode == SPEED_CONTROL) {
-            this->eyes_blue();
             last_mode = ctrl_mode;
           }
 
@@ -544,7 +543,6 @@ public:
           if (last_mode == POSE_CONTROL) {
             i = 0;
             last_mode = ctrl_mode;
-            this->eyes_magenta();
           }
 
           //this->check_pose(true).print();

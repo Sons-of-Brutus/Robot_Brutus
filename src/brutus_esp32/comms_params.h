@@ -38,7 +38,7 @@
 #define RECONNECT_WAIT 3000
 
 // ----------- MODES -----------
-#define IS_EDUROAM true // true to connect to eduroam, false to connect to normal wifi
+#define IS_EDUROAM false // true to connect to eduroam, false to connect to normal wifi
 
 // ----------- RANGES FOR TEST_WITH_RANDOM_MSG-----------
 #define MIN_LEG_DEG 0
