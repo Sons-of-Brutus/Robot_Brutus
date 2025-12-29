@@ -79,7 +79,7 @@ void setup() {
 
   brutus.set_motion_control_mode(POSE_CONTROL);
   brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
-  //brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
+  brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
   brutus_comms.create_comms_task(COMMS_CORE);
 
   xTaskCreatePinnedToCore(
@@ -134,13 +134,30 @@ mode_task(void* pvParameters)
       case VEL_CONTROL:
         if (mode != last_mode) {
           brutus.eyes_green();
-          Serial.println("Mode: VEL_CONTROL");
           brutus.set_motion_control_mode(SPEED_CONTROL);
           last_mode = mode;
         }
 
         brutus.set_linear_speed_ts(cmd.v);
         brutus.set_angular_speed_ts(cmd.w);
+        break;
+
+      case EXERCISE_1:
+        if (mode != last_mode) {
+          brutus.eyes_white();
+          brutus.set_motion_control_mode(SPEED_CONTROL);
+          last_mode = mode;
+        }
+
+        break;
+
+      case EXERCISE_2:
+        if (mode != last_mode) {
+          brutus.eyes_magenta();
+          brutus.set_motion_control_mode(SPEED_CONTROL);
+          last_mode = mode;
+        }
+
         break;
 
       default:
