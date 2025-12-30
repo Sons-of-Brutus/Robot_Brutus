@@ -79,7 +79,7 @@ void setup() {
   brutus.change_target_pose(STANDING_POSE);
 
   brutus.set_motion_control_mode(POSE_CONTROL);
-  //brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
+  brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
   brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
   brutus_comms.create_comms_task(COMMS_CORE);
 
@@ -115,6 +115,7 @@ mode_task(void* pvParameters)
   float dist = 0.0;
 
   while (true) {
+    Serial.println("<MODES>");
     uint32_t start_time = micros();
 
     cmd = brutus_comms.getCmd();

@@ -44,6 +44,8 @@ class BrutusComms {
       TickType_t last_wake_time = xTaskGetTickCount();
 
       while(true) {
+        Serial.println("<COMMS>");
+        
         uint32_t start_time = micros();
         
         if (!client.connected()) {
@@ -118,13 +120,13 @@ class BrutusComms {
       char message[MSG_BUFFER];
 
       if (length >= sizeof(message)) {
-        Serial.print("Message received too long: ");
+        //Serial.print("Message received too long: ");
         return;
       }
 
       memcpy(message, payload, length);
       message[length] = '\0';
-      Serial.printf("Message arrived on topic: %s. Message: %s\n", topic, message);
+      //Serial.printf("Message arrived on topic: %s. Message: %s\n", topic, message);
       for (int i = 0; i < numTopics; i++) {
         if (strcmp(topic, topicHandlers_sub_[i].topic) == 0) {
           switch (topicHandlers_sub_[i].n)
@@ -143,8 +145,8 @@ class BrutusComms {
         }
       }
 
-      Serial.print("Message received on unknown topic: ");
-      Serial.println(topic);
+      //Serial.print("Message received on unknown topic: ");
+      //Serial.println(topic);
     }
 
     void create_msg(int topic, const void* val, char* msg, int msg_size) {
@@ -185,12 +187,12 @@ class BrutusComms {
     // ----------- HANDLERS -----------
     void
     handleCmdPose(const char* msg) {
-        Serial.print("msg: ");
-        Serial.println(msg);
+        //Serial.print("msg: ");
+        //Serial.println(msg);
         StaticJsonDocument<JSON_BUFFER> doc;
         
         if (deserializeJson(doc, msg)) {
-            Serial.println("JSON parsing error");
+            //Serial.println("JSON parsing error");
             return;
         }
 
@@ -211,23 +213,23 @@ class BrutusComms {
 
         xSemaphoreTake(cmd_mutex_, portMAX_DELAY);
         cmd_.pose = pos;
-        Serial.println("Recived Pose Values:");
-        Serial.printf("FR Shoulder: %f, FR Elbow: %f\n", cmd_.pose.fr_leg_state.shoulder_angle, cmd_.pose.fr_leg_state.elbow_angle);
-        Serial.printf("FL Shoulder: %f, FL Elbow: %f\n", cmd_.pose.fl_leg_state.shoulder_angle, cmd_.pose.fl_leg_state.elbow_angle);
-        Serial.printf("BR Shoulder: %f, BR Elbow: %f\n", cmd_.pose.br_leg_state.shoulder_angle, cmd_.pose.br_leg_state.elbow_angle);
-        Serial.printf("BL Shoulder: %f, BL Elbow: %f\n", cmd_.pose.bl_leg_state.shoulder_angle, cmd_.pose.bl_leg_state.elbow_angle);
+        //Serial.println("Recived Pose Values:");
+        //Serial.printf("FR Shoulder: %f, FR Elbow: %f\n", cmd_.pose.fr_leg_state.shoulder_angle, cmd_.pose.fr_leg_state.elbow_angle);
+        //Serial.printf("FL Shoulder: %f, FL Elbow: %f\n", cmd_.pose.fl_leg_state.shoulder_angle, cmd_.pose.fl_leg_state.elbow_angle);
+        //Serial.printf("BR Shoulder: %f, BR Elbow: %f\n", cmd_.pose.br_leg_state.shoulder_angle, cmd_.pose.br_leg_state.elbow_angle);
+        //Serial.printf("BL Shoulder: %f, BL Elbow: %f\n", cmd_.pose.bl_leg_state.shoulder_angle, cmd_.pose.bl_leg_state.elbow_angle);
         xSemaphoreGive(cmd_mutex_);
     }
 
 
     void
     handleCmdVel(const char* msg) {
-      Serial.print("handleCmdVel called with message: ");
+      //Serial.print("handleCmdVel called with message: ");
       StaticJsonDocument<JSON_BUFFER> doc;
       
       if (deserializeJson(doc, msg)) {
-          Serial.println("JSON parsing error");
-          return;
+        //Serial.println("JSON parsing error");
+        return;
       }
       
       float vel_x = doc["vx"] | 0.0;
@@ -237,38 +239,38 @@ class BrutusComms {
       cmd_.v = doc["vx"] | 0.0;
       cmd_.w = doc["wz"] | 0.0;
 
-      Serial.print("vel_x = ");
-      Serial.print(cmd_.v);
-      Serial.print("  vel_z = ");
-      Serial.println(cmd_.w);
+      //Serial.print("vel_x = ");
+      //Serial.print(cmd_.v);
+      //Serial.print("  vel_z = ");
+      //Serial.println(cmd_.w);
       xSemaphoreGive(cmd_mutex_);
     }
 
     void
     handleCmdMode(const char* msg) {
-      Serial.print("handleCmdMode called with message: ");
+      //Serial.print("handleCmdMode called with message: ");
       xSemaphoreTake(cmd_mutex_, portMAX_DELAY);
       cmd_.mode = atoi(msg);
-      Serial.println(cmd_.mode);
+      //Serial.println(cmd_.mode);
       xSemaphoreGive(cmd_mutex_);
     }
 
     void
     reconnect() {
       while (!client.connected()) {
-        Serial.print("Attempting to connect to the MQTT broker...");
+        //Serial.print("Attempting to connect to the MQTT broker...");
 
         if (client.connect(CLIENT_ID)) {
-          Serial.println("Connected!");
+          //Serial.println("Connected!");
 
           client.subscribe(TOPIC_CMD_POSE);
           client.subscribe(TOPIC_CMD_VEL);
           client.subscribe(TOPIC_CMD_MODE);
 
         } else {
-          Serial.print("Failed. Code: ");
-          Serial.print(client.state());
-          Serial.println(" Trying again in 3 seconds...");
+          //Serial.print("Failed. Code: ");
+          //Serial.print(client.state());
+          //Serial.println(" Trying again in 3 seconds...");
           vTaskDelay(pdMS_TO_TICKS(RECONNECT_WAIT));
         }
       }

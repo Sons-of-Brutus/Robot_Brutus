@@ -1,6 +1,6 @@
 // Configuración de Pines (ajusta a tus pines)
-const int TRIGGER_PIN = 17;
-const int ECHO_PIN = 5;
+const int TRIGGER_PIN = 15;
+const int ECHO_PIN = 2;
 
 // Variables para la comunicación entre ISR y Tarea
 volatile uint32_t start_micros = 0;

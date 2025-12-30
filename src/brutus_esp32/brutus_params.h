@@ -20,25 +20,14 @@
 
 // ---------- GPIOs -----------
 
-/* TODO
-  Poner a que sensor de ultrasonidos corresponde cada par de pines.
-  1,2,3 --> FRONT, RIGHT, LEFT
-*/
-
-#define US_1_TRIG 15
-#define US_1_ECHO 2
-
-#define US_2_TRIG 4
-#define US_2_ECHO 16
-
 #define US_R_TRIG 17
 #define US_R_ECHO 5
 
-#define US_L_TRIG 15
-#define US_L_ECHO 15
+#define US_L_TRIG 4
+#define US_L_ECHO 16
 
 #define US_F_TRIG 15
-#define US_F_ECHO 15
+#define US_F_ECHO 2
 
 #define R_PIN 32
 #define G_PIN 25
@@ -101,7 +90,7 @@
 
 #define LOGIC_CORE 1
 
-#define MODES_PERIOD 150 // SAME PERIOD AS ALL LOGIC CORE TASKS
+#define MODES_PERIOD 200 // SAME PERIOD AS ALL LOGIC CORE TASKS
 // -----------------------------
 
 
@@ -234,8 +223,8 @@ constexpr BrutusPose CCW_SPIN_STEPS[6] {SPIN_6, SPIN_5, SPIN_4, SPIN_3, SPIN_2, 
 
 #define PERCEPTION_PRIO 3
 
-#define PERCEPTION_PERIOD 150 // [ms]
-#define MIN_PERCEPTION_TIMEOUT 12 // [ms]
+#define PERCEPTION_PERIOD 200 // [ms]
+#define MIN_PERCEPTION_TIMEOUT 10 // [ms]
 // --------------------------------
 
 #endif // BRUTUS_PARAMS__H

@@ -899,6 +899,8 @@ public:
     Serial.println("PERCEPTION TASK START!");
 
     while (true) {
+      Serial.println("<PERCEPTION>");
+      
       uint32_t start_time = micros();
 
       dist_right = this->right_us_.read_distance();
