@@ -73,9 +73,9 @@ class BrutusComms {
         //create_msg(DIST_FRONT, &(data_.front_us), front_msg, MSG_BUFFER);
         //create_msg(DIST_RIGHT, &(data_.right_us), right_msg, MSG_BUFFER);
         //create_msg(DIST_LEFT, &(data_.left_us) , left_msg, MSG_BUFFER);
-        create_msg(DIST_FRONT, &((int)perception.front_dist), front_msg, MSG_BUFFER);
-        create_msg(DIST_RIGHT, &((int)perception.right_dist), right_msg, MSG_BUFFER);
-        create_msg(DIST_LEFT, &((int)perception.left_dist), left_msg, MSG_BUFFER);
+        create_msg(DIST_FRONT, &(perception.front_dist), front_msg, MSG_BUFFER);
+        create_msg(DIST_RIGHT, &(perception.right_dist), right_msg, MSG_BUFFER);
+        create_msg(DIST_LEFT, &(perception.left_dist), left_msg, MSG_BUFFER);
 
         xSemaphoreGive(data_mutex_);
         
@@ -169,15 +169,15 @@ class BrutusComms {
           
         }
         case DIST_FRONT:
-          snprintf(msg, msg_size, "{\"front_dist\":%d}", *(int*)val);
+          snprintf(msg, msg_size, "{\"front_dist\":%f}", *(float*)val);
           break;
 
         case DIST_RIGHT:
-          snprintf(msg, msg_size, "{\"right_dist\":%d}", *(int*)val);
+          snprintf(msg, msg_size, "{\"right_dist\":%f}", *(float*)val);
           break;
 
         case DIST_LEFT:
-          snprintf(msg, msg_size, "{\"left_dist\":%d}", *(int*)val);
+          snprintf(msg, msg_size, "{\"left_dist\":%f}", *(float*)val);
           break;
       }
     }
