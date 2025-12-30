@@ -31,11 +31,8 @@
 #define US_2_TRIG 4
 #define US_2_ECHO 16
 
-#define US_3_TRIG 17
-#define US_3_ECHO 5
-
-#define US_R_TRIG 15
-#define US_R_ECHO 15
+#define US_R_TRIG 17
+#define US_R_ECHO 5
 
 #define US_L_TRIG 15
 #define US_L_ECHO 15
@@ -104,7 +101,7 @@
 
 #define LOGIC_CORE 1
 
-#define MODES_PERIOD 300
+#define MODES_PERIOD 150 // SAME PERIOD AS ALL LOGIC CORE TASKS
 // -----------------------------
 
 
@@ -235,10 +232,10 @@ constexpr BrutusPose CCW_SPIN_STEPS[6] {SPIN_6, SPIN_5, SPIN_4, SPIN_3, SPIN_2, 
 // ---------- PERCEPTION ----------
 #define N_DISTANCE_SENSORS 3
 
-#define PERCEPTION_PERIOD 150 // [ms]
 #define PERCEPTION_PRIO 3
 
-#define MIN_PERCEPTION_TIMEOUT 3 * 1e4
+#define PERCEPTION_PERIOD 150 // [ms]
+#define MIN_PERCEPTION_TIMEOUT 12 // [ms]
 // --------------------------------
 
 #endif // BRUTUS_PARAMS__H

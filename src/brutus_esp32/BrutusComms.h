@@ -41,7 +41,11 @@ class BrutusComms {
     void
     commsTask()
     {
+      TickType_t last_wake_time = xTaskGetTickCount();
+
       while(true) {
+        uint32_t start_time = micros();
+        
         if (!client.connected()) {
           reconnect();
         }
@@ -60,13 +64,19 @@ class BrutusComms {
           Serial.println("Error publishing STATE_HEARTBEAT");
         }
 
+        BrutusPerception perception = brutus_->get_perception_data();
+
         //upload_data();
         xSemaphoreTake(data_mutex_, portMAX_DELAY);
-        create_msg(DIST_LEFT, &data_.left_us , left_msg, MSG_BUFFER);
+        //create_msg(DIST_LEFT, &data_.left_us , left_msg, MSG_BUFFER);
         create_msg(POSE, &(data_.pose), pose_msg, MSG_BUFFER);
-        create_msg(DIST_FRONT, &(data_.front_us), front_msg, MSG_BUFFER);
-        create_msg(DIST_RIGHT, &(data_.right_us), right_msg, MSG_BUFFER);
-        create_msg(DIST_LEFT, &(data_.left_us) , left_msg, MSG_BUFFER);
+        //create_msg(DIST_FRONT, &(data_.front_us), front_msg, MSG_BUFFER);
+        //create_msg(DIST_RIGHT, &(data_.right_us), right_msg, MSG_BUFFER);
+        //create_msg(DIST_LEFT, &(data_.left_us) , left_msg, MSG_BUFFER);
+        create_msg(DIST_FRONT, &((int)perception.front_dist), front_msg, MSG_BUFFER);
+        create_msg(DIST_RIGHT, &((int)perception.right_dist), right_msg, MSG_BUFFER);
+        create_msg(DIST_LEFT, &((int)perception.left_dist), left_msg, MSG_BUFFER);
+
         xSemaphoreGive(data_mutex_);
         
 
@@ -91,7 +101,14 @@ class BrutusComms {
         if (!client.publish(TOPIC_DIST_LEFT, left_msg)) {
           Serial.println("Error publishing DIST_LEFT");
         }
-        vTaskDelay(pdMS_TO_TICKS(comms_task_period_));
+
+        uint32_t end_time = micros();
+        uint32_t execution_time_us = end_time - start_time;
+        Serial.print("[COMMS] Tiempo de CPU activo: ");
+        Serial.print(execution_time_us / 1000.0);
+        Serial.println(" ms");
+
+        vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(comms_task_period_));
       }
     }
 

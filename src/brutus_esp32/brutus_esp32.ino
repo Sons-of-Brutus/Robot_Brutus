@@ -63,7 +63,8 @@ void setup() {
                           US_L_TRIG,
                           US_L_ECHO,
                           US_F_TRIG,
-                          US_F_ECHO);
+                          US_F_ECHO,
+                          MIN_PERCEPTION_TIMEOUT);
 
   delay(3000);
 
@@ -78,10 +79,11 @@ void setup() {
   brutus.change_target_pose(STANDING_POSE);
 
   brutus.set_motion_control_mode(POSE_CONTROL);
-  brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
+  //brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
   brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
   brutus_comms.create_comms_task(COMMS_CORE);
 
+  
   xTaskCreatePinnedToCore(
     (TaskFunction_t)mode_task,
     "ModeTask",
@@ -91,6 +93,7 @@ void setup() {
     &mode_task_handle,
     LOGIC_CORE
   );
+  
 }
 
 void loop() {}
@@ -98,14 +101,22 @@ void loop() {}
 void
 mode_task(void* pvParameters)
 {
-  enum FuncMode mode = STANDING;
+  enum FuncMode mode = EXERCISE_1;
   enum FuncMode last_mode = STANDING;
   BrutusCommsCmd cmd;
 
+  BrutusPerception perception_data;
+
   TickType_t last_wake_time = xTaskGetTickCount();
 
+  float ex1_kp = 1.0;
+  float exp_dist = 20.0;
+  float error = 0.0;
+  float dist = 0.0;
 
   while (true) {
+    uint32_t start_time = micros();
+
     cmd = brutus_comms.getCmd();
     mode = FuncMode(cmd.mode);
 
@@ -149,6 +160,14 @@ mode_task(void* pvParameters)
           last_mode = mode;
         }
 
+        perception_data = brutus.get_perception_data();
+        dist = perception_data.right_dist;
+
+        error = exp_dist - dist;
+
+        brutus.set_linear_speed_ts(1.0);
+        brutus.set_angular_speed_ts(ex1_kp*error);
+
         break;
 
       case EXERCISE_2:
@@ -163,6 +182,12 @@ mode_task(void* pvParameters)
       default:
         break;
     }
+
+    uint32_t end_time = micros();
+    uint32_t execution_time_us = end_time - start_time;
+    Serial.print("[MODES] Tiempo de CPU activo: ");
+    Serial.print(execution_time_us / 1000.0);
+    Serial.println(" ms");
 
     vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(MODES_PERIOD));
     

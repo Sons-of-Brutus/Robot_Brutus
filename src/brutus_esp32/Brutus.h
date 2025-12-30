@@ -5,6 +5,7 @@
 #include "BrutusLegInterface.h"
 #include "BrutusPose.h"
 #include "brutus_perception.h"
+#include "BrutusDistanceSensor.h"
 
 #define JOINTS_PER_LEG 2
 #define N_LEGS 4
@@ -77,9 +78,7 @@ private:
   bool perception_is_setup_ = false;
   int perception_task_period_;
 
-  UltrasonicSensorPins right_us_ = {0,0};
-  UltrasonicSensorPins left_us_ = {0,0};
-  UltrasonicSensorPins front_us_ = {0,0};
+  BrutusDistanceSensor right_us_, left_us_, front_us_;
 
 public:
   /**
@@ -189,20 +188,12 @@ public:
                    int left_trig_pin,
                    int left_echo_pin,
                    int front_trig_pin,
-                   int front_echo_pin)
+                   int front_echo_pin,
+                   uint32_t timeout)
   {
-    pinMode(right_trig_pin, OUTPUT);
-    pinMode(right_echo_pin, INPUT);
-
-    pinMode(left_trig_pin, OUTPUT);
-    pinMode(left_echo_pin, INPUT);
-
-    pinMode(front_trig_pin, OUTPUT);
-    pinMode(front_echo_pin, INPUT);
-
-    right_us_ = {right_trig_pin, right_echo_pin};
-    left_us_ = {left_trig_pin, left_echo_pin};
-    front_us_ = {front_trig_pin, front_echo_pin};
+    right_us_.setup(timeout, right_trig_pin, right_echo_pin);
+    left_us_.setup(timeout, left_trig_pin, left_echo_pin);
+    front_us_.setup(timeout, front_trig_pin, front_echo_pin);
 
     perception_is_setup_ = true;
   }
@@ -548,8 +539,8 @@ public:
           //this->check_pose(true).print();
           //Serial.println(i);
 
-          v = this->get_linear_speed_ts();
-          w = this->get_angular_speed_ts();
+          v = constrain(this->get_linear_speed_ts(), MIN_V, MAX_V);
+          w = constrain(this->get_angular_speed_ts(), MIN_W, MAX_W);
 
           //GAIT_STEPS[i%N_GAIT_STEPS].print();
           //pose.print();
@@ -896,106 +887,45 @@ public:
   // -------- Perception ---------
 
   /**
-   * @brief Reads the echo pulse duration in microseconds using polling.
-   *
-   * @param echo_pin ECHO pin number
-   * @param timeout_us Maximum time to wait for echo [ms]
-   * @return Pulse duration in microseconds, or -1 on timeout
-   */
-  int32_t
-  read_echo_pulse_safe(int echo_pin, uint32_t timeout_us)
-  {
-    uint32_t start = micros();
-
-    // Wait for rising edge (pulse start)
-    while (digitalRead(echo_pin) == LOW) {
-      if (micros() - start > timeout_us) {
-        return -1;
-      }
-
-      taskYIELD();
-    }
-
-    uint32_t pulse_start = micros();
-
-    // Wait for falling edge (pulse end)
-    while (digitalRead(echo_pin) == HIGH) {
-      if (micros() - pulse_start > timeout_us) {
-        return -1;
-      }
-
-      taskYIELD();
-    }
-
-    return micros() - pulse_start;
-  }
-
-  /**
-   * @brief Sends a FreeRTOS-safe trigger pulse to the ultrasonic sensor.
-   *
-   * @param sendor_side BrutusPerceptionSide sensor
-   */
-  void
-  trigger_ultrasonic_safe(int trigger)
-  {
-    digitalWrite(trigger, LOW);
-    uint32_t start = micros();
-    while (micros() - start < 2) {
-      taskYIELD(); // Wait 2 µs
-    }
-
-    digitalWrite(trigger, HIGH);
-    start = micros();
-    while (micros() - start < 10) {
-      taskYIELD(); // Wait 10 µs
-    }
-
-    digitalWrite(trigger, LOW);
-  }
-
-  /**
-   * @brief Reads the distance in cm from an ultrasonic sensor.
-   *
-   * @param sensor UltrasonicSensor struct
-   * @param timeout_us Maximum wait time for the echo
-   * @return Distance [cm], or -1 on timeout/error
-   */
-  float
-  read_ultrasonic_distance(UltrasonicSensorPins & sensor, uint32_t timeout_us)
-  {
-      trigger_ultrasonic_safe(sensor.trigger); // Send trigger
-      int32_t duration = read_echo_pulse_safe(sensor.echo, timeout_us); // Measure echo
-
-      if (duration < 0) {
-        return -1.0f; // Timeout
-      }
-
-      return duration * 0.034f / 2.0f; // Convert µs to cm (sound speed)
-  }
-
-  /**
   * @brief Task example to read multiple ultrasonic sensors.
   */
   void
   perception_task()
   {
-    float dist_right, dist_left, dist_front;
+    float dist_right = 0.0, dist_left = 0.0, dist_front = 0.0;
 
     TickType_t last_wake_time = xTaskGetTickCount();
 
-    uint32_t perception_timeout =
-      (uint32_t) max((perception_task_period_ * 1e3) / N_DISTANCE_SENSORS, MIN_PERCEPTION_TIMEOUT); // [us]
+    Serial.println("PERCEPTION TASK START!");
 
     while (true) {
-      dist_right = read_ultrasonic_distance(this->right_us_, perception_timeout);
-      dist_left  = read_ultrasonic_distance(this->left_us_, perception_timeout);
-      dist_front = read_ultrasonic_distance(this->front_us_, perception_timeout);
+      uint32_t start_time = micros();
+
+      dist_right = this->right_us_.read_distance();
+      dist_left  = this->left_us_.read_distance();
+      dist_front = this->front_us_.read_distance();
 
       xSemaphoreTake(perception_mutex_, portMAX_DELAY);
-      this->perception_data_.right_dist = dist_right;
-      this->perception_data_.left_dist = dist_left;
-      this->perception_data_.front_dist = dist_front;
+
+      if (dist_right >= 0.0) {
+        this->perception_data_.right_dist = dist_right;
+      }
+
+      if (dist_left >= 0.0) {
+        this->perception_data_.left_dist = dist_left;
+      }
+
+      if (dist_front >= 0.0) {
+        this->perception_data_.front_dist = dist_front;
+      }
+
       xSemaphoreGive(perception_mutex_);
+
+      uint32_t end_time = micros();
+      uint32_t execution_time_us = end_time - start_time;
+      Serial.print("[PERCEPTION] Tiempo de CPU activo: ");
+      Serial.print(execution_time_us / 1000.0);
+      Serial.println(" ms");
 
       vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(perception_task_period_));
     }

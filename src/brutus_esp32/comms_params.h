@@ -56,8 +56,8 @@
 #define JSON_BUFFER 300
 
 // ----------- PERIEODS -----------
-#define COMMS_PERIOD 100
-#define COMMS_CORE 1
+#define COMMS_PERIOD 150
+#define COMMS_CORE LOGIC_CORE
 #define BAUD 115200
 
 // ----------- START CMD AND DATA -----------
