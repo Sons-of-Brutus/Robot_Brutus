@@ -72,7 +72,7 @@ void setup() {
   brutus_comms.start(&brutus);
   delay(100);
 
-  Serial.println("<START>");
+  //Serial.println("<START>");
   
   brutus.set_linear_speed_ts(0.0);
   brutus.set_angular_speed_ts(0.0);
@@ -109,13 +109,24 @@ mode_task(void* pvParameters)
 
   TickType_t last_wake_time = xTaskGetTickCount();
 
-  float ex1_kp = 1.0;
-  float exp_dist = 20.0;
+  float ex1_kp = 0.20;
+  float exp_dist = 40.0;
   float error = 0.0;
   float dist = 0.0;
+  float last_dist = 0.0;
+  float last_last_dist = 0.0;
+
+  BrutusPose pose = brutus.check_pose(true);
+  int i = 0;
+
+  float fr_elbow = 0.0;
+  float fl_elbow = 0.0;
+  float br_elbow = 0.0;
+  float bl_elbow = 0.0;
+
 
   while (true) {
-    Serial.println("<MODES>");
+    //Serial.println("<MODES>");
     uint32_t start_time = micros();
 
     cmd = brutus_comms.getCmd();
@@ -161,13 +172,44 @@ mode_task(void* pvParameters)
           last_mode = mode;
         }
 
+        fr_elbow = pose.fr_leg_state.elbow_angle;
+        fl_elbow = pose.fl_leg_state.elbow_angle;
+        br_elbow = pose.br_leg_state.elbow_angle;
+        bl_elbow = pose.bl_leg_state.elbow_angle;
+
+
         perception_data = brutus.get_perception_data();
         dist = perception_data.right_dist;
 
-        error = exp_dist - dist;
+        if (i < 1){
+          last_dist = dist;
+          last_last_dist = dist;
+          i++;
+        }
 
-        brutus.set_linear_speed_ts(1.0);
-        brutus.set_angular_speed_ts(ex1_kp*error);
+
+        if (dist >= last_dist+10){
+          dist = last_dist;
+        }
+
+        error = dist - exp_dist;
+
+        //if (abs(ELBOW_DOWN-(fr_elbow - ELBOW_FRONT_RIGHT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= 2.5){
+        if (abs(0) <= 2.5 && abs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= 2.5){
+          //brutus.set_angular_speed_ts(ex1_kp*error);
+          //brutus_comms.publish_w(ex1_kp*error);
+          Serial.print(ex1_kp*error);
+          Serial.println(" cm");
+        }
+        
+
+
+        //brutus.set_linear_speed_ts(1.0);
+
+        last_last_dist = last_dist;
+        last_dist = dist;
+        
+        
 
         break;
 
@@ -186,9 +228,9 @@ mode_task(void* pvParameters)
 
     uint32_t end_time = micros();
     uint32_t execution_time_us = end_time - start_time;
-    Serial.print("[MODES] Tiempo de CPU activo: ");
-    Serial.print(execution_time_us / 1000.0);
-    Serial.println(" ms");
+    //Serial.print("[MODES] Tiempo de CPU activo: ");
+    //Serial.print(execution_time_us / 1000.0);
+    //Serial.println(" ms");
 
     vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(MODES_PERIOD));
     

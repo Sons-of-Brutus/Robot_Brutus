@@ -3,7 +3,7 @@
 
 #include "BrutusPose.h" 
 struct BrutusCommsCmd {
-  int mode;          // Modo de funcionamiento
+  int mode;         // Modo de funcionamiento
   float v;          // Velocidad lineal
   float w;          // Velocidad angular
   BrutusPose pose;  // La pose que queremos que le llegue al robot

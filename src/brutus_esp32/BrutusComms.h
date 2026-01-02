@@ -67,11 +67,12 @@ class BrutusComms {
         }
 
         BrutusPerception perception = brutus_->get_perception_data();
+        BrutusPose pose = brutus_->check_pose(true);
 
         //upload_data();
         xSemaphoreTake(data_mutex_, portMAX_DELAY);
         //create_msg(DIST_LEFT, &data_.left_us , left_msg, MSG_BUFFER);
-        create_msg(POSE, &(data_.pose), pose_msg, MSG_BUFFER);
+        create_msg(POSE, &pose, pose_msg, MSG_BUFFER);
         //create_msg(DIST_FRONT, &(data_.front_us), front_msg, MSG_BUFFER);
         //create_msg(DIST_RIGHT, &(data_.right_us), right_msg, MSG_BUFFER);
         //create_msg(DIST_LEFT, &(data_.left_us) , left_msg, MSG_BUFFER);
@@ -284,6 +285,18 @@ class BrutusComms {
       data_(START_DATA),
       client(espClient)
     {};
+
+    // TODO borrar esta función
+    void 
+    publish_w(float w)
+    {
+      client.loop();
+      char msg[MSG_BUFFER];
+
+      snprintf(msg, MSG_BUFFER, "{\"w\":%f}", w);
+
+      client.publish("brutus/data/w", msg);
+    }
     
     void start(Brutus *b){
       Serial.begin(BAUD);
