@@ -15,4 +15,7 @@
 | `Battery limit` | 1 | [battery_limit.stl](../meshes/battery_limit.stl) | ... |
 | `Weight case` | 1 | [weight_case.stl](../meshes/weight_case) | ... |
 
-**Note:** *Left shoulder/elbow are for front left leg and back right leg, while right shoulder/elbow are for front right leg, back left leg.*
+**Notes:**
+- *Left shoulder/elbow are for front left leg and back right leg, while right shoulder/elbow are for front right leg, back left leg.*
+- *Spacer is optional as you can replace it for a metalic one with similar dimensions (Inner hole must be at least as the 3D model one).*
+
