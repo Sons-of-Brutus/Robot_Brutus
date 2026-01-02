@@ -15,5 +15,4 @@
 | `Battery limit` | 1 | [battery_limit.stl](../meshes/battery_limit.stl) | ... |
 | `Weight case` | 1 | [weight_case.stl](../meshes/weight_case) | ... |
 
-
 **Note:** *Left shoulder/elbow are for front left leg and back right leg, while right shoulder/elbow are for front right leg, back left leg.*
