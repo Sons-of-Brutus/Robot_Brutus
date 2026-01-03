@@ -457,7 +457,7 @@ public:
     xTaskCreatePinnedToCore(
       (TaskFunction_t)Brutus::motion_task_wrapper,
       "MotionTask",
-      2048,
+      MOTION_TASK_SIZE,
       (void*)this,
       configMAX_PRIORITIES - 2,
       &this->motion_task_handle_,
@@ -896,10 +896,10 @@ public:
 
     TickType_t last_wake_time = xTaskGetTickCount();
 
-    Serial.println("PERCEPTION TASK START!");
+    //Serial.println("PERCEPTION TASK START!");
 
     while (true) {
-      Serial.println("<PERCEPTION>");
+      //Serial.println("<PERCEPTION>");
       
       uint32_t start_time = micros();
 
@@ -925,9 +925,9 @@ public:
 
       uint32_t end_time = micros();
       uint32_t execution_time_us = end_time - start_time;
-      Serial.print("[PERCEPTION] Tiempo de CPU activo: ");
-      Serial.print(execution_time_us / 1000.0);
-      Serial.println(" ms");
+      //Serial.print("[PERCEPTION] Tiempo de CPU activo: ");
+      //Serial.print(execution_time_us / 1000.0);
+      //Serial.println(" ms");
 
       vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(perception_task_period_));
     }
@@ -967,17 +967,17 @@ public:
   void
   create_perception_task(int task_period, int core, int priority)
   {
+    perception_task_period_ = task_period;
+
     xTaskCreatePinnedToCore(
       (TaskFunction_t)Brutus::perception_task_wrapper,
-      "MotionTask",
-      2048,
+      "PerceptionTask",
+      PERCEPTION_TASK_SIZE,
       (void*)this,
       priority,
       &this->perception_task_handle_,
       core
     );
-
-    perception_task_period_ = task_period;
   }
 
   // -------- Eyes color --------

@@ -16,6 +16,8 @@ BrutusComms brutus_comms;
 
 TaskHandle_t mode_task_handle;
 
+bool start_tasks = false;
+
 void setup() {
   Serial.begin(115200);
 
@@ -81,19 +83,18 @@ void setup() {
   brutus.set_motion_control_mode(POSE_CONTROL);
   brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
   brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
-  brutus_comms.create_comms_task(COMMS_CORE);
-
   
   xTaskCreatePinnedToCore(
     (TaskFunction_t)mode_task,
     "ModeTask",
-    2048,
+    MODES_TASK_SIZE,
     NULL,
     2,
     &mode_task_handle,
     LOGIC_CORE
   );
-  
+
+  brutus_comms.create_comms_task(COMMS_CORE); 
 }
 
 void loop() {}
@@ -124,6 +125,7 @@ mode_task(void* pvParameters)
   float br_elbow = 0.0;
   float bl_elbow = 0.0;
 
+  BrutusPose dbg_pose;
 
   while (true) {
     //Serial.println("<MODES>");
@@ -172,6 +174,7 @@ mode_task(void* pvParameters)
           last_mode = mode;
         }
 
+        pose = brutus.check_pose(true);
         fr_elbow = pose.fr_leg_state.elbow_angle;
         fl_elbow = pose.fl_leg_state.elbow_angle;
         br_elbow = pose.br_leg_state.elbow_angle;
@@ -187,29 +190,33 @@ mode_task(void* pvParameters)
           i++;
         }
 
-
         if (dist >= last_dist+10){
           dist = last_dist;
         }
 
         error = dist - exp_dist;
 
-        //if (abs(ELBOW_DOWN-(fr_elbow - ELBOW_FRONT_RIGHT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= 2.5){
-        if (abs(0) <= 2.5 && abs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= 2.5 && abs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= 2.5){
-          //brutus.set_angular_speed_ts(ex1_kp*error);
-          //brutus_comms.publish_w(ex1_kp*error);
-          Serial.print(ex1_kp*error);
-          Serial.println(" cm");
-        }
-        
+        dbg_pose = pose;
+        dbg_pose.fr_leg_state.elbow_angle = abs(ELBOW_DOWN-(fr_elbow - ELBOW_FRONT_RIGHT_ANGLE_OFFSET));
+        dbg_pose.fl_leg_state.elbow_angle = abs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET));
+        dbg_pose.br_leg_state.elbow_angle = abs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET));
+        dbg_pose.bl_leg_state.elbow_angle = abs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET));
 
+        brutus_comms.set_debug_pose(dbg_pose);
+
+        if (abs(ELBOW_DOWN-(fr_elbow - ELBOW_FRONT_RIGHT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && abs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && abs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && abs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF){
+          //brutus.set_angular_speed_ts(ex1_kp*error);
+          brutus.eyes_red();
+          Serial.print("Speed: ");
+          Serial.println(ex1_kp*error);
+        } else {
+          brutus.eyes_white();
+        }
 
         //brutus.set_linear_speed_ts(1.0);
 
         last_last_dist = last_dist;
         last_dist = dist;
-        
-        
 
         break;
 

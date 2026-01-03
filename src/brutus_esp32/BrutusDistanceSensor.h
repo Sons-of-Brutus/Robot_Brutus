@@ -1,8 +1,6 @@
 #ifndef BRUTUS_DISTANCE_SENSOR__H
 #define BRUTUS_DISTANCE_SENSOR__H
 
-#include <Arduino.h>
-
 class BrutusDistanceSensor {
 private:
   int trig_pin_, echo_pin_;

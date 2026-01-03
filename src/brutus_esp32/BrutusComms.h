@@ -30,6 +30,9 @@ class BrutusComms {
     PubSubClient client;
     SemaphoreHandle_t cmd_mutex_;
     SemaphoreHandle_t data_mutex_;
+
+    BrutusPose dbg_pose_;
+    float dbg_float_;
     /*
     void upload_data(){
       xSemaphoreTake(data_mutex_, portMAX_DELAY);
@@ -44,7 +47,7 @@ class BrutusComms {
       TickType_t last_wake_time = xTaskGetTickCount();
 
       while(true) {
-        Serial.println("<COMMS>");
+        //Serial.println("<COMMS>");
         
         uint32_t start_time = micros();
         
@@ -55,9 +58,8 @@ class BrutusComms {
 
         char heartbeat_msg[MSG_BUFFER];
         char pose_msg[MSG_BUFFER];
-        char front_msg[MSG_BUFFER];
-        char right_msg[MSG_BUFFER];
-        char left_msg[MSG_BUFFER];
+        char dist_msg[MSG_BUFFER];
+        char float_msg[MSG_BUFFER];
 
         // HEARTBEAT
         create_msg(STATE_HEARTBEAT, nullptr, heartbeat_msg, MSG_BUFFER);
@@ -67,21 +69,24 @@ class BrutusComms {
         }
 
         BrutusPerception perception = brutus_->get_perception_data();
-        BrutusPose pose = brutus_->check_pose(true);
+        //BrutusPose pose = brutus_->check_pose(true);
 
         //upload_data();
         xSemaphoreTake(data_mutex_, portMAX_DELAY);
         //create_msg(DIST_LEFT, &data_.left_us , left_msg, MSG_BUFFER);
-        create_msg(POSE, &pose, pose_msg, MSG_BUFFER);
+        create_msg(POSE, &dbg_pose_, pose_msg, MSG_BUFFER);
         //create_msg(DIST_FRONT, &(data_.front_us), front_msg, MSG_BUFFER);
         //create_msg(DIST_RIGHT, &(data_.right_us), right_msg, MSG_BUFFER);
         //create_msg(DIST_LEFT, &(data_.left_us) , left_msg, MSG_BUFFER);
-        create_msg(DIST_FRONT, &(perception.front_dist), front_msg, MSG_BUFFER);
-        create_msg(DIST_RIGHT, &(perception.right_dist), right_msg, MSG_BUFFER);
-        create_msg(DIST_LEFT, &(perception.left_dist), left_msg, MSG_BUFFER);
+        create_msg(DIST, &(perception), dist_msg, MSG_BUFFER);
+
+        snprintf(float_msg, MSG_BUFFER, "{\"debug float\":%f}", dbg_float_);
 
         xSemaphoreGive(data_mutex_);
         
+        if (!client.publish("brutus/data/dbg_float", float_msg)) {
+          Serial.println("Error publishiug DEBUG FLOAT");
+        }
 
         // POSE
         if (!client.publish(TOPIC_POSE, pose_msg)) {
@@ -89,27 +94,15 @@ class BrutusComms {
         }
 
         // DISTANCES
-        
-        // FRONT DIST
-        if (!client.publish(TOPIC_DIST_FRONT, front_msg)) {
-          Serial.println("Error publishing DIST_FRONT");
-        }
-
-        // RIGHT DIST
-        if (!client.publish(TOPIC_DIST_RIGHT, right_msg)) {
-          Serial.println("Error publishing DIST_RIGHT");
-        }
-
-        // LEFT DIST
-        if (!client.publish(TOPIC_DIST_LEFT, left_msg)) {
-          Serial.println("Error publishing DIST_LEFT");
+        if (!client.publish(TOPIC_DIST, dist_msg)) {
+          Serial.println("Error publishing DISTANCES");
         }
 
         uint32_t end_time = micros();
         uint32_t execution_time_us = end_time - start_time;
-        Serial.print("[COMMS] Tiempo de CPU activo: ");
-        Serial.print(execution_time_us / 1000.0);
-        Serial.println(" ms");
+        //Serial.print("[COMMS] Tiempo de CPU activo: ");
+        //Serial.print(execution_time_us / 1000.0);
+        //Serial.println(" ms");
 
         vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(comms_task_period_));
       }
@@ -121,7 +114,7 @@ class BrutusComms {
       char message[MSG_BUFFER];
 
       if (length >= sizeof(message)) {
-        //Serial.print("Message received too long: ");
+        Serial.print("Message received too long: ");
         return;
       }
 
@@ -146,8 +139,8 @@ class BrutusComms {
         }
       }
 
-      //Serial.print("Message received on unknown topic: ");
-      //Serial.println(topic);
+      Serial.print("Message received on unknown topic: ");
+      Serial.println(topic);
     }
 
     void create_msg(int topic, const void* val, char* msg, int msg_size) {
@@ -171,16 +164,9 @@ class BrutusComms {
           break;
           
         }
-        case DIST_FRONT:
-          snprintf(msg, msg_size, "{\"front_dist\":%f}", *(float*)val);
-          break;
-
-        case DIST_RIGHT:
-          snprintf(msg, msg_size, "{\"right_dist\":%f}", *(float*)val);
-          break;
-
-        case DIST_LEFT:
-          snprintf(msg, msg_size, "{\"left_dist\":%f}", *(float*)val);
+        case DIST:
+          const BrutusPerception* p = static_cast<const BrutusPerception*>(val);
+          snprintf(msg, msg_size, "{\"front\":%.2f,\"right\":%.2f,\"left\":%.2f}", p->front_dist, p->right_dist, p->left_dist);
           break;
       }
     }
@@ -193,7 +179,7 @@ class BrutusComms {
         StaticJsonDocument<JSON_BUFFER> doc;
         
         if (deserializeJson(doc, msg)) {
-            //Serial.println("JSON parsing error");
+            Serial.println("JSON parsing error");
             return;
         }
 
@@ -229,7 +215,7 @@ class BrutusComms {
       StaticJsonDocument<JSON_BUFFER> doc;
       
       if (deserializeJson(doc, msg)) {
-        //Serial.println("JSON parsing error");
+        Serial.println("JSON parsing error");
         return;
       }
       
@@ -249,29 +235,29 @@ class BrutusComms {
 
     void
     handleCmdMode(const char* msg) {
-      //Serial.print("handleCmdMode called with message: ");
+      Serial.print("handleCmdMode called with message: ");
       xSemaphoreTake(cmd_mutex_, portMAX_DELAY);
       cmd_.mode = atoi(msg);
-      //Serial.println(cmd_.mode);
       xSemaphoreGive(cmd_mutex_);
+      Serial.println(cmd_.mode);
     }
 
     void
     reconnect() {
       while (!client.connected()) {
-        //Serial.print("Attempting to connect to the MQTT broker...");
+        Serial.print("Attempting to connect to the MQTT broker...");
 
         if (client.connect(CLIENT_ID)) {
-          //Serial.println("Connected!");
+          Serial.println("Connected!");
 
           client.subscribe(TOPIC_CMD_POSE);
           client.subscribe(TOPIC_CMD_VEL);
           client.subscribe(TOPIC_CMD_MODE);
 
         } else {
-          //Serial.print("Failed. Code: ");
-          //Serial.print(client.state());
-          //Serial.println(" Trying again in 3 seconds...");
+          Serial.print("Failed. Code: ");
+          Serial.print(client.state());
+          Serial.println(" Trying again in 3 seconds...");
           vTaskDelay(pdMS_TO_TICKS(RECONNECT_WAIT));
         }
       }
@@ -288,14 +274,20 @@ class BrutusComms {
 
     // TODO borrar esta función
     void 
-    publish_w(float w)
+    set_debug_pose(BrutusPose pose)
     {
-      client.loop();
-      char msg[MSG_BUFFER];
+      xSemaphoreTake(data_mutex_, portMAX_DELAY);
+      this->dbg_pose_ = pose;
+      xSemaphoreGive(data_mutex_);
+    }
 
-      snprintf(msg, MSG_BUFFER, "{\"w\":%f}", w);
-
-      client.publish("brutus/data/w", msg);
+    // TODO borrar esta función
+    void 
+    set_debug_float(float dbg_f)
+    {
+      xSemaphoreTake(data_mutex_, portMAX_DELAY);
+      this->dbg_float_ = dbg_f;
+      xSemaphoreGive(data_mutex_);
     }
     
     void start(Brutus *b){
@@ -345,17 +337,18 @@ class BrutusComms {
     void
     create_comms_task(int core)
     {
+      comms_task_period_ = COMMS_PERIOD;
+
       xTaskCreatePinnedToCore(
         (TaskFunction_t)BrutusComms::commsTask_static,
         "commsTask",
         6000,
         this,
-        10,
+        1,
         &this->comms_task_handle_,
         core
       );
-      Serial.println("TASK CREATE");
-      comms_task_period_ = COMMS_PERIOD;
+      //Serial.println("TASK CREATE");
     }
 
     BrutusCommsCmd

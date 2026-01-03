@@ -23,15 +23,11 @@
 
 #define TOPIC_STATE_HEARTBEAT "brutus/data/heartbeat"
 #define TOPIC_POSE            "brutus/data/pose"
-#define TOPIC_DIST_FRONT      "brutus/data/distance/front"
-#define TOPIC_DIST_RIGHT      "brutus/data/distance/right"
-#define TOPIC_DIST_LEFT       "brutus/data/distance/left"
+#define TOPIC_DIST      "brutus/data/distance"
 
 #define STATE_HEARTBEAT 0
 #define POSE            1
-#define DIST_FRONT      2
-#define DIST_RIGHT      3
-#define DIST_LEFT       4
+#define DIST            2
 
 // ----------- WAITS -----------
 #define WIFI_WAIT 500
@@ -55,8 +51,9 @@
 #define MSG_BUFFER 254
 #define JSON_BUFFER 300
 
-// ----------- PERIEODS -----------
-#define COMMS_PERIOD 200
+// ----------- FreeRTOS -----------
+#define COMMS_PRIO 1
+#define COMMS_PERIOD 150
 #define COMMS_CORE LOGIC_CORE
 #define BAUD 115200
 

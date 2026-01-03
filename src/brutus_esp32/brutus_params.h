@@ -82,17 +82,28 @@
 
 // ---------------------------
 
-
-
 // -------- FreeRTOS -----------
 #define MOTION_CORE  0
 #define DEFAULT_MOTION_PERIOD 300 // [ms]
+#define MOTION_TASK_SIZE 4096
 
 #define LOGIC_CORE 1
 
-#define MODES_PERIOD 200 // SAME PERIOD AS ALL LOGIC CORE TASKS
+#define MODES_PERIOD 150 // SAME PERIOD AS ALL LOGIC CORE TASKS
+#define MODES_TASK_SIZE 4096
+
 // -----------------------------
 
+
+// ---------- PERCEPTION ----------
+#define N_DISTANCE_SENSORS 3
+
+#define PERCEPTION_PRIO 3
+
+#define PERCEPTION_PERIOD 150 // [ms]
+#define MIN_PERCEPTION_TIMEOUT 10 // [ms]
+#define PERCEPTION_TASK_SIZE 4096
+// --------------------------------
 
 // ------- POSES ---------
 constexpr BrutusLegState STANDING_FR_STATE {20, -20};
@@ -218,13 +229,8 @@ constexpr BrutusPose CCW_SPIN_STEPS[6] {SPIN_6, SPIN_5, SPIN_4, SPIN_3, SPIN_2, 
 #define MAX_V 1.0f
 // -----------------------------
 
-// ---------- PERCEPTION ----------
-#define N_DISTANCE_SENSORS 3
-
-#define PERCEPTION_PRIO 3
-
-#define PERCEPTION_PERIOD 200 // [ms]
-#define MIN_PERCEPTION_TIMEOUT 10 // [ms]
-// --------------------------------
+// -------- EXERCISE 1 ---------
+#define MIN_ELBOW_DIFF 0.7
+// -----------------------------
 
 #endif // BRUTUS_PARAMS__H
