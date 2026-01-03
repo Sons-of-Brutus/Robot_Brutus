@@ -84,7 +84,7 @@
 
 // -------- FreeRTOS -----------
 #define MOTION_CORE  0
-#define DEFAULT_MOTION_PERIOD 300 // [ms]
+#define DEFAULT_MOTION_PERIOD 150 // [ms]
 #define MOTION_TASK_SIZE 4096
 
 #define LOGIC_CORE 1
@@ -101,7 +101,7 @@
 #define PERCEPTION_PRIO 3
 
 #define PERCEPTION_PERIOD 150 // [ms]
-#define MIN_PERCEPTION_TIMEOUT 10 // [ms]
+#define MIN_PERCEPTION_TIMEOUT 30 // [ms]
 #define PERCEPTION_TASK_SIZE 4096
 // --------------------------------
 
