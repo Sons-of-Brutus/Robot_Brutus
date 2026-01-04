@@ -18,6 +18,22 @@ This assembly instructions are divided in N parts:
 Following the [electronics schematics image](../electronics/brutus_schematic/brutus_electronic_schematics.svg) (<-- Click here to see it bigger):
 <img src="../electronics/brutus_schematic/brutus_electronic_schematics.svg" width="50%">
 
+Solder the following connections:
+- `ESP32`
+
+x3 28 AWG (cortados): ESP32 <-> PCA
+x3 28 AWG (cortados): ESP32 <-> LED
+
+x(2x3) [echo y trigger] jumper (cortado-hembra): ESP32 <-> HC-SR04
+x(2x3) [vcc y gnd] jumper (cortado-hembra): terminal <-> HC-SR04
+
+x2 [vin y gnd] 26 AWG: terminal <-> ESP32
+
+x2 [V+ y GND] 20 AWG : terminal <-> PCA
+
+x2 [vin y gnd] 16 AWG: battery <-> Buck
+x2 [vout y gnd] 16 AWG: buck <-> terminal
+
 ## Assembling chasis (Part 1)
 
 ## Assembling legs

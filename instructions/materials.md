@@ -32,9 +32,26 @@
 | `HC-SR04` | 3 | Ultrasonic distance sensor | [Link](https://es.aliexpress.com/item/1005010356855481.html?) | <img src="./media/components/hc_sr04.png" width="200"> |
 | `RGB LED` | 1 | RGB flat led module | Not specified | <img src="./media/components/led_rgb.jpg" width="200">
 
-## Cables
+## Wiring
 
+**Important**: Some wire lengths are redundant.
 
+| Name | Quantity/Length | Image |
+| :--- | :----: | ---: |
+| `2-Pole Terminal Block` | 1 | <img src="./media/components/pole_terminal.png" width="200"> |
+| `16 AWG Wire` | 500 mm aprox. | - |
+| `20 AWG Wire` | 500 mm aprox. | - |
+| `26 AWG Wire` | 500 mm aprox. | - |
+| `28 AWG Wire` | 200 mm aprox. | - |
+| `Female-to-female Wire` | 18 | <img src="./media/components/jumpers.jpg" width="200">
+
+**Notes**:
+- `2-Pole Terminal` can be substituted by:
+  + Using 2 `1-Pole Terminal Block`.
+  + Cutting a `N-pole Terminal Block` with more than 2 poles.
+- You can substitute 28 AWG cables by using *jumpers* with their conectors removed.
+- Wire gauges:
+<img src="./media/components/wires.jpg" width="50%">
 
 ## Fasteners
 + 
