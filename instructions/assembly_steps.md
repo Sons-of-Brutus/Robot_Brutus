@@ -15,7 +15,8 @@ This assembly instructions are divided in N parts:
 # Assembly
 
 ## Soldering `ESP32` Connections
-<img src="../electronics/brutus_schematic/brutus_electronic_schematics.svg" width="100%">
+Following the [electronics schematics image](../electronics/brutus_schematic/brutus_electronic_schematics.svg) (<-- Click here to see it bigger):
+<img src="../electronics/brutus_schematic/brutus_electronic_schematics.svg" width="50%">
 
 ## Assembling chasis (Part 1)
 
