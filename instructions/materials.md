@@ -24,10 +24,10 @@
 ## Electronic components
 | Name | Quantity | Description | Link | Image |
 | :--- | :---: | :---: | :---: | ---: |
-| `ESP32` development board | 1 | Dual-Core microcontroller with integrated WiFi and Bluetooth | [Link](https://www.amazon.es/AZDelivery-ESP-32-Dev-Kit-Development/dp/B0DJ33NNRD?) | ![esp32](./media/components/esp32.png) |
-| `PCA9685` | 1 | 16-channel, I2C-controlled PWM (Pulse Width Modulation) controller. For servos control. | [Link](https://es.aliexpress.com/item/1005005670283526.html) | ![pca](./media/components/pca.png) |
-| `DC-DC Buck module` | 1 | Ultra-small 10A DC-DC Buck Converter 9V-14V to 5V Step-Down Voltage Regulator Module. | [Link](https://es.aliexpress.com/item/1005009068963636.html?) | ![dc_dc_buck](./media/components/dc_dc_buck.png) |
-| `MG90S Servo` | 8 | High-torque, metal-gear micro servo motor. | [Link](https://es.aliexpress.com/item/1005007522665750.html?) | ![mg90s](./media/components/mg90s.png)
-| `Battery` | 1 | 3S1P 18650 Lithium-ion Battery Packs, 12V Rechargeable Lithium Battery.  | [Link](https://es.aliexpress.com/item/1005009656713743.html?) | ![battery](./media/components/battery.png)
-| `HC-SR04` | 3 | Ultrasonic distance sensor | [Link](https://es.aliexpress.com/item/1005010356855481.html?) | ![hc_sr04](./media/components/hc_sr04.png) |
-| `RGB LED` | 1 | RGB flat led module | Any link | ![led_rgb](./media/components/led_rgb.jpg)
+| `ESP32` development board | 1 | Dual-Core microcontroller with integrated WiFi and Bluetooth | Link | <img src="./media/components/esp32.png" width="200"> |
+| `PCA9685` | 1 | 16-channel, I2C-controlled PWM (Pulse Width Modulation) controller. For servos control. | Link | <img src="./media/components/pca.png" width="200"> |
+| `DC-DC Buck module` | 1 | Ultra-small 10A DC-DC Buck Converter 9V-14V to 5V Step-Down Voltage Regulator Module. | Link | <img src="./media/components/dc_dc_buck.png" width="200"> |
+| `MG90S Servo` | 8 | High-torque, metal-gear micro servo motor. | Link | <img src="./media/components/mg90s.png" width="200">
+| `Battery` | 1 | 3S1P 18650 Lithium-ion Battery Packs, 12V Rechargeable Lithium Battery.  | Link | <img src="./media/components/battery.png" width="200">
+| `HC-SR04` | 3 | Ultrasonic distance sensor | Link | <img src="./media/components/hc_sr04.png" width="200"> |
+| `RGB LED` | 1 | RGB flat led module | Any link | <img src="./media/components/led_rgb.jpg" width="200"> |
