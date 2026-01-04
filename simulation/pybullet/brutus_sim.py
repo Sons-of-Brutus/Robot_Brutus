@@ -14,7 +14,7 @@ BRUTUS_PATH = os.path.abspath("./model/urdf/brutus.urdf")
 
 GRAVITY = -9.8
 
-FORCE = 70  # par máximo, ajusta 30–80 según tu modelo
+FORCE = 70  # max force applied by the joint motors
 MAX_TORQUE = 0.1824
 
 START_POS = (0,0,0.08)
@@ -48,8 +48,6 @@ ELBOWS_INIT_POSITIONS = {'br':(-math.radians(20)), 'bl':(math.radians(20)), 'fl'
 
 # 600°/s = 600*(180/π) ​= 10.4719755 rad/s
 MAX_SERVOS_SPEED = 10.47
-
-WAIT_MOV = 0.05
 
 
 # JOINTD ANGLES
@@ -92,17 +90,17 @@ RETURN = 2
 robot_state = 0
 
 
-# ---- CONFIG PIES PLANOS ----
+# ---- Config flat feet ----
 FOOT_OFFSETS = {
-    "fr": 0.0,  # ajusta si el pie no queda exactamente plano
+    "fr": 0.0,  # adjust if needed to keep foot flat
     "fl": 0.0,
     "br": 0.0,
     "bl": 0.0,
 }
 
-# Si algún eje está invertido por la kinemática local, cambia los signos aquí.
+# if any axis is inverted, change the sign here.
 SIGNS = {
-    # cómo suma el codo y el bottom para cada pata (ajusta si ves que “se pasa” o va al revés)
+    # how to sum the elbow and bottom angles to get the foot angle for each leg
     "fr": {"elbow": +1.0, "bottom": -1.0, "foot": -1.0},
     "fl": {"elbow": -1.0, "bottom": +1.0, "foot": -1.0},
     "br": {"elbow": -1.0, "bottom": -1.0, "foot": +1.0},
@@ -116,7 +114,7 @@ LEGS = {
     "bl": BACK_LEFT_JOINTS,
 }
 
-# Mapas de conveniencia por pata
+# Convenience maps for joint angles
 BOTTOM_UP = {
     "fr": FRONT_RIGHT_JOINT_BOTTOM_UP,
     "fl": FRONT_LEFT_JOINT_BOTTOM_UP,
@@ -138,7 +136,7 @@ ELBOW_BACK = {
     "bl": BACK_LEFT_JOINT_BACKWARD,
 }
 
-# Ángulo de apoyo del bottom (tal como lo tenías en WAIT_INIT)
+# bottom angles for support phase
 BOTTOM_SUPPORT = {
     "fr":  TEST_ANGLE,
     "fl": -TEST_ANGLE,
@@ -146,25 +144,20 @@ BOTTOM_SUPPORT = {
     "bl":  TEST_ANGLE,
 }
 
-
-
-
 def compute_flat_foot_target(brutus_id, leg_key):
     joints = LEGS[leg_key]
     s = SIGNS[leg_key]
     q_bottom = p.getJointState(brutus_id, joints["bottom"])[0]
 
-    # objetivo de pie para “anular” la rotación total y quedar plano
+    # foot desired angle to keep it flat
     q_foot_des = - (s["bottom"]*q_bottom) + FOOT_OFFSETS[leg_key]
-    # si el eje del propio pie está invertido, aplica también el signo:
+    # if the foot joint is inverted, apply the sign
     q_foot_des *= s["foot"]
-
-    #print(f"({leg_key}) bottom: {q_bottom}, foot desired: {q_foot_des}")
 
     return q_foot_des
 
 def keep_feet_flat(brutus_id, kp=1.0):
-    """Lanza órdenes a los 4 pies para que se mantengan planos (se llama en cada iteración)."""
+    #sends position commands to keep all feet flat on the ground
     for leg_key in ["fr", "fl", "br", "bl"]:
         q_des = compute_flat_foot_target(brutus_id, leg_key)
         p.setJointMotorControl2(
@@ -178,7 +171,6 @@ def keep_feet_flat(brutus_id, kp=1.0):
 
 def wait_sim(dt, sim_step=SIM_TIME_STEP):
     steps = int(dt/sim_step)
-    finished = False
 
     for i in range(steps):
         if brutus_id_global is not None:
@@ -188,34 +180,13 @@ def wait_sim(dt, sim_step=SIM_TIME_STEP):
         time.sleep(sim_step)
 
 
-
-def is_in_pos(brutus_id, j, q_target):
-  q_now = p.getJointState(brutus_id, j)[0]
-  q_diff = abs(q_now - q_target)
-
-  print(f"j: {j}, q_now: {q_now}, q_target: {q_target}, diff: {q_diff}")
-
-  if q_diff <= POS_ERROR:
-     return True
-  
-  return False
-
-def all_joints_in_pos(brutus_id, targets):
-    for j, q in targets:
-      if not is_in_pos(brutus_id, j, q):
-         print(f"Is not in pos ({j})")
-         return False
-    
-    return True
-
-       
-
 def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
     """
-    targets: lista [(jointIndex, targetPosition), ...]
-    - Aplica TODOS los targets de este mini-paso.
-    - Si stagger>0, hace una micro-pausa entre joints.
-    - Luego espera wait_after antes de seguir.
+    targets: list [(jointIndex, targetPosition), ...]
+    - Apply ALL the targets of this mini-step.
+    - If stagger > 0, insert a small delay between joints.
+    - Then wait wait_after before continuing.
+
     """
     
     for j, q in targets:
@@ -225,102 +196,21 @@ def set_phase(brutus_id, targets, dt=0.03, stagger=0.0):
         )
 
         if stagger > 0.0:
-            wait_sim(stagger)  # micro-pausa entre joints del mismo paso
+            wait_sim(stagger)  # micro pause between joints
     
     
-    wait_sim(dt)      # pausa entre mini-pasos
-
-
-
-def movement_1(brutus_id):
-  print("MOV 1")
-
-  # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
-  set_phase(brutus_id, [
-      (FRONT_RIGHT_JOINTS["bottom"], FRONT_RIGHT_JOINT_BOTTOM_UP),
-      (FRONT_RIGHT_JOINTS["elbow"],  FRONT_RIGHT_JOINT_FORWARD),
-
-      (BACK_LEFT_JOINTS["bottom"], BACK_LEFT_JOINT_BOTTOM_UP),
-      (BACK_LEFT_JOINTS["elbow"],  BACK_LEFT_JOINT_FORWARD)
-
-
-      #(FRONT_RIGHT_JOINTS["bottom"], TEST_ANGLE)
-  ], dt=1, stagger=0.5)
-
-  
-def movement_2(brutus_id):
-  print("MOV 2")
-
-  # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
-  set_phase(brutus_id, [
-      (BACK_LEFT_JOINTS["bottom"], BACK_LEFT_JOINT_BOTTOM_UP),
-      (BACK_LEFT_JOINTS["elbow"],  BACK_LEFT_JOINT_FORWARD)
-      #(BACK_LEFT_JOINTS["bottom"], TEST_ANGLE)
-  ], dt=1, stagger=0.5)
-
-def movement_3(brutus_id):
-  print("MOV 3")
-
-  # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
-  set_phase(brutus_id, [
-      (FRONT_LEFT_JOINTS["bottom"], FRONT_LEFT_JOINT_BOTTOM_UP),
-      (FRONT_LEFT_JOINTS["elbow"],  FRONT_LEFT_JOINT_FORWARD)
-      #(FRONT_LEFT_JOINTS["bottom"], -TEST_ANGLE)
-  ], dt=1, stagger=0.5)
-
-
-def movement_4(brutus_id):
-  print("MOV 4")
-
-  # Fase 1: levantar y adelantar FR a la vez (bottom + elbow) y plantar un poco el pie
-  set_phase(brutus_id, [
-      (BACK_RIGHT_JOINTS["bottom"], BACK_RIGHT_JOINT_BOTTOM_UP),
-      (BACK_RIGHT_JOINTS["elbow"],  BACK_RIGHT_JOINT_FORWARD)
-      #(BACK_RIGHT_JOINTS["bottom"], -TEST_ANGLE)
-  ], dt=1, stagger=0.5)
-
-
-
-
-'''
-def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt_push=0.12):
-  """Un paso de trote:
-      - swing: pareja que se levanta y avanza (por defecto FR+BL)
-      - la pareja soporte es la complementaria (FL+BR) que empuja después
-  """
-  support = tuple({"fr","fl","br","bl"} - set(swing))
-
-  # 1) Levantar bottoms y adelantar elbows de ambas patas swing (a la vez)
-  lift_targets = []
-  for leg in swing:
-      lift_targets.append((LEGS[leg]["bottom"], BOTTOM_UP[leg]))
-      lift_targets.append((LEGS[leg]["elbow"],  ELBOW_FWD[leg]))
-  set_phase(brutus_id, lift_targets, dt=dt_lift, stagger=0.0)
-
-  # 2) Bajar esas dos patas a su ángulo de apoyo (a la vez)
-  lower_targets = []
-  for leg in swing:
-      lower_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
-  set_phase(brutus_id, lower_targets, dt=dt_lower, stagger=0.0)
-
-  # 3) Empujar con la pareja de soporte (llevar sus elbows a backward)
-  push_targets = []
-  for leg in support:
-      push_targets.append((LEGS[leg]["elbow"], ELBOW_BACK[leg]))
-      push_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
-  set_phase(brutus_id, push_targets, dt=dt_push, stagger=0.0)
-'''
+    wait_sim(dt)      # pause before next phase
 
 def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt_push=0.12):
   support = tuple({"fr","fl","br","bl"} - set(swing))
 
-  # 1) Levantar bottoms
+  # 1) Lift bottoms
   lift_targets = []
   for leg in swing:
       lift_targets.append((LEGS[leg]["bottom"], BOTTOM_UP[leg]))
   set_phase(brutus_id, lift_targets, dt=dt_lift, stagger=0.0)
 
-  # 2) Adelantar elbows de ambas patas swing (a la vez) y empujar con la pareja de soporte (llevar sus elbows a backward)
+  # 2) Advance elbows of both swing legs (at the same time) and push with the support pair (bring their elbows to backward)
   advance_targets = []
   for leg in swing:
       advance_targets.append((LEGS[leg]["elbow"],  ELBOW_FWD[leg]))
@@ -330,49 +220,11 @@ def trot_pair_step(brutus_id, swing=("fr","bl"), dt_lift=0.10, dt_lower=0.10, dt
       advance_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
   set_phase(brutus_id, advance_targets, dt=dt_lift, stagger=0.0)
 
-  # 3) Empujar con la pareja de soporte (llevar sus elbows a backward)
-  #push_targets = []
-  #for leg in support:
-  #    push_targets.append((LEGS[leg]["elbow"], ELBOW_BACK[leg]))
-  #    push_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
-  #set_phase(brutus_id, push_targets, dt=dt_push, stagger=0.0)
-
-  # 4) Bajar esas dos patas a su ángulo de apoyo (a la vez)
+  # 3) push down the swing legs
   lower_targets = []
   for leg in swing:
       lower_targets.append((LEGS[leg]["bottom"], BOTTOM_SUPPORT[leg]))
   set_phase(brutus_id, lower_targets, dt=dt_lower, stagger=0.0)
-
-def read_elbows_bottom_torques(brutus_id):
-    # lista de indices de elbows y bottoms
-    idxs = [
-        FRONT_RIGHT_JOINTS["elbow"], FRONT_LEFT_JOINTS["elbow"],
-        BACK_RIGHT_JOINTS["elbow"],  BACK_LEFT_JOINTS["elbow"],
-        FRONT_RIGHT_JOINTS["bottom"], FRONT_LEFT_JOINTS["bottom"],
-        BACK_RIGHT_JOINTS["bottom"],  BACK_LEFT_JOINTS["bottom"],
-    ]
-
-    states = p.getJointStates(brutus_id, idxs)
-    # states[i] = (position, velocity, reactionForces[6], appliedJointMotorTorque)
-
-    # Mapea a un dict legible
-    names = [
-        "fr_elbow","fl_elbow","br_elbow","bl_elbow",
-        "fr_bottom","fl_bottom","br_bottom","bl_bottom"
-    ]
-
-    data = {}
-    for name, st in zip(names, states):
-        q, dq, react, tau_motor = st
-        # tau_motor: par aplicado por el actuador en el último paso
-        # react[3:6] = (Mx, My, Mz) momento de reacción en marco mundial
-        data[name] = {
-            "tau_motor": tau_motor,
-            "Mx_react": react[3],
-            "My_react": react[4],
-            "Mz_react": react[5],
-        }
-    return data
 
 def enable_force_sensors_for_logged_joints(brutus_id):
     for j in LOG_JOINT_IDXS:
@@ -393,19 +245,17 @@ def read_logged_joint_torques(brutus_id):
     return out
 
 def init_csv_logger():
-    # Siempre el mismo fichero
+    # Always the same file
     fname = "logs/torques.csv"
     os.makedirs(os.path.dirname(fname), exist_ok=True)
 
-    # "w" = sobrescribe en cada ejecución
-    f = open(fname, "w", newline="")   # newline="" evita líneas en blanco extra en Windows
+    f = open(fname, "w", newline="")
     writer = csv.writer(f)
 
-    # Cabecera fija
+    # Header
     header = ["t_seconds"]
     for n in LOG_JOINT_NAMES:
         header.append(f"{n}_tau")
-        # Si algún día guardas Mx/My/Mz, añade aquí las columnas como antes
     writer.writerow(header)
 
     print(f"[logger] Escribiendo torques en {fname} (sobrescribiendo)")
@@ -416,14 +266,7 @@ def write_csv_row(writer, t, data_dict):
     row = [t]
     for n in LOG_JOINT_NAMES:
         row.append(data_dict[n]["tau"])
-        # si activaste Mx/My/Mz en cabecera, añade también:
-        # row.extend([data_dict[n]["Mx"], data_dict[n]["My"], data_dict[n]["Mz"]])
     writer.writerow(row)
-
-  
-
-
-  
 
 
 last_print = time.time()
@@ -451,10 +294,10 @@ def main():
   
   p.changeDynamics(
     bodyUniqueId=plane_id,
-    linkIndex=-1,              # el plano no tiene links: usa -1
-    lateralFriction=1,       # prueba 3–6
-    rollingFriction=0.005,     # opcional, reduce deslizamiento por rodadura
-    spinningFriction=0.005,    # opcional, evita giros sobre sí mismo
+    linkIndex=-1,
+    lateralFriction=1,
+    rollingFriction=0.005,
+    spinningFriction=0.005,
     frictionAnchor=True
   )
   
@@ -468,31 +311,29 @@ def main():
   b_csv_writer = csv.writer(b_csv_file)
   b_csv_writer.writerow(["t_seconds", "battery_z_m"])
 
-  # tras: csv_file, csv_writer, csv_path = init_csv_logger()
-  LOG_DT = 0.02           # frecuencia de log (50 Hz). Sube a 0.05 si quieres menos filas
+  LOG_DT = 0.02
   last_log_t = time.time()
   t0_log = last_log_t
   rows_written = 0
-  FLUSH_EVERY = 50        # fuerza flush cada 50 filas (ajústalo a gusto)
+  FLUSH_EVERY = 50
 
 
   global brutus_id_global
   brutus_id_global = brutus_id
   
-  # tras cargar el plano y el robot:
   p.changeDynamics(plane_id, -1, lateralFriction=5)
 
   
 
-  # aplica a cada pie; usa los linkIndex de los pies (en PyBullet suele ser el mismo índice del joint del link)
+  # apply foot dynamics
   for foot_idx in [FRONT_RIGHT_JOINTS["foot"], FRONT_LEFT_JOINTS["foot"],
                   BACK_RIGHT_JOINTS["foot"],  BACK_LEFT_JOINTS["foot"],]:
       p.changeDynamics(
           brutus_id, foot_idx,
-          lateralFriction=4.0,      # prueba entre 1.5 y 3.0
-          rollingFriction=0.003,    # pequeña resistencia al rodar
-          spinningFriction=0.003,   # evita “girar sobre sí” sin grip
-          frictionAnchor=True,         # “ancla” de fricción -> menos deslizamiento lateral
+          lateralFriction=4.0,
+          rollingFriction=0.003,
+          spinningFriction=0.003,
+          frictionAnchor=True,
     )
 
 
@@ -508,16 +349,16 @@ def main():
   masses = []
   positions = []
 
-  # Incluir también el cuerpo base (link -1)
+  # also include the body base (-1)
   link_indices = [-1] + list(range(numJoints))
 
   for link_index in link_indices:
-      # Obtener masa
+      # obtain mass
       mass = p.getDynamicsInfo(brutus_id, link_index)[0]
       if mass == 0:
-          continue  # ignorar links sin masa
+          continue  # ignore massless links
 
-      # Obtener posición del centro de masa en coordenadas globales
+      # obtain position of the link's center of mass in world coordinates
       if link_index == -1:
           pos, _ = p.getBasePositionAndOrientation(brutus_id)
       else:
@@ -526,28 +367,12 @@ def main():
       masses.append(mass)
       positions.append(np.array(pos))
 
-  # Calcular centro de masas global
+  # Calculate center of mass
   total_mass = np.sum(masses)
   com_global = np.sum([m * r for m, r in zip(masses, positions)], axis=0) / total_mass
 
   print("Masa total:", total_mass, "kg")
   print("Centro de masas global (x, y, z):", com_global)
-
-#  print("------------------------------------")
-#  print("JOINTS:", numJoints)
-#
-#  for i in range(numJoints):
-#      info = p.getJointInfo(brutus_id, i)
-#      joint_index = info[0]
-#      joint_name = info[1].decode("utf-8")
-#      joint_type = info[2]
-#      link_index = info[12]
-#
-#      print("Joint", joint_index)
-#      print("  Name -", joint_name)
-#      print("  Link -", link_index)
-#
-#  print("-----------------------------------------")
 
   # Initialize joint positions
   p.resetJointState(brutus_id, BACK_RIGHT_JOINTS["elbow"], targetValue=ELBOWS_INIT_POSITIONS["br"])
@@ -558,14 +383,13 @@ def main():
   p.setTimeStep(SIM_TIME_STEP)
 
   start_time = time.time()
-  state = "WAIT_INIT"        # estados: WAIT_INIT -> MOVE1 -> PAUSE -> MOVE2 -> PAUSE -> (repite)
+  state = "WAIT_INIT"        # states: WAIT_INIT -> MOVE1 -> PAUSE -> MOVE2 -> PAUSE -> (repeat)
   pause_start = None
   MOVE_DELAY = 0.5
 
   try:
     while True:
       now = time.time()
-      elapsed = now - start_time
 
       if state == "WAIT_INIT":
         # Elbow
@@ -674,7 +498,7 @@ def main():
        
 
       elif state == "TROT_A":
-          # Pareja 1: FR + BL
+          # pare 1: FR + BL
           trot_pair_step(brutus_id, swing=("fr","bl"))
           pause_start = now
           state = "PAUSE_A"
@@ -684,7 +508,7 @@ def main():
               state = "TROT_B"
 
       elif state == "TROT_B":
-          # Pareja 2: FL + BR
+          # pare 2: FL + BR
           trot_pair_step(brutus_id, swing=("fl","br"))
           pause_start = now
           state = "PAUSE_B"
@@ -692,10 +516,6 @@ def main():
       elif state == "PAUSE_B":
           if (now - pause_start) >= MOVE_DELAY:
               state = "TROT_A"
-        
-      #print("----------")
-      #print("BR BOTTOM:", p.getJointState(brutus_id, BACK_RIGHT_JOINTS["bottom"])[0])
-      #print("BR FOOT:", p.getJointState(brutus_id, BACK_RIGHT_JOINTS["foot"])[0])
 
       p.stepSimulation()
       time.sleep(SIM_TIME_STEP)
@@ -710,7 +530,7 @@ def main():
           z_battery = pos_com[2]
           b_csv_writer.writerow([now_log - t0_log, z_battery])
           if rows_written % FLUSH_EVERY == 0:
-              csv_file.flush()  # asegura datos en disco periódicamente
+              csv_file.flush()
           last_log_t = now_log
 
   except KeyboardInterrupt:
