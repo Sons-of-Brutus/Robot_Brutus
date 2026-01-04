@@ -5,7 +5,7 @@
 | :--- | :---: | :---: | ---: |
 | `Chasis` | 1 | [chasis_mesh.stl](../meshes/chasis_mesh.stl) | <img src="./media/pieces/chasis.png" width="150"> |
 | `Chasis cover` | 1 | [chasis_cover_mesh.stl](../meshes/chasis_cover_mesh.stl) | <img src="./media/pieces/chasis_cover.png" width="150"> |
-| `Spacer` (optional) | 4 | spacer.stl | <img src="./media/pieces/spacer.png" width="150"> |
+| `Spacer` (optional) | 4 | [spacer.stl](../meshes/spacer.png) | <img src="./media/pieces/spacer.png" width="150"> |
 | `Left shoulder` | 2 | [left_shoulder_mesh.stl](../meshes/left_shoulder_mesh.stl) | <img src="./media/pieces/left_shoulder.png" width="150"> |
 | `Right shoulder` | 2 | [right_shoulder_mesh.stl](../meshes/right_shoulder_mesh.stl) | <img src="./media/pieces/right_shoulder.png" width="150"> |
 | `Left elbow` | 2 | [left_elbow_mesh.stl](../meshes/left_elbow_mesh.stl) | <img src="./media/pieces/left_elbow.png" width="150"> |
@@ -30,4 +30,11 @@
 | `MG90S Servo` | 8 | High-torque, metal-gear micro servo motor. | [Link](https://es.aliexpress.com/item/1005007522665750.html?) | <img src="./media/components/mg90s.png" width="200"> |
 | `Battery` | 1 | 3S1P 18650 Lithium-ion Battery Packs, 12V Rechargeable Lithium Battery.  | [Link](https://es.aliexpress.com/item/1005009656713743.html?) | <img src="./media/components/battery.png" width="200">
 | `HC-SR04` | 3 | Ultrasonic distance sensor | [Link](https://es.aliexpress.com/item/1005010356855481.html?) | <img src="./media/components/hc_sr04.png" width="200"> |
-| `RGB LED` | 1 | RGB flat led module | Any link | <img src="./media/components/led_rgb.jpg" width="200">
+| `RGB LED` | 1 | RGB flat led module | Not specified | <img src="./media/components/led_rgb.jpg" width="200">
+
+## Cables
+
+
+
+## Fasteners
++ 
