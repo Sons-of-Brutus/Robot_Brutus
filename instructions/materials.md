@@ -3,19 +3,19 @@
 ## Printable pieces
 | Name | Quantity | Mesh | Image |
 | :--- | :---: | :---: | ---: |
-| `Chasis` | 1 | [chasis_mesh.stl](../meshes/chasis_mesh.stl) | ![chasis_mesh](./media/pieces/chasis.png) |
-| `Chasis cover` | 1 |[chasis_cover_mesh.stl](../meshes/chasis_cover_mesh.stl) | ![chasis_cover_mesh](./media/pieces/chasis_cover.png) |
-| `Spacer` (optional) | 4 | [spacer.stl](../meshes/spacer.stl) | ![spacer_mesh](./media/pieces/spacer.png) |
-| `Left shoulder` | 2 | [left_shoulder_mesh.stl](../meshes/foot_fist_mesh.stl) | ![left_shoulder_mesh](./media/pieces/left_shoulder.png) |
-| `Right shoulder` | 2 | [right_shoulder_mesh.stl](../meshes/right_shoulder_mesh.stl) | ![right_shoulder_mesh](./media/pieces/right_shoulder.png) |
-| `Left elbow` | 2 | [left_elbow_mesh.stl](../meshes/left_elbow_mesh.stl) | ![left_elbow_mesh](./media/pieces/left_elbow.png) |
-| `Right elbow` | 2 | [right_elbow_mesh.stl](../meshes/right_elbow_mesh.stl) | ![right_elbow_mesh](./media/pieces/right_elbow.png) |
-| `Leg up link` | 4 | [leg_up_link_mesh.stl](../meshes/leg_up_link_mesh.stl) | ![leg_up_link_mesh](./media/pieces/leg_up_link.png) |
-| `Foot` | 4 | [foot_fist_mesh.stl](../meshes/foot_fist_mesh.stl) | ![foot_mesh](./media/pieces/foot.png) | 
-| `Box` | 1 | [up_box_mesh.stl](../meshes/up_box_mesh.stl) | ![up_box_mesh](./media/pieces/up_box.png) |
-| `US Sensor chasis` | 3 | [us_chasis_mesh.stl](../meshes/us_chasis_mesh.stl) | ![us_chasis_mesh](./media/pieces/us_chasis.png) |
-| `Battery limit` | 1 | [battery_limit.stl](../meshes/battery_limit.stl) | ![battery_limit_mesh](./media/pieces/battery_limit.png) |
-| `Weight case` | 1 | [weight_case.stl](../meshes/weight_case) | ![weight_case_mesh](./media/pieces/weight_case.png) |
+| `Chasis` | 1 | [chasis_mesh.stl](../meshes/chasis_mesh.stl) | <img src="./media/pieces/chasis.png" width="150"> |
+| `Chasis cover` | 1 |chasis_cover_mesh.stl | <img src="./media/pieces/chasis_cover.png" width="150"> |
+| `Spacer` (optional) | 4 | spacer.stl | <img src="./media/pieces/spacer.png" width="150"> |
+| `Left shoulder` | 2 | left_shoulder_mesh.stl | <img src="./media/pieces/left_shoulder.png" width="150"> |
+| `Right shoulder` | 2 | right_shoulder_mesh.stl | <img src="./media/pieces/right_shoulder.png" width="150"> |
+| `Left elbow` | 2 | left_elbow_mesh.stl | <img src="./media/pieces/left_elbow.png" width="150"> |
+| `Right elbow` | 2 | right_elbow_mesh.stl | <img src="./media/pieces/right_elbow.png" width="150"> |
+| `Leg up link` | 4 | leg_up_link_mesh.stl | <img src="./media/pieces/leg_up_link.png" width="150"> |
+| `Foot` | 4 | foot_fist_mesh.stl | <img src="./media/pieces/foot.png" width="150"> | 
+| `Box` | 1 | up_box_mesh.stl | <img src="./media/pieces/up_box.png" width="150"> |
+| `US Sensor chasis` | 3 | us_chasis_mesh.stl | <img src="./media/pieces/us_chasis.png" width="150"> |
+| `Battery limit` | 1 | battery_limit.stl | <img src="./media/pieces/battery_limit.png" width="150"> |
+| `Weight case` | 1 | weight_case.stl | <img src="./media/pieces/weight_case.png" width="150"> |
 
 **Notes:**
 - ***Left shoulder/elbow** are for **front left** leg and **back right** leg, while **right shoulder/elbow** are for **front right** leg, **back left** leg.*
