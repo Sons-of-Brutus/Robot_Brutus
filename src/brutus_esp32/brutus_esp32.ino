@@ -111,7 +111,7 @@ mode_task(void* pvParameters)
 
   TickType_t last_wake_time = xTaskGetTickCount();
 
-  float EX1_KP = 1.0;
+  float EX1_KP = 0.4;
   float EX1_EXP_DIST = 30.0;
   int N_MEASUREMENTS = 4;
 
@@ -183,7 +183,7 @@ mode_task(void* pvParameters)
           brutus.set_motion_control_mode(SPEED_CONTROL);
           last_mode = mode;
           i = 0;
-          w_sign = 0;
+          w_sign = -1;
           last_errors_m = 0.0;
           errors_m = 0.0;
         }
@@ -220,19 +220,24 @@ mode_task(void* pvParameters)
             distances[i%N_MEASUREMENTS] = dist;
           }
 
-          if (fabs(fabs(error) - distance_errors[(i-1)%N_MEASUREMENTS]) > 10){
-            error = distance_errors[(i-1)%N_MEASUREMENTS];
-          }
+          //if (fabs(fabs(error) - distance_errors[(i-1)%N_MEASUREMENTS]) > 10){
+          //  error = distance_errors[(i-1)%N_MEASUREMENTS];
+          //}
           
           distance_errors[i%N_MEASUREMENTS] = fabs(error);
 
           errors_m = calc_slope(distance_errors, N_MEASUREMENTS);
+          errors_m = map(errors_m, -100, 100, MIN_W, MAX_W);
 
           if (i%N_MEASUREMENTS == N_MEASUREMENTS-1) {
+            //Serial.println("KLK");
             if (errors_m > last_errors_m) {
+              //Serial.print("Changing direction: ");
               w_sign *= -1;
+              //Serial.println(w_sign);
             }
             last_errors_m = errors_m;
+            
           }
 
           i++;
@@ -246,12 +251,12 @@ mode_task(void* pvParameters)
           brutus.eyes_blue();
         }
 
-        w = fabs(errors_m) * w_sign;
+        w = fabs(errors_m) * EX1_KP * w_sign;
 
         brutus.set_angular_speed_ts(w);
         brutus.set_linear_speed_ts(1.0);
 
-        brutus_comms.set_debug_float(error);
+        brutus_comms.set_debug_float(errors_m);
 
         break;
 
