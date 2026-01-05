@@ -33,12 +33,45 @@ class BrutusComms {
 
     BrutusPose dbg_pose_;
     float dbg_float_;
+  
     /*
     void upload_data(){
       xSemaphoreTake(data_mutex_, portMAX_DELAY);
       brutus_->getCommsData(&data_);
       xSemaphoreGive(data_mutex_);
     }
+    */
+
+
+    /**
+    * @brief Static function that serves as a wrapper to run the communications task.
+    * 
+    * This function allows a FreeRTOS task to execute the `commsTask()` method of
+    * a BrutusComms instance.
+    * 
+    * - Casts the `param` argument to a BrutusComms pointer.
+    * - Calls the `commsTask()` method of the instance.
+    * 
+    * @param param Pointer to the BrutusComms instance passed to the FreeRTOS task.
+    */
+
+    static void commsTask_static(void* param) {
+      Serial.println("commsTask_static");
+      BrutusComms* instance = static_cast<BrutusComms*>(param);
+      instance->commsTask();
+    }
+
+
+    /**
+    * @brief Main communication task for the Brutus robot.
+    * 
+    * This function runs as a FreeRTOS task and is responsible for:
+    * - Maintaining the MQTT connection and reconnecting if necessary.
+    * - Periodically publishing status messages (heartbeat), pose, and distances.
+    * - Updating the client and checking for new messages using client.loop().
+    * 
+    * @note It is assumed that `client` (PubSubClient) and `brutus_` have already been initialized.
+    * @note `data_mutex_` is used to protect access to shared data.
     */
 
     void
@@ -108,6 +141,47 @@ class BrutusComms {
       }
     }
 
+
+    /**
+    * @brief Callback estático de MQTT que redirige los mensajes a la instancia de BrutusComms.
+    * 
+    * Esta función se registra en el cliente MQTT (`client.setCallback`) y actúa como
+    * intermediario para invocar el método `callback()` de la instancia de BrutusComms.
+    * 
+    * @param topic Puntero al string que indica el tópico del mensaje recibido.
+    * @param payload Puntero al buffer que contiene los datos del mensaje.
+    * @param length Longitud del payload recibido.
+    */
+
+    static void mqtt_callback_static(char* topic, byte* payload, unsigned int length) {
+      if (static_instance) {
+          static_instance->callback(topic, payload, length);
+      }
+    }
+
+
+    /**
+    * @brief Callback executed upon receiving an MQTT message.
+    * 
+    * This function processes incoming messages from the MQTT broker and
+    * forwards them to the appropriate handler based on the received topic.
+    * 
+    * - Checks if the message is too long and discards it if so.
+    * - Iterates through the subscribed topics (`topicHandlers_sub_`) and calls
+    *   the appropriate handler based on the command type:
+    *     - CMD_POSE -> handleCmdPose()
+    *     - CMD_VEL  -> handleCmdVel()
+    *     - CMD_MODE -> handleCmdMode()
+    * - If the topic does not match any known topic, it prints a warning message.
+    * 
+    * @note This function is not called directly. It is automatically invoked
+    *       by `client.loop()` from PubSubClient when an MQTT message is received.
+    * 
+    * @param topic Pointer to the string representing the topic of the received message.
+    * @param payload Pointer to the buffer containing the message data.
+    * @param length Length of the received payload.
+    */
+  
     void
     callback(char* topic, byte* payload, unsigned int length) {
       
@@ -143,6 +217,29 @@ class BrutusComms {
       Serial.println(topic);
     }
 
+
+    /**
+    * @brief Generates a JSON message for MQTT publication based on the data type.
+    * 
+    * This function constructs a JSON string in the `msg` buffer from the value
+    * provided in `val`, depending on the message type indicated by `topic`.
+    * 
+    * - STATE_HEARTBEAT: generates a message with the current timestamp.
+    * - POSE: generates a message with the shoulder and elbow angles of the four legs.
+    * - DIST: generates a message with the distances measured by the front, right, and left sensors.
+    * 
+    * @param topic Type of message to generate. Can be:
+    *              - STATE_HEARTBEAT
+    *              - POSE
+    *              - DIST
+    * @param val Pointer to the value to include in the message. Interpreted according to `topic`:
+    *            - POSE: pointer to BrutusPose
+    *            - DIST: pointer to BrutusPerception
+    *            - STATE_HEARTBEAT: ignored (can be nullptr)
+    * @param msg Buffer where the generated JSON message will be stored.
+    * @param msg_size Size of the `msg` buffer.
+    */
+
     void create_msg(int topic, const void* val, char* msg, int msg_size) {
       switch(topic) {
         case STATE_HEARTBEAT:
@@ -171,7 +268,33 @@ class BrutusComms {
       }
     }
 
+
     // ----------- HANDLERS -----------
+
+    /**
+    * @brief Processes a message received on the POSE topic and updates cmd_.pose.
+    * 
+    * This function receives a JSON message containing the shoulder and elbow angles
+    * of the Brutus robot's four legs. It deserializes the JSON and updates the
+    * `cmd_.pose` structure, protected by the `cmd_mutex_` semaphore.
+    * 
+    * The expected JSON format is:
+    * {
+    *   "fr": {"shoulder": <float>, "elbow": <float>},
+    *   "fl": {"shoulder": <float>, "elbow": <float>},
+    *   "br": {"shoulder": <float>, "elbow": <float>},
+    *   "bl": {"shoulder": <float>, "elbow": <float>}
+    * }
+    * 
+    * @param msg Pointer to the JSON message received with the pose values.
+    * 
+    * @note If the JSON cannot be deserialized correctly, an error is printed
+    *       and `cmd_.pose` is not modified.
+    * @note `xSemaphoreTake` and `xSemaphoreGive` are used to protect concurrent
+    *       access to `cmd_`.
+    */
+
+
     void
     handleCmdPose(const char* msg) {
         //Serial.print("msg: ");
@@ -209,6 +332,27 @@ class BrutusComms {
     }
 
 
+    /**
+    * @brief Processes a message received on the velocity topic and updates cmd_.v and cmd_.w.
+    * 
+    * This function receives a JSON message containing the linear (vx) and angular (wz)
+    * velocities for the Brutus robot. It deserializes the JSON and updates the `cmd_`
+    * structure, protected by the `cmd_mutex_` semaphore.
+    * 
+    * The expected JSON format is:
+    * {
+    *   "vx": <float>,  // Linear velocity in X
+    *   "wz": <float>   // Angular velocity around Z
+    * }
+    * 
+    * @param msg Pointer to the JSON message received with the velocity values.
+    * 
+    * @note If the JSON cannot be deserialized correctly, an error is printed
+    *       and `cmd_.v` and `cmd_.w` are not modified.
+    * @note `xSemaphoreTake` and `xSemaphoreGive` are used to protect concurrent
+    *       access to `cmd_`.
+    */
+
     void
     handleCmdVel(const char* msg) {
       //Serial.print("handleCmdVel called with message: ");
@@ -233,6 +377,21 @@ class BrutusComms {
       xSemaphoreGive(cmd_mutex_);
     }
 
+
+    /**
+    * @brief Processes a message received on the mode topic and updates cmd_.mode.
+    * 
+    * This function receives a message containing a numeric mode value for the robot.
+    * It converts the message to an integer and updates `cmd_.mode`, protected by the
+    * `cmd_mutex_` semaphore.
+    * 
+    * @param msg Pointer to the message received representing the robot's mode.
+    * 
+    * @note The message `msg` is expected to contain a valid integer as a string.
+    * @note `xSemaphoreTake` and `xSemaphoreGive` are used to protect concurrent
+    *       access to `cmd_`.
+    */
+
     void
     handleCmdMode(const char* msg) {
       Serial.print("handleCmdMode called with message: ");
@@ -241,6 +400,21 @@ class BrutusComms {
       xSemaphoreGive(cmd_mutex_);
       Serial.println(cmd_.mode);
     }
+
+
+    /**
+    * @brief Attempts to reconnect to the MQTT broker until the connection is established.
+    * 
+    * This function enters a loop while the MQTT client (`client`) is not connected.
+    * - It tries to connect using `client.connect(CLIENT_ID)`.
+    * - If the connection succeeds, it subscribes to the command topics:
+    *     - TOPIC_CMD_POSE
+    *     - TOPIC_CMD_VEL
+    *     - TOPIC_CMD_MODE
+    * - If the connection fails, it prints the error code and waits `RECONNECT_WAIT` milliseconds before retrying.
+    * 
+    * @note This function blocks until a connection with the broker is successfully established.
+    */
 
     void
     reconnect() {
@@ -265,12 +439,23 @@ class BrutusComms {
 
   public:
 
+    /**
+    * @brief Constructor of the BrutusComms class.
+    * 
+    * Initializes the class members:
+    * - `brutus_` as a null pointer.
+    * - `cmd_` with the default value `START_CMD`.
+    * - `data_` with the default value `START_DATA`.
+    * - `client` using `espClient` as the network client for MQTT.
+    */
+
     BrutusComms():
       brutus_(nullptr),
       cmd_(START_CMD),
       data_(START_DATA),
       client(espClient)
     {};
+
 
     // TODO borrar esta función
     void 
@@ -290,6 +475,21 @@ class BrutusComms {
       xSemaphoreGive(data_mutex_);
     }
     
+    
+    /**
+    * @brief Initializes the communication for the Brutus robot.
+    * 
+    * This function performs the necessary initial setup for BrutusComms to work:
+    * - Initializes the serial communication at the speed defined by `BAUD`.
+    * - Creates the `cmd_mutex_` and `data_mutex_` semaphores to protect access to shared data.
+    * - Connects the ESP32 to the WiFi network. The network depends on the `IS_EDUROAM` macro defined in `comms_params.h`.
+    * - Configures the MQTT client with the specified server and port.
+    * - Registers the static callback `mqtt_callback_static` to process incoming messages.
+    *   @note The `mqtt_callback_static` callback will internally call the `callback()` function of the BrutusComms instance to handle messages.
+    * 
+    * @param b Pointer to the Brutus object that will be associated with this BrutusComms instance.
+    */
+   
     void start(Brutus *b){
       Serial.begin(BAUD);
       cmd_mutex_ = xSemaphoreCreateMutex();
@@ -321,18 +521,21 @@ class BrutusComms {
       static_instance = this;
       client.setCallback(BrutusComms::mqtt_callback_static);
     }
-    
-    static void mqtt_callback_static(char* topic, byte* payload, unsigned int length) {
-      if (static_instance) {
-          static_instance->callback(topic, payload, length);
-      }
-    }
 
-    static void commsTask_static(void* param) {
-      Serial.println("commsTask_static");
-      BrutusComms* instance = static_cast<BrutusComms*>(param);
-      instance->commsTask();
-    }
+    /**
+    * @brief Creates and launches the Brutus communications task on a specific core.
+    * 
+    * This function sets the task period and uses FreeRTOS's `xTaskCreatePinnedToCore`
+    * to start the `commsTask_static` task.
+    * 
+    * - The task will execute `commsTask_static`, which in turn calls the `commsTask()`
+    *   method of this BrutusComms instance.
+    * - Stores the task handle in `comms_task_handle_`.
+    * 
+    * @param core ESP32 core where the task should be executed.
+    * 
+    * @note `comms_task_period_` is initialized with the value of `COMMS_PERIOD`.
+    */
 
     void
     create_comms_task(int core)
@@ -350,6 +553,15 @@ class BrutusComms {
       );
       //Serial.println("TASK CREATE");
     }
+
+    /**
+    * @brief Retrieves a safe copy of the current Brutus commands.
+    * 
+    * This function returns a copy of the `cmd_` structure, protecting access
+    * using the `cmd_mutex_` semaphore to prevent race conditions.
+    * 
+    * @return BrutusCommsCmd A copy of the current commands (`cmd_`).
+    */
 
     BrutusCommsCmd
     getCmd() {
