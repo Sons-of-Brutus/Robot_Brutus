@@ -225,6 +225,18 @@ Screw the `M3x8mm Bolt` into the nut placed in [step 5.2](#52-chasis-cover-m3-nu
 
 ## 7. Assembling upper box
 
+#### 7.1. Place the `HC-SR04` sensors
+
+<p align="center">
+  <img src="./media/steps/step_7_1_1_br.png" width="50%"><img src="./media/steps/step_7_1_1_fl.png" width="50%">
+</p>
+
+Now, place the `US sensor chasis` for each sensor:
+
+<p align="center">
+  <img src="./media/steps/step_7_1_2.png" width="50%">
+</p>
+
 
 
 ## 8. Joining upper box with chasis
