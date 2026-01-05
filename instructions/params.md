@@ -208,3 +208,171 @@ These parameters configure the ultrasonic sensor system:
 - Minimum allowed timeout for a measurement.
 
 This ensures reliable obstacle detection without blocking the rest of the system.
+
+# `comms_params.h` – MQTT communication configuration
+
+The file comms_params.h centralizes all the configuration required for the robot’s communication layer.
+It defines the MQTT client identity, the subscribed and published topics, timing parameters for connection handling, message buffers, and default command/data structures used at startup.
+
+This file is designed to keep the MQTT interface consistent and easy to maintain. 
+
+## MQTT client identifier
+
+```cpp
+#define CLIENT_ID "brutus_esp"
+```
+
+This is the unique MQTT client identifier used when the ESP32 connects to the broker.
+
+## Subscribed topics (commands to the robot)
+
+```cpp
+#define TOPIC_CMD_MODE   "brutus/cmd/mode"
+#define TOPIC_CMD_VEL    "brutus/cmd/velocity"
+#define TOPIC_CMD_POSE   "brutus/cmd/pose"
+```
+
+The robot subscribes to these topics to receive commands from an external controller:
+
+- brutus/cmd/mode: change the robot operating mode.
+
+- brutus/cmd/velocity: set linear and angular velocity references.
+
+- brutus/cmd/pose: directly command a full pose to the robot.
+
+To simplify internal handling, each command is also mapped to an integer code:
+
+```cpp
+#define CMD_MODE   0
+#define CMD_VEL    1
+#define CMD_POSE   2
+```
+
+## Published topics (robot telemetry)
+
+```cpp
+#define TOPIC_STATE_HEARTBEAT "brutus/data/heartbeat"
+#define TOPIC_POSE            "brutus/data/pose"
+#define TOPIC_DIST_FRONT      "brutus/data/distance/front"
+#define TOPIC_DIST_RIGHT      "brutus/data/distance/right"
+#define TOPIC_DIST_LEFT       "brutus/data/distance/left"
+```
+
+The robot publishes telemetry data to these topics:
+
+- `brutus/data/heartbeat`: periodic status message that indicates the robot is alive and connected.
+
+- `brutus/data/pose`: the pose currently executed by the robot.
+
+- `brutus/data/distance/*`: distances measured by the ultrasonic sensors (front, right, left).
+
+Similarly, message types are mapped to integer identifiers:
+
+```cpp
+#define STATE_HEARTBEAT 0
+#define POSE            1
+#define DIST_FRONT      2
+#define DIST_RIGHT      3
+#define DIST_LEFT       4
+```
+
+## Connection timing parameters
+
+```cpp
+#define WIFI_WAIT 500
+#define RECONNECT_WAIT 3000
+```
+
+- `WIFI_WAIT` sets the delay (in milliseconds) used while waiting for WiFi to connect.
+
+- `RECONNECT_WAIT` sets the delay (in milliseconds) between MQTT reconnection attempts if the connection is lost.
+
+These values avoid aggressive reconnection loops and help keep the system stable.
+
+## Network mode selection (Eduroam vs normal WiFi)
+
+```cpp
+#define IS_EDUROAM false
+```
+
+This parameter selects which WiFi credentials should be used during initialization:
+
+- true: connect using ***Eduroam*** credentials (enterprise authentication).
+
+- false: connect using a ***standard WiFi network*** (SSID + password).
+
+The actual credentials are defined in credential.h, while this flag determines which set of credentials will be used by the connection code.
+
+## Ranges for test/debug messages
+
+```cpp
+#define MIN_LEG_DEG 0
+#define MAX_LEG_DEG 181
+#define MIN_DIST 0
+#define MAX_DIST 200
+```
+
+These ranges are created in order to put a limit to the leg degrees and the distance the ultrasonic sensor can reach.
+
+## Joint identifier strings
+
+```cpp
+#define SHOULDER "0"
+#define ELBOW "1"
+```
+
+These string identifiers are used in message payloads (JSON fields) to label which joint is being referenced.
+
+## Buffers and message sizes
+
+```cpp
+#define MSG_BUFFER 254
+#define JSON_BUFFER 300
+```
+
+These values define the maximum sizes used to store incoming/outgoing MQTT payloads:
+
+- `MSG_BUFFER`: raw MQTT message buffer length.
+
+- `JSON_BUFFER`: buffer size for JSON serialization/deserialization.
+
+## Task timing and serial configuration
+
+```cpp
+#define COMMS_PERIOD 200
+#define COMMS_CORE LOGIC_CORE
+#define BAUD 115200
+```
+
+- `COMMS_PERIOD` defines how often the communications task runs (every 200 ms).
+
+- `COMMS_CORE` pins the task to the logic core (LOGIC_CORE), keeping communications separate from real-time motion control.
+
+- `BAUD` sets the serial debugging baud rate.
+
+## Default startup command and telemetry
+
+```cpp
+constexpr BrutusCommsCmd START_CMD {0, 0.0, 0.0, STANDING_POSE};
+constexpr BrutusCommsData START_DATA {STANDING_POSE, 0.0, 0.0, 0.0};
+```
+
+At startup, the robot initializes both the current command and telemetry structures with safe default values:
+
+- START_CMD initializes:
+
+  - mode = 0 (default mode)
+
+  - linear velocity v = 0.0
+
+  - angular velocity w = 0.0
+
+  - pose = STANDING_POSE
+
+- START_DATA initializes:
+
+  - pose = STANDING_POSE
+
+  - ultrasonic distances set to 0.0 until valid measurements are available.
+
+
