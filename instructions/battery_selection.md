@@ -2,13 +2,13 @@
 
 The battery of the robot must be chosen so that it satisfies four fundamental requirements:
 
-1. The voltage required by the robot
+- **1.** The voltage required by the robot
 
-2. The energy required (capacity in Ah / mAh)
+- **2.** The energy required (capacity in Ah / mAh)
 
-3. The maximum current demanded by the robot
+- **3.** The maximum current demanded by the robot
 
-4. The worst-case discharge time
+- **4.** The worst-case discharge time
 
 The selected battery is a **3S Li-ion pack (11.1 V, 2.5 Ah, 30 Wh)** with integrated BMS protection.
 
