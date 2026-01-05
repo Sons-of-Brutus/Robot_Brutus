@@ -54,7 +54,7 @@ Solder the following connections:
 ## 2. Assembling chasis (Part 1)
 
 #### 2.1. `PCA9685` attachment in the chasis
-Put the `PCA9685` in the space at the bottom center of the `chasis`.
+Put the `PCA9685` in the space at the bottom center of the `chasis` as it is placed in the image:
 
 <p align="center">
   <img src="./media/steps/step_2_1_1.png" width="50%">
@@ -115,19 +115,73 @@ You can use the `sheet metal screws` that are included with the servos to attatc
 
 #### 3.2. Join the elbow and the shoulder
 
-First, insert an M3 nut into the corresponding slot on the shoulder.
+First, identify how you shuold place de elbow.
+
+<p align="center">
+  <img src="./media/steps/step_3_2_place1.png" width="50%"><img src="./media/steps/step_3_2_place2.png" width="50%">
+  <img src="./media/steps/step_3_2_place3.png" width="36.4%"><img src="./media/steps/step_3_2_place_4.png" width="50%">
+</p>
+
+Then, insert a `M3 nut` into the corresponding slot on the shoulder.
 
 <p align="center">
   <img src="./media/steps/step_3_2_nut.png" width="50%">
 </p>
 
-Then, screw the elbow to the shoulder as shown, from the non-servo side.
+Finally, screw the elbow to the shoulder as shown, from the non-servo side.
 
 <img src="./media/steps/step_3_2_1.png" width="70%">
 
 The servo-side will be attached in [part 9](#9-assembling-legs-part-2s).
 
+#### 3.3. Join the `leg up link` and the shoulder
+
+Use `M3x30mm bolt` and `M3 nut`.
+
+<p align="center">
+  <img src="./media/steps/step_3_3_1.png" width="50%"><img src="./media/steps/step_3_3_2.png" width="50%">
+</p>
+
+### 3.4. Add the foot
+
+Use `M3x30mm bolts` and a `M3 nuts`.
+
+<p align="center">
+  <img src="./media/steps/step_3_4_1.png" width="50%">
+</p>
+
+### 3.5. Right vs Left
+**REMEMBER THAT:** *Left shoulder/elbow* are for *front left* leg and *back right* leg, while *right shoulder/elbow* are for *front right* leg, *back left* leg.
+
+<p align="center">
+  <img src="./media/steps/step_3_5_1.png" width="50%">
+</p>
+
+<p align="center">
+  <img src="./media/steps/step_3_5_2.png" width="50%"><img src="./media/steps/step_3_5_3.png" width="33.5%">
+</p>
+
 ## 4. Connecting servos to `PCA9685`
+
+Now you should connect the 8 `servos` to the `PCA9685` following the  [schematic](../electronics/brutus_schematic/brutus_electronic_schematics.svg) (<-- Click here to see it bigger):
+<img src="../electronics/brutus_schematic/brutus_electronic_schematics.svg" width="50%">
+
+<img src="./media/components/pca_2.jpg" width="50%">
+
+```
+      0 ---------------------------> 15
+```
+
+| Joint | `PCA9685`'s pin |
+| :--- | ---: |
+| Front Right Shoulder | 13 |
+| Front Right Elbow | 12 |
+| Front Left Shoulder | 9 |
+| Front Left Elbow | 8 |
+| Back Right Shoulder | 2 |
+| Back Right Elbow | 3 |
+| Back Left Shoulder | 0 |
+| Back Left Elbow | 1 |
 
 ## 5. Assembling chasis (Part 2)
 
@@ -135,10 +189,7 @@ The servo-side will be attached in [part 9](#9-assembling-legs-part-2s).
 
 ## 7. Assembling upper box
 
-x(2x3) [vcc y gnd] jumper (cortado-hembra): terminal <-> HC-SR04
 
-x2 [vin y gnd] 16 AWG: battery <-> Buck
-x2 [vout y gnd] 16 AWG: buck <-> terminal
 
 ## 8. Joining upper box with chasis
 

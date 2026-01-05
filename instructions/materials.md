@@ -66,3 +66,4 @@
 | Name | Details | Quantity | Image |
 | :--- | :---: | :---: | ---: |
 | `Bearing` | F693ZZ Bearing | 8 | <img src="./media/components/bearing.jpg" width="150"> |
+| `M3x30mm Bolt` | M3 30mm Hex bolt | 12 | - |
