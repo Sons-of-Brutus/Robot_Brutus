@@ -3,18 +3,22 @@
 # Guide
 
 This assembly instructions are divided in N parts:
-1. [Soldering `ESP32` Connections](#soldering-esp32-connections)
-2. [Assembling chasis (Part 1)](#assembling-chasis-part-1)
-3. [Assembling legs](#assembling-legs)
-4. [Connecting servos to `PCA9685`](#connecting-servos-to-pca9685)
-5. [Assembling chasis (Part 2)](#assembling-chasis-part-2)
-6. [Joining legs with chasis](#joining-legs-with-chasis)
-7. [Assembling upper box](#assembling-upper-box)
-8. [Joining upper box with chasis](#joining-upper-box-with-chasis)
+1. [Soldering `ESP32` Connections](#1-soldering-esp32-connections)
+2. [Assembling chasis (Part 1)](#2-assembling-chasis-part-1)
+3. [Assembling legs (Part 1)](#3-assembling-legs-part-1)
+4. [Connecting servos to `PCA9685`](#4-connecting-servos-to-pca9685)
+5. [Assembling chasis (Part 2)](#5-assembling-chasis-part-2)
+6. [Joining legs with chasis](#6-joining-legs-with-chasis)
+7. [Assembling upper box](#7-assembling-upper-box)
+8. [Joining upper box with chasis](#8-joining-upper-box-with-chasis)
+9. [Assembling legs (Part 2)](#9-assembling-legs-part-2)
 
 # Assembly
 
-## Soldering `ESP32` and `PCA9685` Connections
+## 1. Soldering `ESP32` and `PCA9685` Connections
+
+First of all, if your `ESP32` and/or `PCA9685` have soldered pins, first, you should desolder them, so the pin's holes for the upcoming cables are free.
+
 Following the [electronics schematics image](../electronics/brutus_schematic/brutus_electronic_schematics.svg) (<-- Click here to see it bigger):
 <img src="../electronics/brutus_schematic/brutus_electronic_schematics.svg" width="50%">
 
@@ -47,21 +51,95 @@ Solder the following connections:
 - The 4 wires that connect `RGB LED` and `ESP32` should be long enough to place this two components as explained in "[Assembling chasis (Part 2)](#assembling-chasis-part-2)" steps.
 - For each of the 6 wires for `HC-SR04`, you must remove one of the tips of a `Female-to-female jumper`. The removed part is the one soldered to the `ESP32` and the *female* part will be connected to the `HC-SR04`.
 
-## Assembling chasis (Part 1)
+## 2. Assembling chasis (Part 1)
 
-## Assembling legs
+#### 2.1. `PCA9685` attachment in the chasis
+Put the `PCA9685` in the space at the bottom center of the `chasis`.
 
-## Connecting servos to `PCA9685`
+<p align="center">
+  <img src="./media/steps/step_2_1_1.png" width="50%">
+</p>
 
-## Assembling chasis (Part 2)
+#### 2.2. Trim the servo wires to fit
+All 8 servos will have shorter wires, but in this step we will only consider the 4 servos inside the chasis.
 
-## Joining legs with chasis
+1. Estimate the length of the servo wire. (At least enough to fit in the chasis)
+```
+ -------            Wire (PWM, GND, VCC)             -----------
+|       |-------------------------------------------|           |
+| Servo |-------------------------------------------| Connector |
+|       |-------------------------------------------|           |
+ -------                                             -----------
+              |_____________________________|
+                        📏 (Excess)
 
-## Assembling upper box
+```
+2. Cut out the excess section of wire estimated in the previous step.
+```
+ -------                    Excess Wire                    -----------
+|       |------✂️ ---------------------------- ✂️---------|           |
+| Servo |------✂️ ---------------------------- ✂️---------| Connector |
+|       |------✂️ ---------------------------- ✂️---------|           |
+ -------                                                   -----------
+```
+3. Now solder the servo-side wires to the connector-side wires.
+```
+ -------                  -----------
+|       |-------🧑‍🏭-------|           |
+| Servo |-------🧑‍🏭-------| Connector |
+|       |-------🧑‍🏭-------|           |
+ -------                  -----------
+```
+
+#### 2.3. Place the servos in the chasis
+
+<img src="./media/steps/step_2_3_1.png" width="50%"><img src="./media/steps/step_2_3_2.png" width="50%">
+
+You can use the `sheet metal screws` that are included with the servos to attatch the servos to the chasis.
+
+## 3. Assembling legs (Part 1)
+
+The images are using `Left shoulder` and `Left elbow` pieces, but the same process is applied to `Right shoulder` and `Right elbow`.
+
+#### 3.1. Attatch the servo to the shoulder
+
+<img src="./media/steps/step_3_1_1.png" width="50%"><img src="./media/steps/step_3_1_2.png" width="47.9%">
+
+You can use the `sheet metal screws` that are included with the servos to attatch the servo to the shoulder.
+
+**Important:** You should do the [same process off triming the servo's wires](#22-trim-the-servo-wires-to-fit) so they could enter to the chasis and be connected to the `PCA9685`, letting some length for shoulder movement.
+
+<p align="center">
+  <img src="./media/steps/step_3_servos.jpeg" width="50%">
+</p>
+
+#### 3.2. Join the elbow and the shoulder
+
+First, insert an M3 nut into the corresponding slot on the shoulder.
+
+<p align="center">
+  <img src="./media/steps/step_3_2_nut.png" width="50%">
+</p>
+
+Then, screw the elbow to the shoulder as shown, from the non-servo side.
+
+<img src="./media/steps/step_3_2_1.png" width="70%">
+
+The servo-side will be attached in [part 9](#9-assembling-legs-part-2s).
+
+## 4. Connecting servos to `PCA9685`
+
+## 5. Assembling chasis (Part 2)
+
+## 6. Joining legs with chasis
+
+## 7. Assembling upper box
 
 x(2x3) [vcc y gnd] jumper (cortado-hembra): terminal <-> HC-SR04
 
 x2 [vin y gnd] 16 AWG: battery <-> Buck
 x2 [vout y gnd] 16 AWG: buck <-> terminal
 
-## Joining upper box with chasis
+## 8. Joining upper box with chasis
+
+## 9. Assembling legs (Part 2)

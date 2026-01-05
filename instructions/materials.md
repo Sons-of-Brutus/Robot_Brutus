@@ -19,7 +19,7 @@
 
 **Notes:**
 - ***Left shoulder/elbow** are for **front left** leg and **back right** leg, while **right shoulder/elbow** are for **front right** leg, **back left** leg.*
-- *Spacer is optional as you can replace it for a metalic one with similar dimensions (Inner hole must be at least as the 3D model one).*
+- *Spacer is optional as you can replace it for metalic washers with similar dimensions (Inner hole must be at least as the 3D model one).*
 
 ## Electronic components
 | Name | Quantity | Description | Link | Image |
@@ -63,3 +63,6 @@
 
 - Tuerca = nut
 
+| Name | Details | Quantity | Image |
+| :--- | :---: | :---: | ---: |
+| `Bearing` | F693ZZ Bearing | 8 | <img src="./media/components/bearing.jpg" width="150"> |
