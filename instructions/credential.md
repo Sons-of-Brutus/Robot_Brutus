@@ -28,7 +28,7 @@ The file also defines the parameters used to connect to the MQTT broker, the val
 Since this file contains private credentials, it should not be shared publicly or uploaded to version control repositories with real data.
 Each user should keep their own local copy of credential.h with their personal WiFi and Eduroam credentials.
 
-### Credential.h template
+### `Credential.h` template
 ```cpp
 #ifndef CREDENTIAL_H
 #define CREDENTIAL_H
