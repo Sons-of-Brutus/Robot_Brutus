@@ -151,7 +151,7 @@ Use `M3x30mm bolts` and a `M3 nuts`.
 </p>
 
 ### 3.5. Right vs Left
-**REMEMBER THAT:** *Left shoulder/elbow* are for *front left* leg and *back right* leg, while *right shoulder/elbow* are for *front right* leg, *back left* leg.
+**REMEMBER:** *Left shoulder/elbow* are for *front left* leg and *back right* leg, while *right shoulder/elbow* are for *front right* leg and *back left* leg.
 
 <p align="center">
   <img src="./media/steps/step_3_5_1.png" width="50%">
@@ -185,7 +185,32 @@ Now you should connect the 8 `servos` to the `PCA9685` following the  [schematic
 
 ## 5. Assembling chasis (Part 2)
 
+#### 5.1. Attach the `ESP32` and the `RGB LED` to the `chasis cover`
+
+<p align="center">
+  <img src="./media/steps/step_5_1_1.jpeg" width="50%">
+</p>
+
+#### 5.2. `Chasis cover` M3 nuts
+
+You should place 6 M3 nuts in their corresponding slots:
+
+<p align="center">
+  <img src="./media/steps/step_5_2_1.png">
+</p>
+
+#### 5.3. Join the `chasis` and the `cover`
+
+Use a `M3x8mm bolt` at each side.
+
+<p align="center">
+  <img src="./media/steps/step_5_3_1.png">
+</p>
+
+
 ## 6. Joining legs with chasis
+
+
 
 ## 7. Assembling upper box
 
