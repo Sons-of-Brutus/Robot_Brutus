@@ -210,7 +210,18 @@ Use a `M3x8mm bolt` at each side.
 
 ## 6. Joining legs with chasis
 
+How the legs should be placed:
 
+<p align="center">
+  <img src="./media/steps/step_6_intro.png">
+</p>
+
+### 6.1. Leg attachment
+Screw the `M3x8mm Bolt` into the nut placed in [step 5.2](#52-chasis-cover-m3-nuts1).
+
+<p align="center">
+  <img src="./media/steps/step_6_1.png" width="70%">
+</p>
 
 ## 7. Assembling upper box
 
