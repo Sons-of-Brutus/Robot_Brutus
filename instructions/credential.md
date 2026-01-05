@@ -27,3 +27,30 @@ The file also defines the parameters used to connect to the MQTT broker, the val
 
 Since this file contains private credentials, it should not be shared publicly or uploaded to version control repositories with real data.
 Each user should keep their own local copy of credential.h with their personal WiFi and Eduroam credentials.
+
+### Credential.h template
+```cpp
+#ifndef CREDENTIAL_H
+#define CREDENTIAL_H
+
+// =====================
+//  WIFI - Eduroam
+// =====================
+#define SSID_EDUROAM     "eduroam"   // Your eduroam SSID
+#define USERNAME_EDUROAM ""          // Your eduroam username
+#define PASSWORD_EDUROAM ""          // Your eduroam password
+
+// =====================
+//  WIFI - Home / Office
+// =====================
+#define SSID     ""  // Your WiFi SSID
+#define PASSWORD ""    // Your WiFi password
+
+// =====================
+//  MQTT
+// =====================
+#define MQTT_SERVER "test.mosquitto.org"  // Your MQTT broker address
+#define MQTT_PORT   1883                 // Your MQTT broker port
+
+#endif // CREDENTIAL_H
+```
