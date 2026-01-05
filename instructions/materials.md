@@ -54,4 +54,12 @@
 <img src="./media/components/wires.jpg" width="50%">
 
 ## Fasteners
-+ 
+
+- Tornillo de rosca chapa = Sheet Metal Screw
+  <img src="./media/components/sheet_metal_screw.jpg" width="150"> <img src="./media/components/sheet_metal_screw_tiny.jpeg" width="100">
+
+- Tornillo para tuerca (Perno) = Bolt
+  <img src="./media/components/bolt.png" width="150">
+
+- Tuerca = nut
+
