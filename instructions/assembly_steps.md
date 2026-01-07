@@ -237,7 +237,27 @@ Now, place the `US sensor chasis` for each sensor:
   <img src="./media/steps/step_7_1_2.png" width="50%">
 </p>
 
+#### 7.2. Place the `Battery`
 
+Before placing the battery, remove the connector from the wires and add the `switch` for turning ON and OFF the robot.
+
+**Connector:**
+
+<img src="./media/steps/step_7_2_connector.png" width="10%">
+
+**Switch connection:**
+
+1. Cut the wire
+```
+
+```
+
+
+Then, place the battery 
+
+<p align="center">
+  <img src="./media/steps/step_7_2_1.png" width="70%">
+</p>
 
 ## 8. Joining upper box with chasis
 

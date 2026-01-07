@@ -12,7 +12,7 @@
 | `Right elbow` | 2 | [right_elbow_mesh.stl](../meshes/right_elbow_mesh.stl) | <img src="./media/pieces/right_elbow.png" width="150"> |
 | `Leg up link` | 4 | [leg_up_link_mesh.stl](../meshes/leg_up_link_mesh.stl) | <img src="./media/pieces/leg_up_link.png" width="150"> |
 | `Foot` | 4 | [foot_fist_mesh.stl](../meshes/foot_fist_mesh.stl) | <img src="./media/pieces/foot.png" width="150"> | 
-| `Box` | 1 | [up_box_mesh.stl](../meshes/up_box_mesh.stl) | <img src="./media/pieces/up_box.png" width="150"> |
+| `Up box` | 1 | [up_box_mesh.stl](../meshes/up_box_mesh.stl) | <img src="./media/pieces/up_box.png" width="150"> |
 | `US Sensor chasis` | 3 | [us_chasis_mesh.stl](../meshes/us_chasis_mesh.stl) | <img src="./media/pieces/us_chasis.png" width="150"> |
 | `Battery limit` | 1 | [battery_limit.stl](../meshes/battery_limit.stl) | <img src="./media/pieces/battery_limit.png" width="150"> |
 | `Weight case` | 1 | [weight_case.stl](../meshes/weight_case.stl) | <img src="./media/pieces/weight_case.png" width="150"> |
@@ -30,7 +30,8 @@
 | `MG90S Servo` | 8 | High-torque, metal-gear micro servo motor. | [Link](https://es.aliexpress.com/item/1005007522665750.html?) | <img src="./media/components/mg90s.png" width="200"> |
 | `Battery` | 1 | 3S1P 18650 Lithium-ion Battery Packs, 12V Rechargeable Lithium Battery.  | [Link](https://es.aliexpress.com/item/1005009656713743.html?) | <img src="./media/components/battery.png" width="200">
 | `HC-SR04` | 3 | Ultrasonic distance sensor | [Link](https://es.aliexpress.com/item/1005010356855481.html?) | <img src="./media/components/hc_sr04.png" width="200"> |
-| `RGB LED` | 1 | RGB flat led module | Not specified | <img src="./media/components/led_rgb.jpg" width="200">
+| `RGB LED` | 1 | RGB flat led module | Not specified | <img src="./media/components/led_rgb.jpg" width="200"> |
+| `Switch` | 1 | Electronic switch (as small as you can) | Not specified | Not specified |
 
 ## Wiring
 
