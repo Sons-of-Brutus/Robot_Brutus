@@ -33,6 +33,7 @@ class BrutusComms {
 
     BrutusPose dbg_pose_;
     float dbg_float_;
+    float dbg_float_2_;
   
     /*
     void upload_data(){
@@ -93,6 +94,7 @@ class BrutusComms {
         char pose_msg[MSG_BUFFER];
         char dist_msg[MSG_BUFFER];
         char float_msg[MSG_BUFFER];
+        char float2_msg[MSG_BUFFER];
 
         // HEARTBEAT
         create_msg(STATE_HEARTBEAT, nullptr, heartbeat_msg, MSG_BUFFER);
@@ -114,11 +116,16 @@ class BrutusComms {
         create_msg(DIST, &(perception), dist_msg, MSG_BUFFER);
 
         snprintf(float_msg, MSG_BUFFER, "{\"debug float\":%f}", dbg_float_);
+        snprintf(float2_msg, MSG_BUFFER, "{\"debug float 2\":%f}", dbg_float_2_);
 
         xSemaphoreGive(data_mutex_);
         
         if (!client.publish("brutus/data/dbg_float", float_msg)) {
           Serial.println("Error publishiug DEBUG FLOAT");
+        }
+
+        if (!client.publish("brutus/data/dbg_float2", float2_msg)) {
+          Serial.println("Error publishiug DEBUG FLOAT 2");
         }
 
         // POSE
@@ -311,15 +318,15 @@ class BrutusComms {
         JsonObject br = doc["br"];
         JsonObject bl = doc["bl"];
 
-        BrutusLegState STANDING_FR_STATE {fr[SHOULDER], fr[ELBOW]};
-        BrutusLegState STANDING_FL_STATE {fl[SHOULDER], fl[ELBOW]};
-        BrutusLegState STANDING_BR_STATE {br[SHOULDER], br[ELBOW]};
-        BrutusLegState STANDING_BL_STATE {bl[SHOULDER], bl[ELBOW]};
+        BrutusLegState fr_state {fr[SHOULDER], fr[ELBOW]};
+        BrutusLegState fl_state {fl[SHOULDER], fl[ELBOW]};
+        BrutusLegState br_state {br[SHOULDER], br[ELBOW]};
+        BrutusLegState bl_state {bl[SHOULDER], bl[ELBOW]};
 
-        BrutusPose pos{STANDING_FR_STATE,
-                       STANDING_FL_STATE,
-                       STANDING_BR_STATE,
-                       STANDING_BL_STATE};
+        BrutusPose pos{fr_state,
+                       fl_state,
+                       br_state,
+                       bl};
 
         xSemaphoreTake(cmd_mutex_, portMAX_DELAY);
         cmd_.pose = pos;
@@ -472,6 +479,14 @@ class BrutusComms {
     {
       xSemaphoreTake(data_mutex_, portMAX_DELAY);
       this->dbg_float_ = dbg_f;
+      xSemaphoreGive(data_mutex_);
+    }
+
+    void 
+    set_debug_float_2(float dbg_f)
+    {
+      xSemaphoreTake(data_mutex_, portMAX_DELAY);
+      this->dbg_float_2_ = dbg_f;
       xSemaphoreGive(data_mutex_);
     }
     

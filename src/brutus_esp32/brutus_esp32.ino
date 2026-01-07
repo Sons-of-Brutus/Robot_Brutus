@@ -111,19 +111,35 @@ mode_task(void* pvParameters)
 
   TickType_t last_wake_time = xTaskGetTickCount();
 
-  float EX1_KP = 0.4;
-  float EX1_EXP_DIST = 30.0;
-  int N_MEASUREMENTS = 4;
+  int EX1_ITERATIONS = 3;
+  int EX1_TURN_ITERATIONS = 2;
+  int N_MEASUREMENTS = 10;
+  float DIST_DIFF_THRESHOLD = 20.0;
+  float EX1_W = 0.2;
+  float EX1_STRAIGHT_THRESHOLD = 3.0;
+
+  //float EX1_KP = 3.33;
+  //float EX1_EXP_DIST = 30.0;  
 
   float error = 0.0;
   float distance_errors[N_MEASUREMENTS];
   float errors_m = 0.0;
   float last_errors_m = 0.0;
-  int w_sign = -1;
+  int w_sign = 0;
 
   float dist = 0.0;
-  float distances[N_MEASUREMENTS];
+  float right_distances[N_MEASUREMENTS];
+  float left_distances[N_MEASUREMENTS];
   float mean_dist = 0.0;
+
+  bool must_sum_iterations = true;
+  int ex1_iterations = 0;
+  float last_dist = 0.0;
+  float exp_dist;
+  float right_mean = 0.0;
+  float left_mean = 0.0;
+  bool right_side = true;
+  
 
   BrutusPose pose = brutus.check_pose(true);
   int i = 0;
@@ -163,7 +179,7 @@ mode_task(void* pvParameters)
           last_mode = mode;
         }
 
-        brutus.change_target_pose(cmd.pose);
+        brutus.change_target_pose(interp_pose_norm(cmd.pose));
         break;
 
       case VEL_CONTROL:
@@ -183,9 +199,56 @@ mode_task(void* pvParameters)
           brutus.set_motion_control_mode(SPEED_CONTROL);
           last_mode = mode;
           i = 0;
-          w_sign = -1;
-          last_errors_m = 0.0;
-          errors_m = 0.0;
+
+          w = 0.0;
+          w_sign = 0;
+          
+          //last_errors_m = 0.0;
+          //errors_m = 0.0;
+          
+          must_sum_iterations = true;
+          ex1_iterations = 0;
+
+          right_mean = 0.0;
+          left_mean = 0.0;
+        }
+
+        perception_data = brutus.get_perception_data();
+
+        if (ex1_iterations < N_MEASUREMENTS) {
+          right_distances[ex1_iterations] = perception_data.right_dist;
+          //left_distances[ex1_iterations] = perception_data.left_dist;
+        } else if (ex1_iterations == N_MEASUREMENTS) {
+          right_mean = median(right_distances, N_MEASUREMENTS);
+          brutus_comms.set_debug_float_2(right_distances[0]);
+          brutus_comms.set_debug_float_2(right_distances[1]);
+          brutus_comms.set_debug_float_2(right_distances[2]);
+          brutus_comms.set_debug_float_2(right_distances[3]);
+          brutus_comms.set_debug_float_2(right_distances[4]);
+          brutus_comms.set_debug_float_2(right_distances[5]);
+          brutus_comms.set_debug_float_2(right_distances[6]);
+          brutus_comms.set_debug_float_2(right_distances[7]);
+          brutus_comms.set_debug_float_2(right_distances[8]);
+          brutus_comms.set_debug_float_2(right_distances[9]);
+          brutus_comms.set_debug_float(right_mean);
+          //left_mean = median(left_distances, N_MEASUREMENTS);
+
+          //if (right_mean < left_mean) {
+          //  exp_dist = right_mean;
+          //  right_side = true;
+          //} else {
+          //  exp_dist = left_mean;
+          //  right_side = false;
+          //}
+
+          right_side = true;
+          exp_dist = right_mean;
+
+          last_dist = exp_dist;
+        }
+        
+        if (ex1_iterations%EX1_ITERATIONS == EX1_TURN_ITERATIONS) {
+          w = 0.0;
         }
 
         pose = brutus.check_pose(true);
@@ -194,10 +257,41 @@ mode_task(void* pvParameters)
         br_elbow = pose.br_leg_state.elbow_angle;
         bl_elbow = pose.bl_leg_state.elbow_angle;
 
-        if (fabs(ELBOW_DOWN-(fr_elbow - ELBOW_FRONT_RIGHT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && fabs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && fabs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && fabs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF) {
-          perception_data = brutus.get_perception_data();
+        if (right_side) {
           dist = perception_data.right_dist;
+        } else {
+          dist = perception_data.left_dist;
+        }
 
+        if (fabs(dist - last_dist) > DIST_DIFF_THRESHOLD) {
+          dist = last_dist;
+        } else {
+          last_dist = dist;
+        }
+
+        if (ex1_iterations != 0 && (ex1_iterations%EX1_ITERATIONS == 0) && fabs(ELBOW_DOWN-(fr_elbow - ELBOW_FRONT_RIGHT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && fabs(ELBOW_DOWN-(fl_elbow - ELBOW_FRONT_LEFT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && fabs(ELBOW_DOWN-(br_elbow - ELBOW_BACK_RIGHT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF && fabs(ELBOW_DOWN-(bl_elbow - ELBOW_BACK_LEFT_ANGLE_OFFSET)) <= MIN_ELBOW_DIFF) {
+          error = dist - exp_dist;
+
+          if (fabs(error) < EX1_STRAIGHT_THRESHOLD) {
+            w_sign = 0;
+          } else if (dist < exp_dist) {
+            if (right_side) {
+              w_sign = -1;
+            } else {
+              w_sign = 1;
+            }
+            
+          } else if (dist > exp_dist) {
+            if (right_side) {
+              w_sign = 1;
+            } else {
+              w_sign = -1;
+            }
+          }
+
+          w = EX1_W * w_sign;
+
+          /*
           if (i > 0) {
             mean_dist = 0.0;
 
@@ -211,6 +305,8 @@ mode_task(void* pvParameters)
           }
 
           error = dist - mean_dist;
+
+          error = dist - distances[(i-1)%N_MEASUREMENTS];
 
           if (i < N_MEASUREMENTS) {
             for (int k = N_MEASUREMENTS-1; k > i; k--) {
@@ -244,20 +340,35 @@ mode_task(void* pvParameters)
           i++;
 
           brutus.eyes_white();
+          */
+
+          ex1_iterations++;
+
         }
 
-        if (w_sign < 0) {
-          brutus.eyes_red();
+        if (ex1_iterations >= N_MEASUREMENTS) {
+          if (w_sign < 0) {
+            brutus.eyes_blue();
+          } else if (w_sign > 0) {
+            brutus.eyes_red();
+          } else {
+            brutus.eyes_magenta();
+          }
+
+          brutus.set_angular_speed_ts(w);
+          brutus.set_linear_speed_ts(1.0);
         } else {
-          brutus.eyes_blue();
+          brutus.set_angular_speed_ts(0.0);
+          brutus.set_linear_speed_ts(0.0);
         }
 
-        w = fabs(errors_m) * EX1_KP * w_sign;
+        //brutus_comms.set_debug_float((float)ex1_iterations);
+        brutus_comms.set_debug_float_2(dist);
+        brutus_comms.set_debug_float_2(exp_dist);
 
-        brutus.set_angular_speed_ts(w);
-        brutus.set_linear_speed_ts(1.0);
-
-        brutus_comms.set_debug_float(errors_m);
+        if (ex1_iterations != EX1_ITERATIONS) {
+          ex1_iterations++;
+        }
 
         break;
 
@@ -310,4 +421,59 @@ float mapf_constrained(float x, float in_min, float in_max,
     if (x > in_max) x = in_max;
 
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+BrutusPose interp_pose_norm(const BrutusPose& norm_pose)
+{
+  BrutusPose out;
+
+  out.fr_leg_state.shoulder_angle = mapf_constrained(norm_pose.fr_leg_state.shoulder_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+  out.fr_leg_state.elbow_angle    = mapf_constrained(norm_pose.fr_leg_state.elbow_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+
+  out.fl_leg_state.shoulder_angle = mapf_constrained(norm_pose.fl_leg_state.shoulder_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+  out.fl_leg_state.elbow_angle    = mapf_constrained(norm_pose.fl_leg_state.elbow_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+
+  out.br_leg_state.shoulder_angle = mapf_constrained(norm_pose.br_leg_state.shoulder_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+  out.br_leg_state.elbow_angle    = mapf_constrained(norm_pose.br_leg_state.elbow_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+
+  out.bl_leg_state.shoulder_angle = mapf_constrained(norm_pose.bl_leg_state.shoulder_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+  out.bl_leg_state.elbow_angle    = mapf_constrained(norm_pose.bl_leg_state.elbow_angle, -1.0, 1.0,
+                                                     MIN_SERVO_ANGLE, MAX_SERVO_ANGLE);
+
+  return out;
+}
+
+float median(float *values, int n)
+{
+  float tmp[n];
+
+  // Copiar valores
+  for (int i = 0; i < n; i++) {
+    tmp[i] = values[i];
+  }
+
+  // Ordenación simple (inserción)
+  for (int i = 1; i < n; i++) {
+    float key = tmp[i];
+    int j = i - 1;
+    while (j >= 0 && tmp[j] > key) {
+      tmp[j + 1] = tmp[j];
+      j--;
+    }
+    tmp[j + 1] = key;
+  }
+
+  // Mediana
+  if (n % 2 == 0) {
+    return 0.5f * (tmp[n/2 - 1] + tmp[n/2]);
+  } else {
+    return tmp[n/2];
+  }
 }

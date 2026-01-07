@@ -53,12 +53,15 @@
 
 // ----------- FreeRTOS -----------
 #define COMMS_PRIO 1
-#define COMMS_PERIOD 150
+#define COMMS_PERIOD 200
 #define COMMS_CORE LOGIC_CORE
 #define BAUD 115200
 
 // ----------- START CMD AND DATA -----------
-constexpr BrutusCommsCmd START_CMD {0, 0.0, 0.0, STANDING_POSE};
+constexpr BrutusLegState START_CMD_LEG {0.0, 0.0};
+constexpr BrutusPose START_CMD_POSE {START_CMD_LEG, START_CMD_LEG, START_CMD_LEG, START_CMD_LEG};
+constexpr BrutusCommsCmd START_CMD {0, 0.0, 0.0, START_CMD_POSE};
+
 constexpr BrutusCommsData START_DATA {STANDING_POSE, 0.0, 0.0, 0.0};
 
 #endif
