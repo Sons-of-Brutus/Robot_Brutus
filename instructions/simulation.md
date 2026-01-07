@@ -29,6 +29,8 @@ This type of mechanism is very difficult to simulate accurately in physics engin
 
 This approximation slightly reduces the effective pushing force of the legs during locomotion. However, the simulation remains sufficiently realistic and functional to extract the required information. Due to the absence of the real closed-chain mechanism, the simulated motion is not as smooth as in the physical robot.
 
+<img src="./media/sim/brutus_sim.png">
+
 ## Simulation in Pybullet
 
 To validate the dynamic behavior of the design before physical construction, the URDF model was loaded into the PyBullet physics engine and locomotion and load tests were executed under realistic gravity conditions.
