@@ -19,7 +19,7 @@
 
 **Notes:**
 - ***Left shoulder/elbow** are for **front left** leg and **back right** leg, while **right shoulder/elbow** are for **front right** leg, **back left** leg.*
-- *Spacer is optional as you can replace it for metalic washers with similar dimensions (Inner hole must be at least as the 3D model one).*
+- *Spacer is optional as you can replace it for M3 metalic washers with similar dimensions.*
 
 ## Electronic components
 | Name | Quantity | Description | Link | Image |
@@ -44,13 +44,13 @@
 | `20 AWG Wire` | 500 mm aprox. | - |
 | `26 AWG Wire` | 500 mm aprox. | - |
 | `28 AWG Wire` | 200 mm aprox. | - |
-| `Female-to-female Wire` | 18 | <img src="./media/components/jumpers.jpg" width="200">
+| `Female-to-female jumper wire` | 18 | <img src="./media/components/jumpers.jpg" width="200">
 
 **Notes**:
 - `2-Pole Terminal` can be substituted by:
   + Using 2 `1-Pole Terminal Block`.
   + Cutting a `N-pole Terminal Block` with more than 2 poles.
-- You can substitute 28 AWG cables by using *jumpers* with their conectors removed.
+- You can substitute 28 AWG cables by using *jumper wires* with their conectors removed.
 - Wire gauges:
 <img src="./media/components/wires.jpg" width="50%">
 

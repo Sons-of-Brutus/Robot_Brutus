@@ -183,6 +183,18 @@ Now you should connect the 8 `servos` to the `PCA9685` following the  [schematic
 | Back Left Shoulder | 0 |
 | Back Left Elbow | 1 |
 
+**Please note**, the following wires (from [part 1](#1-soldering-esp32-and-pca9685-connections)) inside the chassis must be routed out through the rear hole:
++ `ESP32` Vin or 5V
++ `ESP32` GND
++ `PCA9685` V+
++ `PCA9685` GND
++ `ESP32` GPIO 2
++ `ESP32` GPIO 15
++ `ESP32` GPIO 16
++ `ESP32` GPIO 4
++ `ESP32` GPIO 17
++ `ESP32` GPIO 5
+
 ## 5. Assembling chasis (Part 2)
 
 #### 5.1. Attach the `ESP32` and the `RGB LED` to the `chasis cover`
@@ -239,7 +251,7 @@ Now, place the `US sensor chasis` for each sensor:
 
 #### 7.2. Place the `Battery`
 
-Before placing the battery, remove the connector from the wires and add the `switch` for turning ON and OFF the robot.
+Before placing the battery, remove the XH2.54-2P connector from the wires and add the `switch` for turning ON and OFF the robot.
 
 **Connector:**
 
@@ -247,17 +259,136 @@ Before placing the battery, remove the connector from the wires and add the `swi
 
 **Switch connection:**
 
-1. Cut the wire
+```
+ ---------                          -----------
+|         |---[+]------------------|           |
+| Battery |                        | Connector |
+|         |---[-]------------------|           |
+ ---------                          -----------
 ```
 
+1. Remove the connector
+```
+ ---------                               -----------
+|         |---[+]------------------     |           |
+| Battery |                             | Connector |
+|         |---[-]------------------     |           |
+ ---------                               -----------
 ```
 
+2. Cut the wire
+```
+ ---------                               -----------
+|         |---[+]------------------     |           |
+| Battery |                             | Connector |
+|         |---[-]----- ✂️ ---------     |           |
+ ---------                               -----------
+```
 
-Then, place the battery 
+3. Add and solder the switch
+```
+ ---------                                   -----------
+|         |---[+]----------------------     |           |
+| Battery |                                 | Connector |
+|         |---[-]----🧑‍🏭| Switch |🧑‍🏭----     |           |
+ ---------                                   -----------
+```
+
+**Placing the `battery`**:
+
+Then, insert the battery into the Up box, routing the wires to the upper compartment through the small slot in the corner. And then connect again the battery connector.
 
 <p align="center">
-  <img src="./media/steps/step_7_2_1.png" width="70%">
+  <img src="./media/steps/step_7_2_1.png" width="50%"><img src="./media/steps/step_7_2_2.png" width="48%">
 </p>
+
+Attatch, using 2 `M1x5mm sheet metal screws`, the `Battery limit` to the box.
+
+<p align="center">
+  <img src="./media/steps/step_7_2_limit.png" width="50%">
+</p>
+
+#### 7.3. Add the `DC-DC Buck module`
+
+First of all, cut 2 pieces of 16 AWG wire (~80 mm each), and solder them to a female XH2.54-2P.
+
+Now, feed the wires through the back-right hole, leading them out the back.
+
+<p align="center">
+  <img src="./media/steps/step_7_3_inout_1.png" width="50%">
+</p>
+
+Now, you will solder this 2 cables to the VIN and GND terminals from the `DC-DC Buck`. To avoid a short circuit, is **ESSENTIAL** that you consider the connection of XH2.54 male (from the battery) and female (from the `DC-DC Buck`):
+
+<p align="center">
+  <img src="./media/steps/step_7_3_1.png" width="30%">
+</p>
+
+<p align="center">
+  <img src="./media/steps/step_7_3_inout_2.png">
+</p>
+
+Solder the output wires (16 AWG ~110 mm each) to the `DC-DC Buck` output pins.
+
+<p align="center">
+  <img src="./media/steps/step_7_3_inout_3.png">
+</p>
+
+Place the `DC-DC Buck` in its slot and feed the output wires through the back-right hole, leading them inside the box again. And secure the wires with a zip tie on each side.
+
+<p align="center">
+  <img src="./media/steps/step_7_3_inout_real.jpeg" width="70%">
+</p>
+
+#### 7.4. Terminal blocks connections
+
+Wires that will be used:
++ Vout and GND wires conected to `DC-DC Buck`
++ `ESP32` Vin or 5V (check end of [part 4](#4-connecting-servos-to-pca9685))
++ `ESP32` GND (check end of [part 4](#4-connecting-servos-to-pca9685))
++ `PCA9685` V+ (check end of [part 4](#4-connecting-servos-to-pca9685))
++ `PCA9685` GND (check end of [part 4](#4-connecting-servos-to-pca9685))
++ 6 `female-to-female jumper wires`, cut and stripped on one end.
+
+First, loosen the two screws on each of the two `terminal blocks`.
+
+Then, wist the exposed strands of the following wires:
++ Group (+):
+  - `ESP32` Vin or 5V
+  - `PCA9685` V+
+  - 3 `female-to-stripped jumper wires`
++ Group (-):
+  - `ESP32` GND
+  - `PCA9685` GND
+  - 3 `female-to-stripped jumper wires`
+
+Now, inside the `up box`, using the `terminal blocks`, make this connections:
+
+<p align="center">
+  <img src="./media/steps/step_7_4_2.png" width="70%">
+</p>
+
+Letting out of the box the *"Groups' wires"*, as shown in the image:
+
+<p align="center">
+  <img src="./media/steps/step_7_4_3.jpeg" width="70%">
+</p>
+
+#### 7.5. Connecting `HC-SR04` sensors to power supply
+
+Connect the `HC-SR04` sensors to the power supply to the `female-to-stripped jumper wires` from the `terminal blocks`:
+
+```
+Jumper from Group (+) <---> HC-SR04 Vcc
+Jumper from Group (-) <---> HC-SR04 GND
+```
+
+Use this image as reference:
+<p align="center">
+  <img src="./media/steps/step_7_5_1.jpeg" width="50%">
+</p>
+
+
 
 ## 8. Joining upper box with chasis
 
