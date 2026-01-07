@@ -407,8 +407,8 @@ The tabs on the chassis cover are designed to fit into the slots on the bottom o
 | `HC-SR04` sensor | Trigger GPIO | Echo GPIO
 | :--- | :---: | ---: |
 | Frontal | 15 | 2 |
-| Right | 4 | 16 |
-| Left | 17 | 5 |
+| Right | 17 | 5 |
+| Left | 4 | 16 |
 
 ## 9. Assembling legs (Part 2)
 
