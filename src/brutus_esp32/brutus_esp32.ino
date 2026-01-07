@@ -207,7 +207,7 @@ mode_task(void* pvParameters)
 
             mean_dist = mean_dist/((float)N_MEASUREMENTS);
           } else {
-            mean_dist = 0.0;
+            mean_dist = dist;
           }
 
           error = dist - mean_dist;
@@ -227,7 +227,8 @@ mode_task(void* pvParameters)
           distance_errors[i%N_MEASUREMENTS] = fabs(error);
 
           errors_m = calc_slope(distance_errors, N_MEASUREMENTS);
-          errors_m = map(errors_m, -100, 100, MIN_W, MAX_W);
+          errors_m = mapf_constrained(errors_m, -100.0, 100.0, MIN_W, MAX_W);
+
 
           if (i%N_MEASUREMENTS == N_MEASUREMENTS-1) {
             //Serial.println("KLK");
@@ -300,4 +301,13 @@ calc_slope(float *values, int n_values)
   float denominador = (n_values * sumX2) - (sumX * sumX);
   
   return numerador / denominador;
+}
+
+float mapf_constrained(float x, float in_min, float in_max,
+                       float out_min, float out_max)
+{
+    if (x < in_min) x = in_min;
+    if (x > in_max) x = in_max;
+
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
