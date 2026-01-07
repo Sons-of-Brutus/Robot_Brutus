@@ -183,35 +183,35 @@ constexpr BrutusPose BACKWARD_GAIT_STEPS[6] {GAIT_6, GAIT_5, GAIT_4, GAIT_3, GAI
 
 // TODO Fix SPIN poses
 
-constexpr BrutusPose SPIN_1 {FRONT_FORWARD_UP_STATE,
-                             FRONT_BACK_DOWN_STATE,
+constexpr BrutusPose SPIN_1 {FRONT_BACK_UP_STATE,
+                             FRONT_FORWARD_DOWN_STATE,
                              BACK_BACK_DOWN_STATE,
                              BACK_FORWARD_UP_STATE};
 
-constexpr BrutusPose SPIN_2 {FRONT_MID_UP_STATE,
-                             FRONT_MID_UP_STATE,
-                             BACK_MID_UP_STATE,
-                             BACK_MID_UP_STATE};
+constexpr BrutusPose SPIN_2 {FRONT_FORWARD_UP_STATE,
+                             FRONT_BACK_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE,
+                             BACK_BACK_UP_STATE};
 
-constexpr BrutusPose SPIN_3 {FRONT_BACK_DOWN_STATE,
-                             FRONT_FORWARD_UP_STATE,
+constexpr BrutusPose SPIN_3 {FRONT_FORWARD_DOWN_STATE,
+                             FRONT_BACK_DOWN_STATE,
+                             BACK_FORWARD_DOWN_STATE,
+                             BACK_BACK_DOWN_STATE};
+
+constexpr BrutusPose SPIN_4 {FRONT_FORWARD_DOWN_STATE,
+                             FRONT_BACK_UP_STATE,
                              BACK_FORWARD_UP_STATE,
                              BACK_BACK_DOWN_STATE};
 
-constexpr BrutusPose SPIN_4 {FRONT_MID_UP_STATE,
-                             FRONT_MID_UP_STATE,
-                             BACK_MID_UP_STATE,
-                             BACK_MID_UP_STATE};
+constexpr BrutusPose SPIN_5 {FRONT_BACK_DOWN_STATE,
+                             FRONT_FORWARD_UP_STATE,
+                             BACK_BACK_UP_STATE,
+                             BACK_FORWARD_DOWN_STATE};
 
-constexpr BrutusPose SPIN_5 {FRONT_FORWARD_UP_STATE,
-                             FRONT_BACK_DOWN_STATE,
+constexpr BrutusPose SPIN_6 {FRONT_BACK_DOWN_STATE,
+                             FRONT_FORWARD_DOWN_STATE,
                              BACK_BACK_DOWN_STATE,
-                             BACK_FORWARD_UP_STATE};
-
-constexpr BrutusPose SPIN_6 {FRONT_MID_UP_STATE,
-                             FRONT_MID_UP_STATE,
-                             BACK_MID_UP_STATE,
-                             BACK_MID_UP_STATE};
+                             BACK_FORWARD_DOWN_STATE};
 
 #define N_SPIN_STEPS 6
 constexpr BrutusPose SPIN_STEPS[6] {SPIN_1, SPIN_2, SPIN_3, SPIN_4, SPIN_5, SPIN_6};
