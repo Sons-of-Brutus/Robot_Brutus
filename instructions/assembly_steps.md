@@ -39,7 +39,7 @@ Solder the following connections:
 | `RGB LED` G | `ESP32` GPIO 25 | 28 AWG | - |
 | `RGB LED` B | `ESP32` GPIO 33 | 28 AWG | - |
 | `RGB LED` GND | `ESP32` GND | 28 AWG | **VERY IMPORTANT!** This `ESP32` GND pin must not be the same as the one in the 2nd row of this table. |
-| `ESP32` GPIO 2 | *Nowhere* | Female-to-female jumper | This wire needs a relatively large quantity of wire as it will be connected to one of the `HC-SR04` at the upper box. Connections at "[Joining upper box with chasis](#joining-upper-box-with-chasis)" steps. |
+| `ESP32` GPIO 2 | *Nowhere* | Female-to-female jumper | Cut and strip one of the ends of the wire. It needs a relatively large quantity of wire as it will be connected to one of the `HC-SR04` at the upper box. Connections at "[Joining upper box with chasis](#joining-upper-box-with-chasis)" steps. |
 | `ESP32` GPIO 15 | *Nowhere* | Female-to-female jumper | The same as `ESP32` GPIO 2 |
 | `ESP32` GPIO 16 | *Nowhere* | Female-to-female jumper | The same as `ESP32` GPIO 2 |
 | `ESP32` GPIO 4 | *Nowhere* | Female-to-female jumper | The same as `ESP32` GPIO 2 |
@@ -392,4 +392,41 @@ Use this image as reference:
 
 ## 8. Joining upper box with chasis
 
+#### 8.1. Attach `up box` to `chasis cover`
+
+The tabs on the chassis cover are designed to fit into the slots on the bottom of the Up box. You will probably hear a 'click' when it is fully seated.
+
+<p align="center">
+  <img src="./media/steps/step_8_1_1.png" width="50%"><img src="./media/steps/step_8_1_2.png" width="50%">
+  <img src="./media/steps/step_8_1_3.png" width="80%">
+</p>
+
+
+#### 8.2 Connect the `HC-SR04` sensors with `ESP32`
+
+| `HC-SR04` sensor | Trigger GPIO | Echo GPIO
+| :--- | :---: | ---: |
+| Frontal | 15 | 2 |
+| Right | 4 | 16 |
+| Left | 17 | 5 |
+
 ## 9. Assembling legs (Part 2)
+
+Finally, we will attach the end of each servo to its corresponding joint.
+
+#### 9.1. Set all servos to angle 0
+
+We want the legs to be in approximately the same position when the 'STANDING' pose is commanded. To do this, upload the [`brutus_esp32.ino`](../src/brutus_esp32/brutus_esp32.ino) code to the robot and set it to STAND mode via the terminal or app.
+
+#### 9.2. Attach servo's single-arm horns
+
+With STAND mode active, position each shoulder and elbow approximately as shown in the images.
+
+<p align="center">
+  <img src="./media/steps/step_9_2_1.jpeg" width="80%">
+  <img src="./media/steps/step_9_2_2.jpeg" width="80%">
+</p>
+
+Once positioned, fit the single-arm horn onto the servo, inserting the long end into the corresponding slot of the 3D-printed part. Then, using two M1x5mm sheet metal screws per servo, secure it by screwing into the nearest and furthest holes.
+
+Now, power off the robot and use the bolt included with the servo to secure the horn to the servo's output shaft.
