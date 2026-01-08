@@ -104,7 +104,7 @@ The box fits into the slots of the previously mentioned modified chasis cover
 </p>
 
 ### How do we attach the ultrasonics?
-The ultrasonic sensor is mounted using this model and the slots shown in the photo
+The ultrasonic sensor is mounted using this model and the slots shown in the photo. Three sensors are used: one at the front and one on each side, in order to meet the exercise requirements and allow the robot to follow a wall while avoiding obstacles.
 
 #### Ultrasonic chasis
 <p align="center">
