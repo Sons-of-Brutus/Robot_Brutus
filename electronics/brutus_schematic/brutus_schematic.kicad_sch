@@ -1612,6 +1612,194 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Switch:SW_Nidec_CAS-120A1"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at 0 4.318 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SW_Nidec_CAS-120A1"
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Button_Switch_SMD:Nidec_Copal_CAS-120A"
+				(at 0 -10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.nidec-components.com/e/catalog/switch/cas.pdf"
+				(at 0 -7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Switch, single pole double throw"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "switch single-pole double-throw spdt ON-ON"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "*Nidec?Copal?CAS?120A*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SW_Nidec_CAS-120A1_0_1"
+				(circle
+					(center -2.032 0)
+					(radius 0.4572)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.651 0.254) (xy 1.651 2.286)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 2.54)
+					(radius 0.4572)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.032 -2.54)
+					(radius 0.4572)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SW_Nidec_CAS-120A1_1_1"
+				(rectangle
+					(start -3.175 3.81)
+					(end 3.175 -3.81)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "esp32_devkit:ESP32S-WROOM"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2633,6 +2821,12 @@
 		(uuid "9c8bda19-8b27-4414-87d8-ee0cbf05e9ba")
 	)
 	(junction
+		(at 273.05 27.94)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a9565c51-aa39-4ffc-815f-f70951a9f5e3")
+	)
+	(junction
 		(at 13.97 123.19)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2808,7 +3002,7 @@
 	)
 	(wire
 		(pts
-			(xy 254 15.24) (xy 264.16 15.24)
+			(xy 254 15.24) (xy 273.05 15.24)
 		)
 		(stroke
 			(width 0)
@@ -2855,6 +3049,16 @@
 			(type default)
 		)
 		(uuid "1c5887aa-c379-4dfe-bab1-f65356998cf1")
+	)
+	(wire
+		(pts
+			(xy 254 25.4) (xy 254 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1d230c5b-33d1-46e1-ac05-071795991a84")
 	)
 	(wire
 		(pts
@@ -2985,16 +3189,6 @@
 			(type default)
 		)
 		(uuid "28b42a61-4970-41a0-bb4e-aeefe72831e8")
-	)
-	(wire
-		(pts
-			(xy 264.16 26.67) (xy 264.16 29.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "29d1e5d6-3aa4-4b3f-a410-497e2d91d524")
 	)
 	(wire
 		(pts
@@ -3338,6 +3532,16 @@
 	)
 	(wire
 		(pts
+			(xy 254 26.67) (xy 257.81 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6761cd59-b68c-43b5-8877-ce3256331e28")
+	)
+	(wire
+		(pts
 			(xy 17.78 154.94) (xy 26.67 154.94)
 		)
 		(stroke
@@ -3448,7 +3652,7 @@
 	)
 	(wire
 		(pts
-			(xy 264.16 15.24) (xy 264.16 16.51)
+			(xy 273.05 15.24) (xy 273.05 17.78)
 		)
 		(stroke
 			(width 0)
@@ -3548,16 +3752,6 @@
 	)
 	(wire
 		(pts
-			(xy 254 25.4) (xy 254 29.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8ba20c86-e1e9-47d1-a666-a8e982c9ead7")
-	)
-	(wire
-		(pts
 			(xy 121.92 52.07) (xy 140.97 52.07)
 		)
 		(stroke
@@ -3585,16 +3779,6 @@
 			(type default)
 		)
 		(uuid "8d8b43e1-cca7-464b-8fcf-9411932da105")
-	)
-	(wire
-		(pts
-			(xy 254 29.21) (xy 264.16 29.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8f9bb084-6298-408a-bf7d-b7ede6af5259")
 	)
 	(wire
 		(pts
@@ -3628,6 +3812,16 @@
 	)
 	(wire
 		(pts
+			(xy 273.05 26.67) (xy 273.05 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "96e165e2-0ab2-44e4-98d9-61e7c07ce8d1")
+	)
+	(wire
+		(pts
 			(xy 236.22 115.57) (xy 127 115.57)
 		)
 		(stroke
@@ -3645,6 +3839,16 @@
 			(type default)
 		)
 		(uuid "9c1db0d0-596e-4490-838c-bc65b8974357")
+	)
+	(wire
+		(pts
+			(xy 251.46 25.4) (xy 254 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ce14b28-a618-47b7-b70b-530e6ab5fada")
 	)
 	(wire
 		(pts
@@ -3998,6 +4202,16 @@
 	)
 	(wire
 		(pts
+			(xy 273.05 27.94) (xy 273.05 29.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e9000da3-e9d1-4d39-b3e2-012ee4b0c017")
+	)
+	(wire
+		(pts
 			(xy 26.67 161.29) (xy 73.66 161.29)
 		)
 		(stroke
@@ -4068,13 +4282,13 @@
 	)
 	(wire
 		(pts
-			(xy 254 25.4) (xy 251.46 25.4)
+			(xy 267.97 29.21) (xy 273.05 29.21)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "fd2bd358-0472-4a0c-9b9d-f448d8a743b8")
+		(uuid "f61ee81b-d0e6-47dd-991f-b5dc5f52aedc")
 	)
 	(wire
 		(pts
@@ -4531,6 +4745,77 @@
 		)
 	)
 	(symbol
+		(lib_id "Switch:SW_Nidec_CAS-120A1")
+		(at 262.89 29.21 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "470eff9f-cbdc-4df2-b79c-26a737a88578")
+		(property "Reference" "SWITCH"
+			(at 262.89 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SW1"
+			(at 262.89 24.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Button_Switch_SMD:Nidec_Copal_CAS-120A"
+			(at 262.89 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.nidec-components.com/e/catalog/switch/cas.pdf"
+			(at 262.89 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Switch, single pole double throw"
+			(at 262.89 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "a56eacda-7487-41a2-a8f6-cab1da188ab1")
+		)
+		(pin "1"
+			(uuid "bbbb0e74-a346-47f2-9ce1-dfab209b5cc3")
+		)
+		(pin "2"
+			(uuid "d1097291-fd10-44d2-be12-8ea356a068bf")
+		)
+		(instances
+			(project ""
+				(path "/157433d3-5d42-4d96-bdf8-aa456a46ad3d"
+					(reference "SWITCH")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "voltage_reduction:DC_DC_Buck_9-14V_to_5V_10A")
 		(at 236.22 22.86 0)
 		(mirror x)
@@ -4760,7 +5045,7 @@
 	)
 	(symbol
 		(lib_id "Device:Battery")
-		(at 264.16 21.59 0)
+		(at 273.05 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4768,7 +5053,7 @@
 		(dnp no)
 		(uuid "78c92abf-aef0-45ba-a023-80f24d58a248")
 		(property "Reference" "BT"
-			(at 267.97 19.7484 0)
+			(at 276.86 21.0184 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4778,7 +5063,7 @@
 			)
 		)
 		(property "Value" "Battery (12V-5A)"
-			(at 267.208 22.098 0)
+			(at 276.098 23.368 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4787,7 +5072,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 264.16 20.066 90)
+			(at 273.05 21.336 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4796,7 +5081,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 264.16 20.066 90)
+			(at 273.05 21.336 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4805,7 +5090,7 @@
 			)
 		)
 		(property "Description" "Multiple-cell battery"
-			(at 264.16 21.59 0)
+			(at 273.05 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
