@@ -555,7 +555,7 @@ public:
             } else if (w < 0) {
               pose = process_angular_speed(CCW_SPIN_STEPS[i%N_SPIN_STEPS], w);
             } else {
-              pose = GAIT_STEPS[GAIT_STAY_STEP];
+              pose = GAIT_6;
             }
           }
 
