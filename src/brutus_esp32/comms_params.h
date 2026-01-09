@@ -1,3 +1,9 @@
+/**
+ * @file comms_params.h
+ * @brief Definition of Parameters for comms.
+ *
+ */
+
 #ifndef MQTT_PARAMS__H
 #define MQTT_PARAMS__H
 

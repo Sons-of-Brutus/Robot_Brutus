@@ -1,3 +1,8 @@
+/**
+* @file BrutusLegInterface.h
+* @brief Definition of interface for the robot legs.
+*/
+
 #ifndef BRUTUS_LEG_INTERFACE__H
 #define BRUTUS_LEG_INTERFACE__H
 

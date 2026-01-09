@@ -1,3 +1,9 @@
+/**
+ * @file brutus_params.h
+ * @brief Definition of Parameters for Brutus.
+ *
+ */
+
 #ifndef BRUTUS_PARAMS__H
 #define BRUTUS_PARAMS__H
 

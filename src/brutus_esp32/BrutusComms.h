@@ -1,3 +1,10 @@
+/**
+* @file BrutusComms.h
+* @brief Creation of the Brutus Comms class.
+*
+* Definition of all methods and attributes of the Brutus Comms class.
+*/
+
 #ifndef BRUTUS_COMMS__H
 #define BRUTUS_COMMS__H
 
@@ -10,6 +17,14 @@
 #include "Brutus.h"
 #include "comms_params.h"
 #include "credential.h"
+
+/**
+ * @class BrutusComms
+ * @brief Handles WiFi and MQTT communications for the Brutus robot.
+ *
+ * Manages MQTT connections, publishes robot data, and receives control commands
+ * using a dedicated FreeRTOS task on ESP32.
+ */
 
 class BrutusComms {
   

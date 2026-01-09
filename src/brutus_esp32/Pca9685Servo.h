@@ -1,3 +1,8 @@
+/**
+* @file Pca9685Servo.h
+* @brief Definition of the Pca9685Servo class.
+*/
+
 #ifndef PCA_9685_SERVO__H
 #define PCA_9685_SERVO__H
 

@@ -1,3 +1,10 @@
+/**
+* @file Brutus.h
+* @brief Creation of the Brutus class.
+*
+* Definition of all methods and attributes of the Brutus class.
+*/
+
 #ifndef BRUTUS__H
 #define BRUTUS__H
 
