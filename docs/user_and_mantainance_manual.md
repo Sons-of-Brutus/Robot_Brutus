@@ -1487,7 +1487,8 @@ mode_task(void* pvParameters)
 
 ## Doxygen
 
-If you want to look for more information about our project, please checkout this Doxygen document in which is talked about almost all software we have made during the process of this project.
+If you want to look for more information about the classes, structs and methods from our project, please checkout [this link](https://sons-of-brutus.github.io/Robot_Brutus/).
+
 
 
 
