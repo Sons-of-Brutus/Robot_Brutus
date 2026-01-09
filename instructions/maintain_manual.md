@@ -18,6 +18,7 @@ It is intended for:
 
 The procedures described here allow safe servicing without damaging the robot.
 
+---
 ## Robot Components Overview
 
 Before performing any maintenance, inspection, or repair on Brutus, it is essential to understand the physical and electronic components that make up the robot.
@@ -45,7 +46,7 @@ This section provides a complete overview of all structural, mechanical, and ele
 
 **Notes:**
 - *Left shoulder/elbow are for front left leg and back right leg, while right shoulder/elbow are for front right leg, back left leg.*
-- *Spacer is optional as you can replace it for a metalic one with similar dimensions (Inner hole must be at least as the 3D model one).*
+- *Spacer is optional as you can replace it for a metallic one with similar dimensions (Inner hole must be at least as the 3D model one).*
 ---
 ### Electronic components
 | Name | Quantity | Description | Link | Image |
@@ -97,6 +98,7 @@ This assembly instructions are divided in N parts:
 8. [Joining upper box with chasis](#8-joining-upper-box-with-chasis)
 9. [Assembling legs (Part 2)](#9-assembling-legs-part-2)
 
+---
 ### 1. Soldering `ESP32` and `PCA9685` Connections
 
 First of all, if your `ESP32` and/or `PCA9685` have soldered pins, first, you should desolder them, so the pin's holes for the upcoming cables are free.
@@ -133,6 +135,7 @@ Solder the following connections:
 - The 4 wires that connect `RGB LED` and `ESP32` should be long enough to place this two components as explained in "[Assembling chasis (Part 2)](#assembling-chasis-part-2)" steps.
 - For each of the 6 wires for `HC-SR04`, you must remove one of the tips of a `Female-to-female jumper`. The removed part is the one soldered to the `ESP32` and the *female* part will be connected to the `HC-SR04`.
 
+---
 ### 2. Assembling chasis (Part 1)
 
 #### 2.1. `PCA9685` attachment in the chasis
@@ -177,19 +180,20 @@ All 8 servos will have shorter wires, but in this step we will only consider the
 
 <img src="./media/steps/step_2_3_1.png" width="50%"><img src="./media/steps/step_2_3_2.png" width="50%">
 
-You can use the `sheet metal screws` that are included with the servos to attatch the servos to the chasis.
+You can use the `sheet metal screws` that are included with the servos to attach the servos to the chasis.
 
+---
 ### 3. Assembling legs (Part 1)
 
 The images are using `Left shoulder` and `Left elbow` pieces, but the same process is applied to `Right shoulder` and `Right elbow`.
 
-#### 3.1. Attatch the servo to the shoulder
+#### 3.1. Attach the servo to the shoulder
 
 <img src="./media/steps/step_3_1_1.png" width="50%"><img src="./media/steps/step_3_1_2.png" width="47.9%">
 
-You can use the `sheet metal screws` that are included with the servos to attatch the servo to the shoulder.
+You can use the `sheet metal screws` that are included with the servos to attach the servo to the shoulder.
 
-**Important:** You should do the [same process off triming the servo's wires](#22-trim-the-servo-wires-to-fit) so they could enter to the chasis and be connected to the `PCA9685`, letting some length for shoulder movement.
+**Important:** You should do the [same process off trimming the servo's wires](#22-trim-the-servo-wires-to-fit) so they could enter to the chasis and be connected to the `PCA9685`, letting some length for shoulder movement.
 
 <p align="center">
   <img src="./media/steps/step_3_servos.jpeg" width="50%">
@@ -197,7 +201,7 @@ You can use the `sheet metal screws` that are included with the servos to attatc
 
 #### 3.2. Join the elbow and the shoulder
 
-First, identify how you shuold place de elbow.
+First, identify how you should place de elbow.
 
 <p align="center">
   <img src="./media/steps/step_3_2_place1.png" width="50%"><img src="./media/steps/step_3_2_place2.png" width="50%">
@@ -243,6 +247,7 @@ Use `M3x30mm bolts` and a `M3 nuts`.
   <img src="./media/steps/step_3_5_2.png" width="50%"><img src="./media/steps/step_3_5_3.png" width="33.5%">
 </p>
 
+---
 ## 4. Connecting servos to `PCA9685`
 
 Now you should connect the 8 `servos` to the `PCA9685` following the  [schematic](../electronics/brutus_schematic/brutus_electronic_schematics.svg) (<-- Click here to see it bigger):
@@ -277,6 +282,7 @@ Now you should connect the 8 `servos` to the `PCA9685` following the  [schematic
 + `ESP32` GPIO 17
 + `ESP32` GPIO 5
 
+---
 ### 5. Assembling chasis (Part 2)
 
 #### 5.1. Attach the `ESP32` and the `RGB LED` to the `chasis cover`
@@ -301,7 +307,7 @@ Use a `M3x8mm bolt` at each side.
   <img src="./media/steps/step_5_3_1.png">
 </p>
 
-
+---
 ### 6. Joining legs with chasis
 
 How the legs should be placed:
@@ -317,6 +323,7 @@ Screw the `M3x8mm Bolt` into the nut placed in [step 5.2](#52-chasis-cover-m3-nu
   <img src="./media/steps/step_6_1.png" width="70%">
 </p>
 
+---
 ### 7. Assembling upper box
 
 #### 7.1. Place the `HC-SR04` sensors
@@ -384,7 +391,7 @@ Then, insert the battery into the Up box, routing the wires to the upper compart
   <img src="./media/steps/step_7_2_1.png" width="50%"><img src="./media/steps/step_7_2_2.png" width="48%">
 </p>
 
-Attatch, using 2 `M1x5mm sheet metal screws`, the `Battery limit` to the box.
+Attach, using 2 `M1x5mm sheet metal screws`, the `Battery limit` to the box.
 
 <p align="center">
   <img src="./media/steps/step_7_2_limit.png" width="50%">
@@ -471,7 +478,7 @@ Use this image as reference:
 </p>
 
 
-
+---
 ### 8. Joining upper box with chasis
 
 #### 8.1. Attach `up box` to `chasis cover`
@@ -492,6 +499,7 @@ The tabs on the chassis cover are designed to fit into the slots on the bottom o
 | Right | 17 | 5 |
 | Left | 4 | 16 |
 
+---
 ### 9. Assembling legs (Part 2)
 
 Finally, we will attach the end of each servo to its corresponding joint.
@@ -528,8 +536,8 @@ Brutus uses the following fasteners in its structure:
 
 - M3 bolts  
 - M3 nuts  
-- Sheet metal screws (for servos and battery limiter)  
-- Servo horn screws (M1 self-tapping)  
+- Sheet metal screws 
+- Servo horn screws  
 
 These elements are exposed to repeated mechanical stress during operation, especially in the legs.
 
@@ -577,6 +585,7 @@ A loose servo horn causes angular offset and loss of accuracy, which directly af
 
 A malfunctioning servo can cause unstable motion, high power consumption, mechanical stress, and unpredictable behavior of the robot. The following methods allow early detection of servo problems before permanent damage occurs.
 
+---
 #### 1. Visual and Motion Inspection
 
 While the robot is powered and standing:
@@ -632,6 +641,7 @@ Brutus is powered by a 3S Li-ion battery. Proper handling and maintenance of the
 
 The DC-DC buck converter will stop regulating correctly if the battery voltage falls too low, which can cause resets or erratic behavior of the ESP32 and servos.
 
+---
 ### Storage recommendations
 When the robot will not be used for extended periods:
 - Store the battery at approximately **50–60% charge**
@@ -660,14 +670,15 @@ This simple procedure prevents most mechanical failures before they occur.
 ### Electrical Connections and Wiring Integrity
 
 All the main electrical connections of Brutus — including the ESP32, PCA9685, RGB LED and DC-DC buck converter — are permanently soldered.  
-Only the ultrasonic sensors (HC-SR04) are connected using removable jumper cables.
+Only the ultrasonic sensors (HC-SR04) and the servos are connected using removable jumper cables.
 
 This design minimizes contact resistance, vibration-related failures and voltage drops in high-current paths.
 
 The power distribution of the robot follows this chain:
 
-Battery → Switch → DC-DC Buck → Terminal Blocks → ESP32 + PCA9685 → servos + LED RGB
+Battery → Switch → DC-DC Buck → Terminal Blocks → ESP32 + PCA9685 + HCSR-04 → servos + LED RGB
 
+---
 #### Critical power cables
 
 Some cables are especially critical for safe and stable operation:
@@ -680,6 +691,7 @@ Some cables are especially critical for safe and stable operation:
 
 These cables must always be firmly soldered and mechanically strain-relieved.
 
+---
 #### Connections most likely to cause power loss
 
 If the robot suddenly shuts down, reboots, or loses servo power, the most common causes are:
@@ -693,6 +705,7 @@ If the robot suddenly shuts down, reboots, or loses servo power, the most common
 
 These should be inspected first before suspecting software faults.
 
+---
 #### Detecting bad contacts
 
 A poor electrical connection typically causes one or more of the following symptoms:
@@ -707,8 +720,696 @@ To check for false contacts:
 3. If the robot resets, flickers or stops, that wire has a faulty connection.
 4. Re-solder or re-tighten the affected connection immediately.
 
+---
 #### Ultrasonic sensor cables
 
-The HC-SR04 sensors are the only components connected via removable jumper cables. These may become loose over time and should be checked periodically, especially if distance readings become unstable or incorrect.
+The HC-SR04 sensors are connected via removable jumper cables. These may become loose over time and should be checked periodically, especially if distance readings become unstable or incorrect.
+
+---
+## User Manual
+
+This User Manual explains how to operate, control, and understand the internal software structure of the Brutus quadruped robot.
+It is intended for users who want to run the robot, send commands, monitor its state, and modify its behavior through the ESP32 firmware and MQTT communication system.
+
+This user manual focuses on:
+
+- How Brutus is started and configured
+- How it receives commands
+- How it changes behavior between modes
+- How its motion and perception systems are coordinated 
+- How to control it remotely via MQTT
+
+It also provides an overview of the main firmware components so that future users can safely extend or debug the robot without breaking its core behavior.
+
+--- 
+### Network and MQTT configuration
+
+The file credential.h contains all the network credentials and communication parameters required for the ESP32 to connect to a WiFi network and to the MQTT broker.
+This file is intentionally separated from the rest of the code in order to keep sensitive information (usernames, passwords, and network names) isolated and easy to modify without changing the main program.
+
+This approach also allows each user to configure their own credentials without affecting the shared project code.
+---
+#### WiFi configuration
+
+The system supports two different WiFi connection modes:
+- **Eduroam network**, which requires a username and password instead of only an SSID and a WiFi key
+- **Home / Office WiFi network**, in which only an SSID and a password are required
+---
+#### Network selection
+
+In the main firmware, a configuration parameter determines whether the ESP32 should connect to the Eduroam network or to a standard WiFi network.
+
+Depending on this parameter, the corresponding set of credentials (SSID_EDUROAM + USERNAME_EDUROAM + PASSWORD_EDUROAM, or SSID + PASSWORD) is used to establish the connection.
+
+This design allows the same firmware to be used in different environments (university, home, office, etc.) without modifying the core program logic.
+
+---
+#### MQTT configuration
+
+The file also defines the parameters used to connect to the MQTT broker, the values selected in the files specify the address and port of the MQTT server used for communication between the robot and external systems.
+
+---
+#### Security considerations
+
+Since this file contains private credentials, it should not be shared publicly or uploaded to version control repositories with real data.
+Each user should keep their own local copy of credential.h with their personal WiFi and Eduroam credentials.
+
+---
+#### `Credential.h` template
+```cpp
+#ifndef CREDENTIAL_H
+#define CREDENTIAL_H
+
+// =====================
+//  WIFI - Eduroam
+// =====================
+#define SSID_EDUROAM     "eduroam"   // Your eduroam SSID
+#define USERNAME_EDUROAM ""          // Your eduroam username
+#define PASSWORD_EDUROAM ""          // Your eduroam password
+
+// =====================
+//  WIFI - Home / Office
+// =====================
+#define SSID     ""  // Your WiFi SSID
+#define PASSWORD ""    // Your WiFi password
+
+// =====================
+//  MQTT
+// =====================
+#define MQTT_SERVER "test.mosquitto.org"  // Your MQTT broker address
+#define MQTT_PORT   1883                 // Your MQTT broker port
+
+#endif // CREDENTIAL_H
+```
+---
+
+## `brutus_params.h` – Robot configuration and motion parameters
+
+The file brutus_params.h contains all the global configuration parameters that define the electrical, mechanical and motion behavior of the Brutus robot.
+It centralizes all tunable values so that the robot can be calibrated, adapted and modified without changing the core control logic.
+
+This file covers:
+
+- Servo configuration
+
+- GPIO pin mapping
+
+- Leg geometry and calibration
+
+- FreeRTOS task configuration
+
+- Motion poses and gait definitions
+
+- Speed limits
+
+- Perception system timing
+
+---
+### Servo configuration
+
+```cpp
+#define PWM_SERVO_FREQ 50
+#define MIN_SERVO_ANGLE -90.0
+#define MAX_SERVO_ANGLE 90.0
+#define MIN_SERVO_PWM_PULSE_US 500
+#define MAX_SERVO_PWM_PULSE_US 2500
+```
+
+These parameters define how the PWM signals are generated for the servos:
+
+- `PWM_SERVO_FREQ` defines the PWM frequency (50 Hz), which is standard for RC servos.
+
+- `MIN_SERVO_ANGLE` and `MAX_SERVO_ANGLE` define the angular range used by the software.
+
+- `MIN_SERVO_PWM_PULSE_US` and `MAX_SERVO_PWM_PULSE_US` define the electrical PWM pulse width corresponding to the minimum and maximum angles.
+
+---
+### GPIO configuration
+
+The GPIO section defines how the ESP32 is electrically connected to the sensors and actuators:
+```cpp
+#define US_R_TRIG 17
+#define US_R_ECHO 5
+
+#define US_L_TRIG 4
+#define US_L_ECHO 16
+
+#define US_F_TRIG 15
+#define US_F_ECHO 2
+
+#define R_PIN 32
+#define G_PIN 25
+#define B_PIN 33
+
+#define PCA9685_OE 19
+```
+
+These pins correspond to:
+
+- Three ultrasonic distance sensors (front, left and right).
+
+- An RGB LED (R, G, B channels).
+
+- The Output Enable (OE) pin of the PCA9685 servo controller.
+
+---
+### Leg servo mapping
+
+Each leg has two servos:
+
+- A shoulder (horizontal movement)
+
+- An elbow (vertical movement)
+
+The file defines which PCA9685 channel controls each servo:
+
+```cpp
+#define SHOULDER_BACK_LEFT_PCA_PIN 0
+#define ELBOW_BACK_LEFT_PCA_PIN    1
+
+#define SHOULDER_BACK_RIGHT_PCA_PIN 2
+#define ELBOW_BACK_RIGHT_PCA_PIN    3
+
+#define SHOULDER_FRONT_LEFT_PCA_PIN 9
+#define ELBOW_FRONT_LEFT_PCA_PIN    8
+
+#define SHOULDER_FRONT_RIGHT_PCA_PIN 13
+#define ELBOW_FRONT_RIGHT_PCA_PIN    12
+```
+
+---
+### Servo calibration
+
+Mechanical assembly imperfections mean that servos are never perfectly aligned.
+To compensate for this, angular offsets are defined for each joint:
+
+```cpp
+#define SHOULDER_BACK_LEFT_ANGLE_OFFSET -2.0
+#define ELBOW_BACK_LEFT_ANGLE_OFFSET    -5.0
+
+#define SHOULDER_BACK_RIGHT_ANGLE_OFFSET 3.0
+#define ELBOW_BACK_RIGHT_ANGLE_OFFSET    0.0
+
+#define SHOULDER_FRONT_LEFT_ANGLE_OFFSET -10.0
+#define ELBOW_FRONT_LEFT_ANGLE_OFFSET    -12.0
+
+#define SHOULDER_FRONT_RIGHT_ANGLE_OFFSET -2.0
+#define ELBOW_FRONT_RIGHT_ANGLE_OFFSET    -20.0
+```
+
+In addition, because of the colocation of some legs, some servos are mounted in inverted orientations. This is handled by:
+
+```cpp
+#define SHOULDER_BACK_LEFT_INVERTED false
+#define ELBOW_BACK_LEFT_INVERTED    true
+
+#define SHOULDER_BACK_RIGHT_INVERTED true
+#define ELBOW_BACK_RIGHT_INVERTED    false
+
+#define SHOULDER_FRONT_LEFT_INVERTED false
+#define ELBOW_FRONT_LEFT_INVERTED    false
+
+#define SHOULDER_FRONT_RIGHT_INVERTED true
+#define ELBOW_FRONT_RIGHT_INVERTED    true
+```
+
+---
+### FreeRTOS task configuration
+
+The robot software runs on FreeRTOS using two CPU cores:
+```cpp
+#define MOTION_CORE  0
+#define LOGIC_CORE   1
+```
+
+- The motion core handles gait generation and servo control.
+
+- The logic core handles perception, communication and high-level decision making.
+
+Task timing is controlled by:
+
+```cpp
+#define DEFAULT_MOTION_PERIOD 300
+#define MODES_PERIOD 200
+```
+
+These values define how often motion and logic tasks are executed.
+
+---
+### Pose and gait definition
+
+The robot motion is defined using poses, represented by the `BrutusPose` structure:
+
+```cpp
+struct BrutusPose {
+  BrutusLegState fr_leg_state;
+  BrutusLegState fl_leg_state;
+  BrutusLegState br_leg_state;
+  BrutusLegState bl_leg_state;
+};
+```
+Each pose contains the desired joint angles for the four legs.
+
+Each pose contains the desired joint angles for the four legs.
+
+A **gait** is defined as a sequence of poses:
+
+```cpp
+constexpr BrutusPose GAIT_STEPS[6] {GAIT_1, GAIT_2, ... , GAIT_6};
+```
+These poses describe a walking cycle.
+A backward gait is also defined by reversing this sequence.
+
+Spin-in-place motions are defined using the `SPIN_STEPS` arrays.
+
+This approach makes it easy to design and tune locomotion by editing poses rather than writing complex motion equations.
+
+---
+### Speed limits
+
+```cpp
+#define MIN_W -1.0f
+#define MAX_W 1.0f
+
+#define MIN_V -1.0f
+#define MAX_V 1.0f
+```
+These values define the allowed ranges for:
+
+- Linear velocity (V)
+
+- Angular velocity (W)
+
+They are used by higher-level control to limit how fast the robot can move or turn.
+
+---
+### Perception system
+```cpp
+#define N_DISTANCE_SENSORS 3
+#define PERCEPTION_PRIO 3
+#define PERCEPTION_PERIOD 200
+#define MIN_PERCEPTION_TIMEOUT 10
+```
+
+These parameters configure the ultrasonic sensor system:
+
+- Number of sensors.
+
+- FreeRTOS task priority.
+
+- Update period (every 200 ms).
+
+- Minimum allowed timeout for a measurement.
+
+This ensures reliable obstacle detection without blocking the rest of the system.
+
+---
+## `comms_params.h` – MQTT communication configuration
+
+The file comms_params.h centralizes all the configuration required for the robot’s communication layer.
+It defines the MQTT client identity, the subscribed and published topics, timing parameters for connection handling, message buffers, and default command/data structures used at startup.
+
+This file is designed to keep the MQTT interface consistent and easy to maintain. 
+
+---
+### MQTT client identifier
+
+```cpp
+#define CLIENT_ID "brutus_esp"
+```
+
+This is the unique MQTT client identifier used when the ESP32 connects to the broker.
+
+---
+### Subscribed topics (commands to the robot)
+
+```cpp
+#define TOPIC_CMD_MODE   "brutus/cmd/mode"
+#define TOPIC_CMD_VEL    "brutus/cmd/velocity"
+#define TOPIC_CMD_POSE   "brutus/cmd/pose"
+```
+
+The robot subscribes to these topics to receive commands from an external controller:
+
+- brutus/cmd/mode: change the robot operating mode.
+
+- brutus/cmd/velocity: set linear and angular velocity references.
+
+- brutus/cmd/pose: directly command a full pose to the robot.
+
+To simplify internal handling, each command is also mapped to an integer code:
+
+```cpp
+#define CMD_MODE   0
+#define CMD_VEL    1
+#define CMD_POSE   2
+```
+---
+### Published topics (robot telemetry)
+
+```cpp
+#define TOPIC_STATE_HEARTBEAT "brutus/data/heartbeat"
+#define TOPIC_POSE            "brutus/data/pose"
+#define TOPIC_DIST_FRONT      "brutus/data/distance/front"
+#define TOPIC_DIST_RIGHT      "brutus/data/distance/right"
+#define TOPIC_DIST_LEFT       "brutus/data/distance/left"
+```
+
+The robot publishes telemetry data to these topics:
+
+- `brutus/data/heartbeat`: periodic status message that indicates the robot is alive and connected.
+
+- `brutus/data/pose`: the pose currently executed by the robot.
+
+- `brutus/data/distance/*`: distances measured by the ultrasonic sensors (front, right, left).
+
+Similarly, message types are mapped to integer identifiers:
+
+```cpp
+#define STATE_HEARTBEAT 0
+#define POSE            1
+#define DIST_FRONT      2
+#define DIST_RIGHT      3
+#define DIST_LEFT       4
+```
+---
+### Connection timing parameters
+
+```cpp
+#define WIFI_WAIT 500
+#define RECONNECT_WAIT 3000
+```
+
+- `WIFI_WAIT` sets the delay (in milliseconds) used while waiting for WiFi to connect.
+
+- `RECONNECT_WAIT` sets the delay (in milliseconds) between MQTT reconnection attempts if the connection is lost.
+
+These values avoid aggressive reconnection loops and help keep the system stable.
+
+---
+### Network mode selection (Eduroam vs normal WiFi)
+
+```cpp
+#define IS_EDUROAM false
+```
+
+This parameter selects which WiFi credentials should be used during initialization:
+
+- true: connect using ***Eduroam*** credentials (enterprise authentication).
+
+- false: connect using a ***standard WiFi network*** (SSID + password).
+
+The actual credentials are defined in credential.h, while this flag determines which set of credentials will be used by the connection code.
+
+---
+### Ranges for test/debug messages
+
+```cpp
+#define MIN_LEG_DEG 0
+#define MAX_LEG_DEG 181
+#define MIN_DIST 0
+#define MAX_DIST 200
+```
+
+These ranges are created in order to put a limit to the leg degrees and the distance the ultrasonic sensor can reach.
+
+---
+### Joint identifier strings
+
+```cpp
+#define SHOULDER "0"
+#define ELBOW "1"
+```
+
+These string identifiers are used in message payloads (JSON fields) to label which joint is being referenced.
+
+---
+### Buffers and message sizes
+
+```cpp
+#define MSG_BUFFER 254
+#define JSON_BUFFER 300
+```
+
+These values define the maximum sizes used to store incoming/outgoing MQTT payloads:
+
+- `MSG_BUFFER`: raw MQTT message buffer length.
+
+- `JSON_BUFFER`: buffer size for JSON serialization/deserialization.
+
+---
+### Task timing and serial configuration
+
+```cpp
+#define COMMS_PERIOD 200
+#define COMMS_CORE LOGIC_CORE
+#define BAUD 115200
+```
+
+- `COMMS_PERIOD` defines how often the communications task runs (every 200 ms).
+
+- `COMMS_CORE` pins the task to the logic core (LOGIC_CORE), keeping communications separate from real-time motion control.
+
+- `BAUD` sets the serial debugging baud rate.
+
+---
+### Default startup command and telemetry
+
+```cpp
+constexpr BrutusCommsCmd START_CMD {0, 0.0, 0.0, STANDING_POSE};
+constexpr BrutusCommsData START_DATA {STANDING_POSE, 0.0, 0.0, 0.0};
+```
+
+At startup, the robot initializes both the current command and telemetry structures with safe default values:
+
+- START_CMD initializes:
+
+  - mode = 0 (default mode)
+
+  - linear velocity v = 0.0
+
+  - angular velocity w = 0.0
+
+  - pose = STANDING_POSE
+
+- START_DATA initializes:
+
+  - pose = STANDING_POSE
+
+  - ultrasonic distances set to 0.0 until valid measurements are available.
+
+---
+
+## User Sketch
+### Enum Declaration
+
+This enum is declared to be used in the state machine created in the logic task.
+```c
+enum FuncMode {
+  STANDING = 0,
+  EXERCISE_1 = 1,
+  EXERCISE_2 = 2,
+  LEG_CONTROL = 3,
+  VEL_CONTROL = 4
+};
+```
+---
+### Variable Declaration
+
+In this section, the main system objects are declared.  
+The **PCA (`Adafruit_PWMServoDriver`)** is not only declared but also **initialized to enable control of the different servos**.  
+Additionally, the `brutus_comms` object is declared, which is responsible for communications, and the `brutus` object, which handles both motion control and sensory processing.  
+Finally, the *task handle* that manages the system logic is declared.
+
+
+```c
+Adafruit_PWMServoDriver pca = Adafruit_PWMServoDriver();
+
+Brutus brutus;
+BrutusComms brutus_comms;
+
+TaskHandle_t mode_task_handle;
+```
+---
+### Setup()
+#### Brutus
+First, Brutus is prepared for operation by calling the general setup function. In this step, the PCA controller, the LED pins, and the PWM frequency used for servo control are assigned.
+
+Next, the setup functions for each of Brutus’ legs are called individually. In each call, the PCA pins to which the two servos of each leg (shoulder and elbow) are connected are specified, along with the minimum and maximum PWM values and the angular limits for each servomotor. Angular offsets are also defined to compensate for possible mechanical inaccuracies caused by imperfect physical calibration. Due to the physical arrangement of the legs, some servos require inversion of the rotation direction to ensure correct movement; this behavior is configured using the last two parameters of each function.
+
+Then, the perception system is initialized, which includes the ultrasonic sensors. Once all configuration steps are completed, the function brutus.start() is called, leaving the system fully ready for use.
+
+After this initialization, it is possible to set the robot’s desired initial configuration. The code provides an example of a possible initial setup.
+
+Finally, the task that will manage both movement and perception is created
+
+```c
+brutus.setup(&pca,
+               PCA9685_OE,
+               R_PIN,
+               B_PIN,
+               G_PIN,
+               PWM_SERVO_FREQ);
+
+brutus.setup_front_right_leg(SHOULDER_FRONT_RIGHT_PCA_PIN, ELBOW_FRONT_RIGHT_PCA_PIN,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            SHOULDER_FRONT_RIGHT_ANGLE_OFFSET, ELBOW_FRONT_RIGHT_ANGLE_OFFSET,
+                            SHOULDER_FRONT_RIGHT_INVERTED, ELBOW_FRONT_RIGHT_INVERTED);
+
+brutus.setup_front_left_leg(SHOULDER_FRONT_LEFT_PCA_PIN,    ELBOW_FRONT_LEFT_PCA_PIN,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            SHOULDER_FRONT_LEFT_ANGLE_OFFSET, ELBOW_FRONT_LEFT_ANGLE_OFFSET,
+                            SHOULDER_FRONT_LEFT_INVERTED, ELBOW_FRONT_LEFT_INVERTED);
+
+brutus.setup_back_right_leg(SHOULDER_BACK_RIGHT_PCA_PIN, ELBOW_BACK_RIGHT_PCA_PIN,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            SHOULDER_BACK_RIGHT_ANGLE_OFFSET, ELBOW_BACK_RIGHT_ANGLE_OFFSET,
+                            SHOULDER_BACK_RIGHT_INVERTED, ELBOW_BACK_RIGHT_INVERTED);
+
+brutus.setup_back_left_leg(SHOULDER_BACK_LEFT_PCA_PIN, ELBOW_BACK_LEFT_PCA_PIN,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_PWM_PULSE_US, MAX_SERVO_PWM_PULSE_US,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            MIN_SERVO_ANGLE, MAX_SERVO_ANGLE,
+                            SHOULDER_BACK_LEFT_ANGLE_OFFSET, ELBOW_BACK_LEFT_ANGLE_OFFSET,
+                            SHOULDER_BACK_LEFT_INVERTED, ELBOW_BACK_LEFT_INVERTED);
+
+brutus.setup_perception(US_R_TRIG,
+                        US_R_ECHO,
+                        US_L_TRIG,
+                        US_L_ECHO,
+                        US_F_TRIG,
+                        US_F_ECHO,
+                        MIN_PERCEPTION_TIMEOUT);
+
+brutus.start();
+
+brutus.set_linear_speed_ts(0.0);
+brutus.set_angular_speed_ts(0.0);
+brutus.change_target_pose(STANDING_POSE);
+
+brutus.set_motion_control_mode(POSE_CONTROL);
+
+brutus.create_motion_task(DEFAULT_MOTION_PERIOD, MOTION_CORE);
+brutus.create_perception_task(PERCEPTION_PERIOD, LOGIC_CORE, PERCEPTION_PRIO);
+```
+---
+#### Brutus Comms
+To initialize BrutusComms, simply call the start function first, and then create the task that will manage communications.
+
+```c
+brutus_comms.start(&brutus);
+brutus_comms.create_comms_task(COMMS_CORE); 
+
+```
+
+---
+#### Logic Task
+Finally, we create the task that will manage Brutus’ highest-level logic, that is, what to do in each mode.
+```c
+  xTaskCreatePinnedToCore(
+    (TaskFunction_t)mode_task,
+    "ModeTask",
+    MODES_TASK_SIZE,
+    NULL,
+    2,
+    &mode_task_handle,
+    LOGIC_CORE
+  );
+```
+
+---
+### loop()
+```c
+void loop() {}
+```
+## Logic Task Definition
+It is worth noting that in each mode we change the eye color to indicate the current mode, although this is not strictly necessary.
+
+```c
+void
+mode_task(void* pvParameters)
+{
+  BrutusCommsCmd cmd;
+  
+  // Initial values
+  enum FuncMode mode = EXERCISE_1;
+  enum FuncMode last_mode = STANDING;
+
+  BrutusPose pose = brutus.check_pose(true);
+
+  float fr_elbow = 0.0;
+  float fl_elbow = 0.0;
+  float br_elbow = 0.0;
+  float bl_elbow = 0.0;
+
+  while (true) {
+    // We update the command using the information received through Mosquitto communications.
+    cmd = brutus_comms.getCmd();
+    mode = FuncMode(cmd.mode);
+
+    switch (mode)
+    {
+      case STANDING:
+        if (mode != last_mode) {
+          brutus.eyes_blue();
+          // We set Brutus to operate in pose control mode.
+          brutus.set_motion_control_mode(POSE_CONTROL);
+          last_mode = mode;
+        }
+        // Set brutus to STANDING_POSE
+        brutus.change_target_pose(STANDING_POSE);
+        break;
+      
+      case LEG_CONTROL:
+        if (mode != last_mode) {
+          brutus.eyes_yellow();
+          // We set Brutus to operate in pose control mode.
+          brutus.set_motion_control_mode(POSE_CONTROL);
+          last_mode = mode;
+        }
+
+        brutus.change_target_pose(interp_pose_norm(cmd.pose));
+        break;
+
+      case VEL_CONTROL:
+        if (mode != last_mode) {
+          brutus.eyes_green();
+          // We set Brutus to operate in speed control mode.
+          brutus.set_motion_control_mode(SPEED_CONTROL);
+          last_mode = mode;
+        }
+
+        // We use the v and w recived from comms to set Brutus v and w
+        brutus.set_linear_speed_ts(cmd.v);
+        brutus.set_angular_speed_ts(cmd.w);
+        break;
+
+      case EXERCISE_1:
+        // Logic of exercise 1
+        continue;
+        break;
+
+      case EXERCISE_2:
+        // Logic of exercise 2
+        continue;
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+```
+
 
 
