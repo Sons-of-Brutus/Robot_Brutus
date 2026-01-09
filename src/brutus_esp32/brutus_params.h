@@ -1,3 +1,9 @@
+/**
+ * @file brutus_params.h
+ * @brief Definition of Parameters for Brutus.
+ *
+ */
+
 #ifndef BRUTUS_PARAMS__H
 #define BRUTUS_PARAMS__H
 
@@ -6,9 +12,9 @@
 // --------- SERVOS CONFIG ----------
 
 // Actual configuration is for MG90s servos
-#define PWM_SERVO_FREQ 50
+#define PWM_SERVO_FREQ 50  /**< PWM frequency for the servos */
 
-#define MIN_SERVO_ANGLE -90.0
+#define MIN_SERVO_ANGLE -90.0 /**<  */
 #define MAX_SERVO_ANGLE 90.0
 
 #define MIN_SERVO_PWM_PULSE_US 500
