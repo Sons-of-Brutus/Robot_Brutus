@@ -1,13 +1,15 @@
 #include "Brutus.h"
 #include "BrutusComms.h"
 
+//EX1
+
 #define W_EX1 0.45
 #define V_EX1 1
 #define NEAREST_DIST 13
 #define FURTHER_DIST 16.0
 
+#define INITIAL_SAMPLES 3
 // STATES
-
 #define PREPARE 0
 #define START 1
 #define FINISH 2
@@ -139,7 +141,11 @@ mode_task(void* pvParameters)
   bool is_right;
   int state_ex1 = PREPARE;
   int sign;
-
+  int samples_taken = 0;
+  float dists_right[INITIAL_SAMPLES];
+  float dists_left[INITIAL_SAMPLES];
+  float med_right_dist = 0;
+  float med_left_dist = 0;
   while (true) {
     uint32_t start_time = micros();
 
@@ -193,14 +199,32 @@ mode_task(void* pvParameters)
             brutus.set_linear_speed_ts(V_EX1);
 
             perception_data = brutus.get_perception_data();
-            
-            is_right = (perception_data.right_dist < perception_data.left_dist);
+
+            dists_right[samples_taken] = perception_data.right_dist;
+            dists_left[samples_taken] = perception_data.left_dist;
+
             if(is_right) {
               sign = 1;
             } else {
               sign = -1;
             }
-            state_ex1 = START;
+
+            if (samples_taken >= INITIAL_SAMPLES) {
+              med_right_dist = median(dists_right, INITIAL_SAMPLES);
+              med_left_dist = median(dists_left, INITIAL_SAMPLES);
+
+              is_right = (med_right_dist < med_left_dist);
+
+              if(is_right) {
+                sign = 1;
+              } else {
+                sign = -1;
+              }
+              samples_taken = 0;
+              state_ex1 = START;
+            } else {
+              samples_taken++;
+            }
             break;
           case START:
           perception_data = brutus.get_perception_data();
@@ -247,9 +271,6 @@ mode_task(void* pvParameters)
 
     uint32_t end_time = micros();
     uint32_t execution_time_us = end_time - start_time;
-    //Serial.print("[MODES] Tiempo de CPU activo: ");
-    //Serial.print(execution_time_us / 1000.0);
-    //Serial.println(" ms");
 
     vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(MODES_PERIOD));
   }
@@ -314,12 +335,10 @@ float median(float *values, int n)
 {
   float tmp[n];
 
-  // Copiar valores
   for (int i = 0; i < n; i++) {
     tmp[i] = values[i];
   }
 
-  // Ordenación simple (inserción)
   for (int i = 1; i < n; i++) {
     float key = tmp[i];
     int j = i - 1;
@@ -330,7 +349,6 @@ float median(float *values, int n)
     tmp[j + 1] = key;
   }
 
-  // Mediana
   if (n % 2 == 0) {
     return 0.5f * (tmp[n/2 - 1] + tmp[n/2]);
   } else {
