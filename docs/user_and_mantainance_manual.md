@@ -1,4 +1,55 @@
-# Maintenance Manual
+# User and mantainance manual
+
+---
+
+## Table of content
+
+This document is divided into the following sections:
+
+1. [Mantainance manual](#mantainance-manual)
+2. [Robot Components Overview](#robot-components-overview)
+3. [Materials](#materials)
+   1. [Printable pieces](#printable-pieces)
+   2. [Electronic components](#electronic-components)
+   3. [Wiring](#wiring)
+   4. [Fasteners](#fasteners)
+4. [Assembly](#assembly)
+   1. [Soldering `ESP32` and `PCA9685` Connections](#1-soldering-esp32-and-pca9685-connections)
+   2. [Assembling chasis (Part 1)](#2-assembling-chasis-part-1)
+   3. [Assembling legs (Part 1)](#3-assembling-legs-part-1)
+   4. [Connecting servos to `PCA9685`](#4-connecting-servos-to-pca9685)
+   5. [Assembling chasis (Part 2)](#5-assembling-chasis-part-2)
+   6. [Joining legs with chasis](#6-joining-legs-with-chasis)
+   7. [Assembling upper box](#7-assembling-upper-box)
+   8. [Joining upper box with chasis](#8-joining-upper-box-with-chasis)
+   9. [Assembling legs (Part 2)](#9-assembling-legs-part-2)
+5. [Mechanical Maintenance](#mechanical-maintenance)
+   1. [Fasteners and Joint Inspection](#fasteners-and-joint-inspection)
+   2. [Bearing Condition](#bearing-condition)
+   3. [Servo Mounting and Horns](#servo-mounting-and-horns)
+   4. [Printed Part Inspection](#printed-part-inspection)
+6. [Battery Maintenance and Safety](#battery-maintenance-and-safety)
+   1. [Voltage limits](#voltage-limits)
+   2. [Storage recommendations](#storage-recommendations)
+7. [Electrical Connections and Wiring Integrity](#electrical-connections-and-wiring-integrity)
+   1. [Critical power cables](#critical-power-cables)
+   2. [Connections most likely to cause power loss](#connections-most-likely-to-cause-power-loss)
+   3. [Detecting bad contacts](#detecting-bad-contacts)
+   4. [Ultrasonic sensor cables](#ultrasonic-sensor-cables)
+8. [User Manual](#user-manual)
+   1. [Network and MQTT configuration](#network-and-mqtt-configuration)
+   2. [WiFi configuration](#wifi-configuration)
+   3. [MQTT configuration](#mqtt-configuration)
+9. [`brutus_params.h` – Robot configuration and motion parameters](#brutus_paramsh--robot-configuration-and-motion-parameters)
+10. [`comms_params.h` – MQTT communication configuration](#comms_paramsh--mqtt-communication-configuration)
+11. [User Sketch](#user-sketch)
+12. [Logic Task Definition](#logic-task-definition)
+13. [Doxygen](#doxygen)
+
+
+---
+
+# Mantainance manual
 
 This document describes the recommended maintenance procedures for the Brutus quadruped robot.  
 Its purpose is to ensure long-term reliability, safety, and performance by defining how the mechanical, electrical, and structural components should be inspected, cleaned, and replaced over time.
@@ -20,51 +71,6 @@ The procedures described here allow safe servicing without damaging the robot.
 
 ---
 
-## Table of content
-
-This document is divided into the following sections:
-
-1. [Robot Components Overview](#robot-components-overview)
-2. [Materials](#materials)
-   1. [Printable pieces](#printable-pieces)
-   2. [Electronic components](#electronic-components)
-   3. [Wiring](#wiring)
-   4. [Fasteners](#fasteners)
-3. [Assembly](#assembly)
-   1. [Soldering `ESP32` and `PCA9685` Connections](#1-soldering-esp32-and-pca9685-connections)
-   2. [Assembling chasis (Part 1)](#2-assembling-chasis-part-1)
-   3. [Assembling legs (Part 1)](#3-assembling-legs-part-1)
-   4. [Connecting servos to `PCA9685`](#4-connecting-servos-to-pca9685)
-   5. [Assembling chasis (Part 2)](#5-assembling-chasis-part-2)
-   6. [Joining legs with chasis](#6-joining-legs-with-chasis)
-   7. [Assembling upper box](#7-assembling-upper-box)
-   8. [Joining upper box with chasis](#8-joining-upper-box-with-chasis)
-   9. [Assembling legs (Part 2)](#9-assembling-legs-part-2)
-4. [Mechanical Maintenance](#mechanical-maintenance)
-   1. [Fasteners and Joint Inspection](#fasteners-and-joint-inspection)
-   2. [Bearing Condition](#bearing-condition)
-   3. [Servo Mounting and Horns](#servo-mounting-and-horns)
-   4. [Printed Part Inspection](#printed-part-inspection)
-5. [Battery Maintenance and Safety](#battery-maintenance-and-safety)
-   1. [Voltage limits](#voltage-limits)
-   2. [Storage recommendations](#storage-recommendations)
-6. [Electrical Connections and Wiring Integrity](#electrical-connections-and-wiring-integrity)
-   1. [Critical power cables](#critical-power-cables)
-   2. [Connections most likely to cause power loss](#connections-most-likely-to-cause-power-loss)
-   3. [Detecting bad contacts](#detecting-bad-contacts)
-   4. [Ultrasonic sensor cables](#ultrasonic-sensor-cables)
-7. [User Manual](#user-manual)
-   1. [Network and MQTT configuration](#network-and-mqtt-configuration)
-   2. [WiFi configuration](#wifi-configuration)
-   3. [MQTT configuration](#mqtt-configuration)
-8. [`brutus_params.h` – Robot configuration and motion parameters](#brutus_paramsh--robot-configuration-and-motion-parameters)
-9. [`comms_params.h` – MQTT communication configuration](#comms_paramsh--mqtt-communication-configuration)
-10. [User Sketch](#user-sketch)
-11. [Logic Task Definition](#logic-task-definition)
-12. [Doxygen](#doxygen)
-
-
----
 ## Robot Components Overview
 
 Before performing any maintenance, inspection, or repair on Brutus, it is essential to understand the physical and electronic components that make up the robot.
