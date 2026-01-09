@@ -124,7 +124,7 @@ constexpr BrutusPose STANDING_POSE {STANDING_FR_STATE,
 #define FRONT_MID_SHOULDER (FRONT_FORWARD_SHOULDER + FRONT_BACK_SHOULDER) / 2.0
 
 #define BACK_FORWARD_SHOULDER -20.0
-#define BACK_BACK_SHOULDER -25.0
+#define BACK_BACK_SHOULDER -35.0
 #define BACK_MID_SHOULDER (BACK_FORWARD_SHOULDER + BACK_BACK_SHOULDER) / 2.0
 
 constexpr BrutusLegState FRONT_FORWARD_UP_STATE {FRONT_FORWARD_SHOULDER, ELBOW_UP};
@@ -224,6 +224,11 @@ constexpr BrutusPose CCW_SPIN_STEPS[6] {SPIN_6, SPIN_5, SPIN_4, SPIN_3, SPIN_2, 
 
 #define MIN_V -1.0f
 #define MAX_V 1.0f
+// -----------------------------
+
+// -------- EXERCISES ----------
+#define FRONT_LIMIT_CM 13
+#define LATERAL_LIMIT_CM 8
 // -----------------------------
 
 // -------- EXERCISE 1 ---------

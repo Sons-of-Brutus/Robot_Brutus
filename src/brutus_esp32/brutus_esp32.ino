@@ -1,6 +1,17 @@
 #include "Brutus.h"
 #include "BrutusComms.h"
 
+#define W_EX1 0.4
+#define V_EX1 1
+#define NEAREST_DIST 12.0
+#define FURTHER_DIST 18.0
+
+// STATES
+
+#define PREPARE 0
+#define START 1
+#define FINISH 2
+
 enum FuncMode {
   STANDING = 0,
   EXERCISE_1 = 1,
@@ -123,6 +134,12 @@ mode_task(void* pvParameters)
 
   float w = 0.0;
 
+  float dist;
+
+  bool is_right;
+  int state_ex1 = PREPARE;
+  int sign;
+
   while (true) {
     //Serial.println("<MODES>");
     uint32_t start_time = micros();
@@ -164,15 +181,52 @@ mode_task(void* pvParameters)
         break;
 
       case EXERCISE_1:
-        if (mode != last_mode) {
-          brutus.eyes_white();
-          brutus.set_motion_control_mode(SPEED_CONTROL);
-          last_mode = mode;
+        switch(state_ex1) {
+          case PREPARE:
+            if (mode != last_mode) {
+              brutus.eyes_white();
+              brutus.set_motion_control_mode(SPEED_CONTROL);
+              last_mode = mode;
+            }
+            brutus.set_linear_speed_ts(V_EX1);
+
+            perception_data = brutus.get_perception_data();
+            
+            is_right = (perception_data.right_dist < perception_data.left_dist);
+            if(is_right) {
+              sign = 1;
+            } else {
+              sign = -1;
+            }
+            state_ex1 = START;
+            break;
+          case START:
+          perception_data = brutus.get_perception_data();
+          if(is_right) {
+              dist = perception_data.right_dist;
+            } else {
+              dist = perception_data.left_dist;
+            }
+
+            if (dist < NEAREST_DIST) {
+              brutus.eyes_blue();
+              brutus.set_angular_speed_ts(-W_EX1 * sign);
+            } else if (dist > FURTHER_DIST) {
+              brutus.eyes_red();
+              brutus.set_angular_speed_ts(W_EX1 * sign);
+            } else {
+              brutus.eyes_magenta();
+              brutus.set_angular_speed_ts(0);
+            }
+
+            if (perception_data.front_dist < FRONT_LIMIT_CM) {
+              brutus.set_linear_speed_ts(0.0);
+              brutus.set_angular_speed_ts(0.0);
+              brutus.eyes_yellow();
+            }
+            brutus_comms.set_debug_float(dist);
+          break;
         }
-
-        brutus.set_linear_speed_ts(1.0);
-        brutus.set_angular_speed_ts(0.0);
-
         break;
 
       case EXERCISE_2:
