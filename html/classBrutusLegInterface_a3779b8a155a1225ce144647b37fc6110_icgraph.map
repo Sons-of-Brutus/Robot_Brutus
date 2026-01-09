@@ -1,0 +1,13 @@
+<map id="BrutusLegInterface::set_leg_state" name="BrutusLegInterface::set_leg_state">
+<area shape="rect" id="Node000001" title="Commands the leg&#39;s servos a desired leg state angles." alt="" coords="836,31,981,71"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a31b0640380df00a8187667e36c386570" title="Commands the robot to adopt a given pose." alt="" coords="657,38,788,63"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="823,53,788,53,788,48,823,48"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#ad54f6a545161e676723e032a32a29a5f" title="Main motion control loop." alt="" coords="456,13,609,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="643,43,609,38,610,33,644,37"/>
+<area shape="rect" id="Node000006" href="$classBrutus.html#a79114236194683af9da146cba8f93e06" title="Finalizes setup and moves the robot to the standing pose." alt="" coords="481,62,584,87"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="644,63,585,71,584,66,643,58"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#ad9f936bd4254cee1ed486f3b8c871dcf" title="FreeRTOS wrapper for the motion task." alt="" coords="255,5,408,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="442,28,408,28,408,23,442,23"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#a5cfdd97187b803d1c6e89c49c65c0e98" title="Creates the motion control task." alt="" coords="5,13,207,38"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="241,28,207,28,207,23,241,23"/>
+</map>

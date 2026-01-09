@@ -1,0 +1,11 @@
+<map id="Brutus::set_pose" name="Brutus::set_pose">
+<area shape="rect" id="Node000001" title="Commands the robot to adopt a given pose." alt="" coords="5,45,136,70"/>
+<area shape="rect" id="Node000002" href="$classBrutusLegInterface.html#a3779b8a155a1225ce144647b37fc6110" title="Commands the leg&#39;s servos a desired leg state angles." alt="" coords="184,37,329,77"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,55,170,55,170,60,136,60"/>
+<area shape="rect" id="Node000003" href="$classPca9685Servo.html#a217c1f47f4b69325a632b5984574b863" title="Sends a PWM pulse corresponding to an angle to the specified servo." alt="" coords="377,45,563,70"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="330,55,364,55,364,60,330,60"/>
+<area shape="rect" id="Node000004" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="625,5,783,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="562,42,611,35,612,41,563,47"/>
+<area shape="rect" id="Node000005" href="$classPca9685Servo.html#abefbdb59d4c315c424056af141387c95" title="Wraps an angle into the servo&#39;s valid range." alt="" coords="611,69,797,109"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="563,67,597,72,597,77,562,73"/>
+</map>

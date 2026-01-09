@@ -1,0 +1,5 @@
+<map id="BrutusPose" name="BrutusPose">
+<area shape="rect" id="Node000001" title="Pose of the Brutus robot." alt="" coords="19,137,113,163"/>
+<area shape="rect" id="Node000002" href="$structBrutusLegState.html" title="State of a robot leg." alt="" coords="5,5,127,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,44,69,137,63,137,63,44"/>
+</map>

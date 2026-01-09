@@ -1,0 +1,7 @@
+<map id="brutus_esp32/brutus_params.h" name="brutus_esp32/brutus_params.h">
+<area shape="rect" id="Node000001" title="Definition of Parameters for Brutus." alt="" coords="5,5,160,45"/>
+<area shape="rect" id="Node000002" href="$BrutusPose_8h.html" title="Definition of the struct BrutusPose." alt="" coords="29,93,136,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,46,85,79,80,79,80,46"/>
+<area shape="rect" id="Node000003" href="$BrutusLegState_8h.html" title="Definition of the struct BrutusLegState." alt="" coords="16,167,149,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="85,119,85,153,80,153,80,119"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="Brutus::process_angular_speed" name="Brutus::process_angular_speed">
+<area shape="rect" id="Node000001" title="Modifies a pose according to the desired angular speed." alt="" coords="5,5,184,45"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#acee8f49a02edf254e69eff8657e4a181" title="Performs a linear interpolation between two values." alt="" coords="232,13,431,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,23,218,23,218,28,184,28"/>
+</map>

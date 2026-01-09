@@ -1,0 +1,9 @@
+<map id="Brutus::get_motion_control_mode" name="Brutus::get_motion_control_mode">
+<area shape="rect" id="Node000001" title="Gets the current motion control mode." alt="" coords="657,5,804,45"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#ad54f6a545161e676723e032a32a29a5f" title="Main motion control loop." alt="" coords="456,13,609,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="644,28,610,28,610,23,644,23"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#ad9f936bd4254cee1ed486f3b8c871dcf" title="FreeRTOS wrapper for the motion task." alt="" coords="255,5,408,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="442,28,408,28,408,23,442,23"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a5cfdd97187b803d1c6e89c49c65c0e98" title="Creates the motion control task." alt="" coords="5,13,207,38"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="241,28,207,28,207,23,241,23"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="Brutus::perception_task_wrapper" name="Brutus::perception_task_wrapper">
+<area shape="rect" id="Node000001" title="FreeRTOS wrapper for the perception task." alt="" coords="277,5,419,45"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#acb554eabdc6c3e98ea166eb3981a0570" title="Creates the perception task." alt="" coords="5,13,229,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="264,28,229,28,229,23,264,23"/>
+</map>

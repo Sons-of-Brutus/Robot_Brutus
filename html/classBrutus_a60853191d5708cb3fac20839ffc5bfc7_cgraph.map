@@ -1,0 +1,14 @@
+<map id="Brutus::setup_back_right_leg" name="Brutus::setup_back_right_leg">
+<area shape="rect" id="Node000001" title="Configures the BACK RIGHT LEG." alt="" coords="5,37,152,77"/>
+<area shape="rect" id="Node000002" href="$classBrutusLegInterface.html#a08264bf811ddf99c63bdc7b0d1dfdfa5" title="Configures the ELBOW servo." alt="" coords="200,5,345,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,43,186,37,187,42,153,48"/>
+<area shape="rect" id="Node000006" href="$classBrutusLegInterface.html#a5e8a2486918f1c17f3a51651d99fb2e1" title="Configures the SHOULDER servo." alt="" coords="200,69,345,109"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="153,67,187,72,186,78,152,72"/>
+<area shape="rect" id="Node000003" href="$classPca9685Servo.html#a91958fd92f16a4774813de0ea134d89c" title="Initializes a Pca9685Servo object with the given parameters." alt="" coords="393,45,536,70"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="346,35,380,41,379,46,345,40"/>
+<area shape="rect" id="Node000004" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="603,8,761,48"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="536,45,589,38,589,43,537,50"/>
+<area shape="rect" id="Node000005" href="$classPca9685Servo.html#ad0fa55efb854cf76a3a170fff1d9a96e" title="Converts a pulse width in microseconds to a PWM value for the PCA9685." alt="" coords="584,73,780,98"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="537,64,571,68,570,74,536,69"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="345,75,379,69,380,74,346,80"/>
+</map>

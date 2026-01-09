@@ -1,0 +1,5 @@
+<map id="BrutusDistanceSensor::setup" name="BrutusDistanceSensor::setup">
+<area shape="rect" id="Node000001" title="Initialize the distance sensor." alt="" coords="237,5,403,45"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#adebb3c3c7ec1710209e5a8fcb0353894" title="Initializes the perception sensors hardware." alt="" coords="5,13,189,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,28,190,28,190,23,223,23"/>
+</map>

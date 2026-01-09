@@ -1,0 +1,9 @@
+<map id="Pca9685Servo::pwm_to_angle" name="Pca9685Servo::pwm_to_angle">
+<area shape="rect" id="Node000001" title="Converts a PWM value from the PCA9685 back to the corresponding angle." alt="" coords="629,5,804,45"/>
+<area shape="rect" id="Node000002" href="$classPca9685Servo.html#aff74f71fb25708b8660817c36f7f5a07" title=" " alt="" coords="395,13,581,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="616,28,582,28,582,23,616,23"/>
+<area shape="rect" id="Node000003" href="$classBrutusLegInterface.html#a45b08da757d2690b80a009dd5493174d" title="Returns the current leg state." alt="" coords="201,5,347,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="381,28,347,28,347,23,381,23"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a29100e678aba23297b1fbcda859dad30" title="Reads the current robot pose from the servos." alt="" coords="5,13,153,38"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="187,28,154,28,154,23,187,23"/>
+</map>

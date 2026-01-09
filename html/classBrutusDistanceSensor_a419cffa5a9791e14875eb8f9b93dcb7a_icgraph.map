@@ -1,0 +1,9 @@
+<map id="BrutusDistanceSensor::read_distance" name="BrutusDistanceSensor::read_distance">
+<area shape="rect" id="Node000001" title="Measure the distance to an object." alt="" coords="691,5,856,45"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a5762cc79329a62885157a1ebf7e84d98" title="Task example to read multiple ultrasonic sensors." alt="" coords="467,13,643,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="677,28,643,28,643,23,677,23"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a98eb21b0fa0cd0679f3254ff8b36b82e" title="FreeRTOS wrapper for the perception task." alt="" coords="277,5,419,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="453,28,419,28,419,23,453,23"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#acb554eabdc6c3e98ea166eb3981a0570" title="Creates the perception task." alt="" coords="5,13,229,38"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="264,28,229,28,229,23,264,23"/>
+</map>

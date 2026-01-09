@@ -1,0 +1,7 @@
+<map id="Pca9685Servo::init" name="Pca9685Servo::init">
+<area shape="rect" id="Node000001" title="Initializes a Pca9685Servo object with the given parameters." alt="" coords="5,42,148,67"/>
+<area shape="rect" id="Node000002" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="215,5,373,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,42,201,35,201,40,149,48"/>
+<area shape="rect" id="Node000003" href="$classPca9685Servo.html#ad0fa55efb854cf76a3a170fff1d9a96e" title="Converts a pulse width in microseconds to a PWM value for the PCA9685." alt="" coords="196,70,392,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="149,61,183,66,182,71,148,66"/>
+</map>

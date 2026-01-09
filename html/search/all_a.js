@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['max_5fdist_0',['MAX_DIST',['../comms__params_8h.html#ae4f6058c45a018de2c45bc43f0c405ae',1,'comms_params.h']]],
+  ['max_5fleg_5fdeg_1',['MAX_LEG_DEG',['../comms__params_8h.html#a4fee1aa45e63fe2fd568b6fa6401524e',1,'comms_params.h']]],
+  ['max_5fservo_5fangle_2',['MAX_SERVO_ANGLE',['../brutus__params_8h.html#ab89f6e7f21b94a9d159a785a13edc35d',1,'brutus_params.h']]],
+  ['max_5fservo_5fpwm_5fpulse_5fus_3',['MAX_SERVO_PWM_PULSE_US',['../brutus__params_8h.html#aa9d57df30476adaaf09da19ab44c9f19',1,'brutus_params.h']]],
+  ['max_5fv_4',['MAX_V',['../brutus__params_8h.html#a2000cd4951968cc02f632c54eb27e362',1,'brutus_params.h']]],
+  ['max_5fw_5',['MAX_W',['../brutus__params_8h.html#adcca6d4018f9243be00ac4f9059d8a5f',1,'brutus_params.h']]],
+  ['min_5fdist_6',['MIN_DIST',['../comms__params_8h.html#a0242b872f13ae044f308ee8865fecc57',1,'comms_params.h']]],
+  ['min_5felbow_5fdiff_7',['MIN_ELBOW_DIFF',['../brutus__params_8h.html#a71c7c2c471fffc699678d24e4fc49188',1,'brutus_params.h']]],
+  ['min_5fleg_5fdeg_8',['MIN_LEG_DEG',['../comms__params_8h.html#a6939310d47eff4d2a088617b8b52a35e',1,'comms_params.h']]],
+  ['min_5fperception_5ftimeout_9',['MIN_PERCEPTION_TIMEOUT',['../brutus__params_8h.html#a9461125e64a33fa457c32b7c979b3692',1,'brutus_params.h']]],
+  ['min_5fservo_5fangle_10',['MIN_SERVO_ANGLE',['../brutus__params_8h.html#a87359258232db0125228017e8e12877a',1,'brutus_params.h']]],
+  ['min_5fservo_5fpwm_5fpulse_5fus_11',['MIN_SERVO_PWM_PULSE_US',['../brutus__params_8h.html#a8643023fbd52d412f801e1e7fe4ee413',1,'brutus_params.h']]],
+  ['min_5fv_12',['MIN_V',['../brutus__params_8h.html#a4984fd061a61ac75f177729a16e7d734',1,'brutus_params.h']]],
+  ['min_5fw_13',['MIN_W',['../brutus__params_8h.html#a1be9e964edada8a540e6c7a881cde6f3',1,'brutus_params.h']]],
+  ['mode_14',['mode',['../structBrutusCommsCmd.html#ac6b67a06434448d3ba111c7c5872918e',1,'BrutusCommsCmd']]],
+  ['modes_5fperiod_15',['MODES_PERIOD',['../brutus__params_8h.html#aeb9a77d5ae979f8265664a67a0ea30c4',1,'brutus_params.h']]],
+  ['modes_5ftask_5fsize_16',['MODES_TASK_SIZE',['../brutus__params_8h.html#a8e74b38f48d81d435a4b8802d9f4f379',1,'brutus_params.h']]],
+  ['motion_5fcore_17',['MOTION_CORE',['../brutus__params_8h.html#a83d96d0da00112fc8bd01f1435999253',1,'brutus_params.h']]],
+  ['motion_5ftask_18',['motion_task',['../classBrutus.html#ad54f6a545161e676723e032a32a29a5f',1,'Brutus']]],
+  ['motion_5ftask_5fsize_19',['MOTION_TASK_SIZE',['../brutus__params_8h.html#ae92d6f74256b35ced4ffe52a29499e7f',1,'brutus_params.h']]],
+  ['motion_5ftask_5fwrapper_20',['motion_task_wrapper',['../classBrutus.html#ad9f936bd4254cee1ed486f3b8c871dcf',1,'Brutus']]],
+  ['msg_5fbuffer_21',['MSG_BUFFER',['../comms__params_8h.html#abc00162331f35a3151ceafe9c9713d42',1,'comms_params.h']]]
+];

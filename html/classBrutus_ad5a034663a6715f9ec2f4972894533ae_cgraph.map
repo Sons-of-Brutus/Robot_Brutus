@@ -1,0 +1,17 @@
+<map id="Brutus::setup" name="Brutus::setup">
+<area shape="rect" id="Node000001" title="Initializes hardware and internal subsystems." alt="" coords="5,153,113,179"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a35bcbaf62df8808bc37e304e70ca6e3b" title="Enables servo outputs." alt="" coords="161,5,340,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,152,100,98,128,66,160,40,171,34,173,38,163,44,131,70,105,101,70,155"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a5d2ccb92a28e8fc1487d279946923bd1" title="Sets eyes LED to BLUE." alt="" coords="181,55,320,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="73,151,111,120,160,89,176,82,178,87,163,94,114,124,76,155"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a555a2355bf2cfe02f899e52f82bcd203" title="Sets eyes LED to CYAN." alt="" coords="180,104,321,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="109,151,186,130,188,136,110,156"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#ac2ad4f77002f0fc870b08f08dea0d113" title="Sets eyes LED to GREEN." alt="" coords="177,153,324,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="114,163,164,163,164,169,114,169"/>
+<area shape="rect" id="Node000006" href="$classBrutus.html#a5905ae62f57d4357f213b0abbee78763" title="Sets eyes LED to RED." alt="" coords="185,203,316,228"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="110,176,188,196,186,202,109,181"/>
+<area shape="rect" id="Node000007" href="$classBrutus.html#a2f9c3f9ea4c7f48e5331dd628c196fba" title="Sets eyes LED to YELLOW." alt="" coords="174,252,327,277"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="77,177,114,207,163,237,182,245,180,250,160,242,111,211,74,181"/>
+<area shape="rect" id="Node000008" href="$classBrutusLegInterface.html#a241b19b5719d0624512c5acc34e97af6" title="Assigns the PCA9685 driver to the leg interface." alt="" coords="178,302,323,342"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="70,177,106,230,133,260,163,287,174,294,171,298,160,291,129,264,102,233,66,181"/>
+</map>

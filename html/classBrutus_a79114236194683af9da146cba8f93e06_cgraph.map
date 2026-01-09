@@ -1,0 +1,17 @@
+<map id="Brutus::start" name="Brutus::start">
+<area shape="rect" id="Node000001" title="Finalizes setup and moves the robot to the standing pose." alt="" coords="5,55,108,80"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#ade9833a6dade14c9aeb30f559333a349" title="Sets eyes LED to MAGENTA." alt="" coords="156,5,324,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,52,178,32,179,37,105,57"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a5905ae62f57d4357f213b0abbee78763" title="Sets eyes LED to RED." alt="" coords="175,55,305,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="108,65,161,65,161,70,108,70"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a31b0640380df00a8187667e36c386570" title="Commands the robot to adopt a given pose." alt="" coords="175,104,305,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="105,77,179,98,178,103,104,83"/>
+<area shape="rect" id="Node000005" href="$classBrutusLegInterface.html#a3779b8a155a1225ce144647b37fc6110" title="Commands the leg&#39;s servos a desired leg state angles." alt="" coords="372,97,517,137"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="306,114,358,114,358,119,306,119"/>
+<area shape="rect" id="Node000006" href="$classPca9685Servo.html#a217c1f47f4b69325a632b5984574b863" title="Sends a PWM pulse corresponding to an angle to the specified servo." alt="" coords="565,104,751,129"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="518,114,552,114,552,119,518,119"/>
+<area shape="rect" id="Node000007" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="813,65,971,105"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="750,101,799,95,800,100,751,107"/>
+<area shape="rect" id="Node000008" href="$classPca9685Servo.html#abefbdb59d4c315c424056af141387c95" title="Wraps an angle into the servo&#39;s valid range." alt="" coords="799,129,985,169"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="751,127,785,131,785,137,750,132"/>
+</map>

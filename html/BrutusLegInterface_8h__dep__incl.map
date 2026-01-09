@@ -1,0 +1,7 @@
+<map id="brutus_esp32/BrutusLegInterface.h" name="brutus_esp32/BrutusLegInterface.h">
+<area shape="rect" id="Node000001" title="Definition of interface for the robot legs." alt="" coords="5,5,253,31"/>
+<area shape="rect" id="Node000002" href="$Brutus_8h.html" title="Creation of the Brutus class." alt="" coords="46,79,213,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="132,44,132,79,127,79,127,44"/>
+<area shape="rect" id="Node000003" href="$BrutusComms_8h.html" title="Creation of the Brutus Comms class." alt="" coords="21,152,238,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="132,118,132,152,127,152,127,118"/>
+</map>

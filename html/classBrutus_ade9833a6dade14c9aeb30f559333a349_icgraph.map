@@ -1,0 +1,5 @@
+<map id="Brutus::eyes_magenta" name="Brutus::eyes_magenta">
+<area shape="rect" id="Node000001" title="Sets eyes LED to MAGENTA." alt="" coords="156,5,324,31"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a79114236194683af9da146cba8f93e06" title="Finalizes setup and moves the robot to the standing pose." alt="" coords="5,5,108,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,21,108,21,108,15,142,15"/>
+</map>

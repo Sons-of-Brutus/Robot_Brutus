@@ -1,0 +1,11 @@
+<map id="Brutus::linear_interpolation" name="Brutus::linear_interpolation">
+<area shape="rect" id="Node000001" title="Performs a linear interpolation between two values." alt="" coords="884,13,1083,38"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#ace92e70c1d993f0f2f694b8dd31b638a" title="Modifies a pose according to the desired angular speed." alt="" coords="657,5,836,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="870,28,836,28,836,23,870,23"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#ad54f6a545161e676723e032a32a29a5f" title="Main motion control loop." alt="" coords="456,13,609,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="643,28,610,28,610,23,643,23"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#ad9f936bd4254cee1ed486f3b8c871dcf" title="FreeRTOS wrapper for the motion task." alt="" coords="255,5,408,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="442,28,408,28,408,23,442,23"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#a5cfdd97187b803d1c6e89c49c65c0e98" title="Creates the motion control task." alt="" coords="5,13,207,38"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="241,28,207,28,207,23,241,23"/>
+</map>

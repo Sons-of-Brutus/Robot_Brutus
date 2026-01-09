@@ -1,0 +1,7 @@
+<map id="Pca9685Servo::set_angle" name="Pca9685Servo::set_angle">
+<area shape="rect" id="Node000001" title="Sends a PWM pulse corresponding to an angle to the specified servo." alt="" coords="5,45,191,70"/>
+<area shape="rect" id="Node000002" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="253,5,411,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,42,239,35,240,41,191,47"/>
+<area shape="rect" id="Node000003" href="$classPca9685Servo.html#abefbdb59d4c315c424056af141387c95" title="Wraps an angle into the servo&#39;s valid range." alt="" coords="239,69,425,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="191,67,225,72,225,77,190,73"/>
+</map>

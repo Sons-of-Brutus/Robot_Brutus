@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['set_5fangle_0',['set_angle',['../classPca9685Servo.html#a217c1f47f4b69325a632b5984574b863',1,'Pca9685Servo']]],
+  ['set_5fangular_5fspeed_1',['set_angular_speed',['../classBrutus.html#a81921cb011a897a2fbb45bb90c17aead',1,'Brutus']]],
+  ['set_5fangular_5fspeed_5fts_2',['set_angular_speed_ts',['../classBrutus.html#acb32f33ee7cab3bbd2c95756ec870a46',1,'Brutus']]],
+  ['set_5fdebug_5ffloat_3',['set_debug_float',['../classBrutusComms.html#aa471f474a305f5ffd1d56ae1a77850a3',1,'BrutusComms']]],
+  ['set_5fdebug_5ffloat_5f2_4',['set_debug_float_2',['../classBrutusComms.html#a25775241f44249c7ab219344d65e6fb4',1,'BrutusComms']]],
+  ['set_5fdebug_5fpose_5',['set_debug_pose',['../classBrutusComms.html#aca35aed79f72e3bcb5ab84969c8f32b8',1,'BrutusComms']]],
+  ['set_5fleg_5fstate_6',['set_leg_state',['../classBrutusLegInterface.html#a3779b8a155a1225ce144647b37fc6110',1,'BrutusLegInterface']]],
+  ['set_5flinear_5fspeed_7',['set_linear_speed',['../classBrutus.html#a882897f61bbb7ee83d9a4bf6fa92e970',1,'Brutus']]],
+  ['set_5flinear_5fspeed_5fts_8',['set_linear_speed_ts',['../classBrutus.html#aabefffbad228e7fced5e98a16a25de10',1,'Brutus']]],
+  ['set_5fmotion_5fcontrol_5fmode_9',['set_motion_control_mode',['../classBrutus.html#ab220c6c376b386d0a570bafa5610c4fe',1,'Brutus']]],
+  ['set_5fpose_10',['set_pose',['../classBrutus.html#a31b0640380df00a8187667e36c386570',1,'Brutus']]],
+  ['setup_11',['setup',['../classBrutus.html#ad5a034663a6715f9ec2f4972894533ae',1,'Brutus::setup()'],['../classBrutusLegInterface.html#a241b19b5719d0624512c5acc34e97af6',1,'BrutusLegInterface::setup()'],['../classBrutusDistanceSensor.html#a736c5ad48895f4b67551c4330e6ca7f9',1,'BrutusDistanceSensor::setup()']]],
+  ['setup_5fback_5fleft_5fleg_12',['setup_back_left_leg',['../classBrutus.html#a75a3a5c4843a9f4b9d840f2fc6a26d40',1,'Brutus']]],
+  ['setup_5fback_5fright_5fleg_13',['setup_back_right_leg',['../classBrutus.html#a60853191d5708cb3fac20839ffc5bfc7',1,'Brutus']]],
+  ['setup_5felbow_14',['setup_elbow',['../classBrutusLegInterface.html#a08264bf811ddf99c63bdc7b0d1dfdfa5',1,'BrutusLegInterface']]],
+  ['setup_5ffront_5fleft_5fleg_15',['setup_front_left_leg',['../classBrutus.html#a282d661633e91de4636e2ecd9fa98971',1,'Brutus']]],
+  ['setup_5ffront_5fright_5fleg_16',['setup_front_right_leg',['../classBrutus.html#aaccc2d83846f065d0393e85405fddd51',1,'Brutus']]],
+  ['setup_5fperception_17',['setup_perception',['../classBrutus.html#adebb3c3c7ec1710209e5a8fcb0353894',1,'Brutus']]],
+  ['setup_5fshoulder_18',['setup_shoulder',['../classBrutusLegInterface.html#a5e8a2486918f1c17f3a51651d99fb2e1',1,'BrutusLegInterface']]],
+  ['start_19',['start',['../classBrutus.html#a79114236194683af9da146cba8f93e06',1,'Brutus::start()'],['../classBrutusComms.html#aa0bf7abb9b9baedcbb78f997263981ab',1,'BrutusComms::start()']]]
+];

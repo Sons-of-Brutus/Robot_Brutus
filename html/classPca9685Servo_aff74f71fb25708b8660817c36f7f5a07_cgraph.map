@@ -1,0 +1,5 @@
+<map id="Pca9685Servo::get_angle" name="Pca9685Servo::get_angle">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,192,38"/>
+<area shape="rect" id="Node000002" href="$classPca9685Servo.html#ae624a9892768e28751ec2711db23d49c" title="Converts a PWM value from the PCA9685 back to the corresponding angle." alt="" coords="240,5,415,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,23,226,23,226,28,193,28"/>
+</map>

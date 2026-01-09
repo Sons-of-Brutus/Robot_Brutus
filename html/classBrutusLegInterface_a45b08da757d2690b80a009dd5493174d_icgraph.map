@@ -1,0 +1,5 @@
+<map id="BrutusLegInterface::get_leg_state" name="BrutusLegInterface::get_leg_state">
+<area shape="rect" id="Node000001" title="Returns the current leg state." alt="" coords="201,5,347,45"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a29100e678aba23297b1fbcda859dad30" title="Reads the current robot pose from the servos." alt="" coords="5,13,153,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="187,28,154,28,154,23,187,23"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="BrutusLegInterface::setup_elbow" name="BrutusLegInterface::setup_elbow">
+<area shape="rect" id="Node000001" title="Configures the ELBOW servo." alt="" coords="200,101,345,141"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a75a3a5c4843a9f4b9d840f2fc6a26d40" title="Configures the BACK LEFT LEG." alt="" coords="5,5,152,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="222,97,151,60,126,48,128,43,153,55,225,92"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a60853191d5708cb3fac20839ffc5bfc7" title="Configures the BACK RIGHT LEG." alt="" coords="5,69,152,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="186,110,152,104,153,99,187,104"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a282d661633e91de4636e2ecd9fa98971" title="Configures the FRONT LEFT LEG." alt="" coords="5,133,152,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="187,138,153,144,152,139,186,133"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#aaccc2d83846f065d0393e85405fddd51" title="Configures the FRONT RIGHT LEG." alt="" coords="5,197,152,237"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="225,150,153,188,128,200,126,195,151,183,222,146"/>
+</map>

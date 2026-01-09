@@ -1,0 +1,19 @@
+<map id="Pca9685Servo::init" name="Pca9685Servo::init">
+<area shape="rect" id="Node000001" title="Initializes a Pca9685Servo object with the given parameters." alt="" coords="393,109,536,134"/>
+<area shape="rect" id="Node000002" href="$classBrutusLegInterface.html#a08264bf811ddf99c63bdc7b0d1dfdfa5" title="Configures the ELBOW servo." alt="" coords="200,69,345,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="379,110,345,104,346,99,380,105"/>
+<area shape="rect" id="Node000007" href="$classBrutusLegInterface.html#a5e8a2486918f1c17f3a51651d99fb2e1" title="Configures the SHOULDER servo." alt="" coords="200,133,345,173"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="380,138,346,144,345,139,379,133"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a75a3a5c4843a9f4b9d840f2fc6a26d40" title="Configures the BACK LEFT LEG." alt="" coords="5,133,152,173"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="199,116,141,136,139,131,197,111"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a60853191d5708cb3fac20839ffc5bfc7" title="Configures the BACK RIGHT LEG." alt="" coords="5,197,152,237"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="208,119,202,123,187,139,178,155,169,171,154,187,135,199,132,195,150,183,165,168,174,152,183,136,198,119,205,114"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#a282d661633e91de4636e2ecd9fa98971" title="Configures the FRONT LEFT LEG." alt="" coords="5,5,152,45"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="197,67,139,48,141,43,199,62"/>
+<area shape="rect" id="Node000006" href="$classBrutus.html#aaccc2d83846f065d0393e85405fddd51" title="Configures the FRONT RIGHT LEG." alt="" coords="5,69,152,109"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="186,92,152,92,152,87,186,87"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="186,156,152,156,152,151,186,151"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="199,180,141,200,139,195,197,175"/>
+<area shape="poly" id="edge9_Node000007_Node000005" title=" " alt="" coords="205,128,198,123,183,107,174,91,165,75,150,59,132,48,135,43,154,55,169,72,178,88,187,104,202,119,208,124"/>
+<area shape="poly" id="edge10_Node000007_Node000006" title=" " alt="" coords="197,131,139,112,141,107,199,126"/>
+</map>

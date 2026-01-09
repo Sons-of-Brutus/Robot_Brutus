@@ -1,0 +1,5 @@
+<map id="Brutus::perception_task" name="Brutus::perception_task">
+<area shape="rect" id="Node000001" title="Task example to read multiple ultrasonic sensors." alt="" coords="5,13,181,38"/>
+<area shape="rect" id="Node000002" href="$classBrutusDistanceSensor.html#a419cffa5a9791e14875eb8f9b93dcb7a" title="Measure the distance to an object." alt="" coords="229,5,395,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,23,216,23,216,28,182,28"/>
+</map>

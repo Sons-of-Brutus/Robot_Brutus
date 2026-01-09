@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['g_5fpin_0',['G_PIN',['../brutus__params_8h.html#adbca23f9ec0f4603813bde409f3fff7c',1,'brutus_params.h']]],
+  ['gait_5f1_1',['GAIT_1',['../brutus__params_8h.html#a37828f0582220c5d60044151ffd1c7b8',1,'brutus_params.h']]],
+  ['gait_5f2_2',['GAIT_2',['../brutus__params_8h.html#a9f621113d85e25ef80cfc3b132d28f9c',1,'brutus_params.h']]],
+  ['gait_5f3_3',['GAIT_3',['../brutus__params_8h.html#a1cd3ac2d4f893112c1f3099ba1615b46',1,'brutus_params.h']]],
+  ['gait_5f4_4',['GAIT_4',['../brutus__params_8h.html#af731bad3e63212b90218ec3a7bd498ea',1,'brutus_params.h']]],
+  ['gait_5f5_5',['GAIT_5',['../brutus__params_8h.html#a51e21a644dc239d2fd94af20d89dd7f4',1,'brutus_params.h']]],
+  ['gait_5f6_6',['GAIT_6',['../brutus__params_8h.html#a1c7adc215564d1e9f2a7e395139ee772',1,'brutus_params.h']]],
+  ['gait_5fsteps_7',['GAIT_STEPS',['../brutus__params_8h.html#ad370987f4e8d26761327652430eb8410',1,'brutus_params.h']]],
+  ['get_5fangle_8',['get_angle',['../classPca9685Servo.html#aff74f71fb25708b8660817c36f7f5a07',1,'Pca9685Servo']]],
+  ['get_5fangular_5fspeed_9',['get_angular_speed',['../classBrutus.html#ae3f1b26280cebf7e3277190476346a20',1,'Brutus']]],
+  ['get_5fangular_5fspeed_5fts_10',['get_angular_speed_ts',['../classBrutus.html#a36c9978c6c94a5ceeb5def0e58631bc6',1,'Brutus']]],
+  ['get_5fleg_5fstate_11',['get_leg_state',['../classBrutusLegInterface.html#a45b08da757d2690b80a009dd5493174d',1,'BrutusLegInterface']]],
+  ['get_5flinear_5fspeed_12',['get_linear_speed',['../classBrutus.html#aa3bcbe0310b91501e3f51eabdf53c05c',1,'Brutus']]],
+  ['get_5flinear_5fspeed_5fts_13',['get_linear_speed_ts',['../classBrutus.html#ad45b402dcf49dc567a001b267a387396',1,'Brutus']]],
+  ['get_5fmotion_5fcontrol_5fmode_14',['get_motion_control_mode',['../classBrutus.html#aec705ab654baadc9c7848a5663e25bfc',1,'Brutus']]],
+  ['get_5fperception_5fdata_15',['get_perception_data',['../classBrutus.html#a94cd6f5823be92e0d00268ee8af7193b',1,'Brutus']]],
+  ['getcmd_16',['getCmd',['../classBrutusComms.html#aef65c7ada71d97ad55ff8e8a23c6d0f0',1,'BrutusComms']]]
+];

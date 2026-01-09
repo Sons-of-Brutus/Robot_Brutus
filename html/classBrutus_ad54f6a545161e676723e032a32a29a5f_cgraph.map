@@ -1,0 +1,25 @@
+<map id="Brutus::motion_task" name="Brutus::motion_task">
+<area shape="rect" id="Node000001" title="Main motion control loop." alt="" coords="5,159,159,184"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#a399127ae26211f6d738776a6ec2489d6" title="Updates the internal target pose. (thread&#45;safe)" alt="" coords="207,5,409,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,157,134,101,167,68,205,41,221,33,224,38,208,46,171,73,138,104,94,160"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a36c9978c6c94a5ceeb5def0e58631bc6" title="Gets the angular speed command in a thread&#45;safe manner." alt="" coords="233,55,383,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="104,156,150,131,206,105,224,98,226,103,208,110,152,136,106,161"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#ad45b402dcf49dc567a001b267a387396" title="Gets the linear speed command in a thread&#45;safe manner." alt="" coords="239,119,377,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="159,158,225,148,226,154,159,163"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#aec705ab654baadc9c7848a5663e25bfc" title="Gets the current motion control mode." alt="" coords="235,183,381,223"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="159,180,222,188,221,194,159,185"/>
+<area shape="rect" id="Node000006" href="$classBrutus.html#ace92e70c1d993f0f2f694b8dd31b638a" title="Modifies a pose according to the desired angular speed." alt="" coords="219,247,397,287"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="106,182,152,207,208,233,226,240,224,245,206,238,150,212,104,186"/>
+<area shape="rect" id="Node000008" href="$classBrutus.html#a31b0640380df00a8187667e36c386570" title="Commands the robot to adopt a given pose." alt="" coords="243,312,373,337"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="94,182,138,238,171,270,208,297,230,307,228,312,205,302,167,274,134,242,90,186"/>
+<area shape="rect" id="Node000007" href="$classBrutus.html#acee8f49a02edf254e69eff8657e4a181" title="Performs a linear interpolation between two values." alt="" coords="457,255,656,280"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="397,265,443,265,443,270,397,270"/>
+<area shape="rect" id="Node000009" href="$classBrutusLegInterface.html#a3779b8a155a1225ce144647b37fc6110" title="Commands the leg&#39;s servos a desired leg state angles." alt="" coords="484,305,629,345"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="374,322,470,322,470,327,374,327"/>
+<area shape="rect" id="Node000010" href="$classPca9685Servo.html#a217c1f47f4b69325a632b5984574b863" title="Sends a PWM pulse corresponding to an angle to the specified servo." alt="" coords="704,312,889,337"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="630,322,691,322,691,327,630,327"/>
+<area shape="rect" id="Node000011" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="951,273,1110,313"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="889,309,938,303,938,308,890,315"/>
+<area shape="rect" id="Node000012" href="$classPca9685Servo.html#abefbdb59d4c315c424056af141387c95" title="Wraps an angle into the servo&#39;s valid range." alt="" coords="937,337,1124,377"/>
+<area shape="poly" id="edge11_Node000010_Node000012" title=" " alt="" coords="890,335,924,339,923,345,889,340"/>
+</map>

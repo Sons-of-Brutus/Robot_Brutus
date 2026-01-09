@@ -1,0 +1,29 @@
+<map id="Brutus::create_motion_task" name="Brutus::create_motion_task">
+<area shape="rect" id="Node000001" title="Creates the motion control task." alt="" coords="5,159,207,184"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#ad9f936bd4254cee1ed486f3b8c871dcf" title="FreeRTOS wrapper for the motion task." alt="" coords="255,151,408,191"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,169,241,169,241,174,207,174"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#ad54f6a545161e676723e032a32a29a5f" title="Main motion control loop." alt="" coords="456,159,609,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="408,169,442,169,442,174,408,174"/>
+<area shape="rect" id="Node000004" href="$classBrutus.html#a399127ae26211f6d738776a6ec2489d6" title="Updates the internal target pose. (thread&#45;safe)" alt="" coords="657,5,860,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="540,157,585,101,618,68,656,41,672,33,674,38,659,46,622,73,589,104,545,160"/>
+<area shape="rect" id="Node000005" href="$classBrutus.html#a36c9978c6c94a5ceeb5def0e58631bc6" title="Gets the angular speed command in a thread&#45;safe manner." alt="" coords="684,55,833,95"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="554,156,601,131,656,105,675,98,677,103,658,110,603,136,557,161"/>
+<area shape="rect" id="Node000006" href="$classBrutus.html#ad45b402dcf49dc567a001b267a387396" title="Gets the linear speed command in a thread&#45;safe manner." alt="" coords="690,119,827,159"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="609,158,676,148,677,154,610,163"/>
+<area shape="rect" id="Node000007" href="$classBrutus.html#aec705ab654baadc9c7848a5663e25bfc" title="Gets the current motion control mode." alt="" coords="685,183,832,223"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="610,180,672,188,672,194,609,185"/>
+<area shape="rect" id="Node000008" href="$classBrutus.html#ace92e70c1d993f0f2f694b8dd31b638a" title="Modifies a pose according to the desired angular speed." alt="" coords="669,247,848,287"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="557,182,603,207,658,233,677,240,675,245,656,238,601,212,554,186"/>
+<area shape="rect" id="Node000010" href="$classBrutus.html#a31b0640380df00a8187667e36c386570" title="Commands the robot to adopt a given pose." alt="" coords="693,312,824,337"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="545,182,589,238,622,270,659,297,681,307,679,312,656,302,618,274,585,242,540,186"/>
+<area shape="rect" id="Node000009" href="$classBrutus.html#acee8f49a02edf254e69eff8657e4a181" title="Performs a linear interpolation between two values." alt="" coords="908,255,1107,280"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="848,265,894,265,894,270,848,270"/>
+<area shape="rect" id="Node000011" href="$classBrutusLegInterface.html#a3779b8a155a1225ce144647b37fc6110" title="Commands the leg&#39;s servos a desired leg state angles." alt="" coords="935,305,1080,345"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="825,322,921,322,921,327,825,327"/>
+<area shape="rect" id="Node000012" href="$classPca9685Servo.html#a217c1f47f4b69325a632b5984574b863" title="Sends a PWM pulse corresponding to an angle to the specified servo." alt="" coords="1155,312,1340,337"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="1081,322,1141,322,1141,327,1081,327"/>
+<area shape="rect" id="Node000013" href="$classPca9685Servo.html#a7bc92e398e719d9bd3c326d0790b5e76" title="Converts an angle to a PWM value for the PCA9685." alt="" coords="1402,273,1561,313"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="1340,309,1388,303,1389,308,1340,315"/>
+<area shape="rect" id="Node000014" href="$classPca9685Servo.html#abefbdb59d4c315c424056af141387c95" title="Wraps an angle into the servo&#39;s valid range." alt="" coords="1388,337,1575,377"/>
+<area shape="poly" id="edge13_Node000012_Node000014" title=" " alt="" coords="1340,335,1375,339,1374,345,1340,340"/>
+</map>

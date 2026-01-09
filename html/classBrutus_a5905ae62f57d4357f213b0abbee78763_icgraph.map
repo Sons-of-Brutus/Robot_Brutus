@@ -1,0 +1,7 @@
+<map id="Brutus::eyes_red" name="Brutus::eyes_red">
+<area shape="rect" id="Node000001" title="Sets eyes LED to RED." alt="" coords="161,31,292,56"/>
+<area shape="rect" id="Node000002" href="$classBrutus.html#ad5a034663a6715f9ec2f4972894533ae" title="Initializes hardware and internal subsystems." alt="" coords="5,5,113,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="147,34,113,29,114,24,148,29"/>
+<area shape="rect" id="Node000003" href="$classBrutus.html#a79114236194683af9da146cba8f93e06" title="Finalizes setup and moves the robot to the standing pose." alt="" coords="8,55,111,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="148,57,112,63,111,57,147,52"/>
+</map>

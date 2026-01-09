@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['shoulder_5fangle_0',['shoulder_angle',['../structBrutusLegState.html#a99dd59c2875971c462031656e5451329',1,'BrutusLegState']]],
+  ['spin_5f1_1',['SPIN_1',['../brutus__params_8h.html#a87aa86b189e216afad497d540e5f052a',1,'brutus_params.h']]],
+  ['spin_5f2_2',['SPIN_2',['../brutus__params_8h.html#a87108fc08dbe06a99e8228b8de56df9b',1,'brutus_params.h']]],
+  ['spin_5f3_3',['SPIN_3',['../brutus__params_8h.html#a13c7a75d37f3b197cbc1e970b8e4eb5d',1,'brutus_params.h']]],
+  ['spin_5f4_4',['SPIN_4',['../brutus__params_8h.html#a2a8797261b0f0e63b37d5f3e1e5cd3ae',1,'brutus_params.h']]],
+  ['spin_5f5_5',['SPIN_5',['../brutus__params_8h.html#aae270079c51eac68e2c80a9727538719',1,'brutus_params.h']]],
+  ['spin_5f6_6',['SPIN_6',['../brutus__params_8h.html#ac01bd60e55ba19aa4740b5c28c6c2ea9',1,'brutus_params.h']]],
+  ['spin_5fsteps_7',['SPIN_STEPS',['../brutus__params_8h.html#a1a6fa0b82eef98edf6820b29d3452826',1,'brutus_params.h']]],
+  ['standing_5fbl_5fstate_8',['STANDING_BL_STATE',['../brutus__params_8h.html#a7584c7542c7a18d764f274a86cc2b514',1,'brutus_params.h']]],
+  ['standing_5fbr_5fstate_9',['STANDING_BR_STATE',['../brutus__params_8h.html#aae8cc4dc0305160b3fbc8c3c06da5f1c',1,'brutus_params.h']]],
+  ['standing_5ffl_5fstate_10',['STANDING_FL_STATE',['../brutus__params_8h.html#ab1e5edc634909c0594b08e147cb5952f',1,'brutus_params.h']]],
+  ['standing_5ffr_5fstate_11',['STANDING_FR_STATE',['../brutus__params_8h.html#a166b662c99c7259c21a94865308c4548',1,'brutus_params.h']]],
+  ['standing_5fpose_12',['STANDING_POSE',['../brutus__params_8h.html#a78c66b7fa8d8206520e12a71830c659b',1,'brutus_params.h']]],
+  ['start_5fcmd_13',['START_CMD',['../comms__params_8h.html#ab6cd5dfae635ba04bd98a7f8f1ef89af',1,'comms_params.h']]],
+  ['start_5fcmd_5fleg_14',['START_CMD_LEG',['../comms__params_8h.html#aaa3fcca387366814931df5a657145d60',1,'comms_params.h']]],
+  ['start_5fcmd_5fpose_15',['START_CMD_POSE',['../comms__params_8h.html#a8918729b36873181763cbace5c1b1d04',1,'comms_params.h']]],
+  ['start_5fdata_16',['START_DATA',['../comms__params_8h.html#ad9de038a780bf4fa30d8cf7ea5c960d2',1,'comms_params.h']]]
+];
