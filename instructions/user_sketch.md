@@ -1,3 +1,5 @@
+# User Sketch
+
 ## Enum Declaration
 
 This enum is declared to be used in the state machine created in the logic task.
