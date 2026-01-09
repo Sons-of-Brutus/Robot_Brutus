@@ -1,10 +1,10 @@
 #include "Brutus.h"
 #include "BrutusComms.h"
 
-#define W_EX1 0.4
+#define W_EX1 0.45
 #define V_EX1 1
-#define NEAREST_DIST 12.0
-#define FURTHER_DIST 18.0
+#define NEAREST_DIST 13
+#define FURTHER_DIST 16.0
 
 // STATES
 
@@ -141,7 +141,6 @@ mode_task(void* pvParameters)
   int sign;
 
   while (true) {
-    //Serial.println("<MODES>");
     uint32_t start_time = micros();
 
     cmd = brutus_comms.getCmd();
@@ -154,6 +153,7 @@ mode_task(void* pvParameters)
           brutus.eyes_blue();
           brutus.set_motion_control_mode(POSE_CONTROL);
           last_mode = mode;
+          state_ex1 = PREPARE;
         }
 
         brutus.change_target_pose(STANDING_POSE);
@@ -164,6 +164,7 @@ mode_task(void* pvParameters)
           brutus.eyes_yellow();
           brutus.set_motion_control_mode(POSE_CONTROL);
           last_mode = mode;
+          state_ex1 = PREPARE;
         }
 
         brutus.change_target_pose(interp_pose_norm(cmd.pose));
@@ -174,6 +175,7 @@ mode_task(void* pvParameters)
           brutus.eyes_green();
           brutus.set_motion_control_mode(SPEED_CONTROL);
           last_mode = mode;
+          state_ex1 = PREPARE;
         }
 
         brutus.set_linear_speed_ts(cmd.v);
@@ -231,6 +233,7 @@ mode_task(void* pvParameters)
 
       case EXERCISE_2:
         if (mode != last_mode) {
+          state_ex1 = PREPARE;
           brutus.eyes_magenta();
           brutus.set_motion_control_mode(SPEED_CONTROL);
           last_mode = mode;
