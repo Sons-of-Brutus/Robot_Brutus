@@ -13,3 +13,7 @@ What can you find in this repository:
 - [Code](./src/brutus_esp32)
 - [Brutus' MQTT user interfaces](./mqtt_interface/)
 - [Doxygen index of the code](https://sons-of-brutus.github.io/Robot_Brutus/)
+
+---
+
+Original design from thingiverse: https://www.thingiverse.com/thing:1265766/files
