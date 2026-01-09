@@ -1328,10 +1328,7 @@ Finally, we create the task that will manage Brutus’ highest-level logic, that
 ```
 
 ---
-### loop()
-```c
-void loop() {}
-```
+
 ## Logic Task Definition
 It is worth noting that in each mode we change the eye color to indicate the current mode, although this is not strictly necessary.
 
@@ -1353,7 +1350,7 @@ mode_task(void* pvParameters)
   float bl_elbow = 0.0;
 
   while (true) {
-    // We update the command using the information received through Mosquitto communications.
+    // We update the command using the information received through MQTT
     cmd = brutus_comms.getCmd();
     mode = FuncMode(cmd.mode);
 
