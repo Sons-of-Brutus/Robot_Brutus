@@ -27,44 +27,74 @@ This section provides a complete overview of all structural, mechanical, and ele
 
 ---
 
+## Materials
+
 ### Printable pieces
 | Name | Quantity | Mesh | Image |
 | :--- | :---: | :---: | ---: |
-| `Chasis` | 1 | [chasis_mesh.stl](../meshes/chasis_mesh.stl) | ... |
-| `Chasis cover` | 1 |[chasis_cover_mesh.stl](../meshes/chasis_cover_mesh.stl) | ... |
-| `Spacer` (optional) | 4 | [spacer.stl](../meshes/spacer.stl) | ... |
-| `Left shoulder` | 2 | [left_shoulder_mesh.stl](../meshes/foot_fist_mesh.stl) | ... |
-| `Right shoulder` | 2 | [right_shoulder_mesh.stl](../meshes/right_shoulder_mesh.stl) | ... |
-| `Left elbow` | 2 | [left_elbow_mesh.stl](../meshes/left_elbow_mesh.stl) | ... |
-| `Right elbow` | 2 | [right_elbow_mesh.stl](../meshes/right_elbow_mesh.stl) | ... |
-| `Leg up link` | 4 | [leg_up_link_mesh.stl](../meshes/leg_up_link_mesh.stl) | ... |
-| `Foot` | 4 | [foot_fist_mesh.stl](../meshes/foot_fist_mesh.stl) | ... | 
-| `Box` | 1 | [up_box_mesh.stl](../meshes/up_box_mesh.stl) | ... |
-| `US Sensor chasis` | 3 | [us_chasis_mesh.stl](../meshes/us_chasis_mesh.stl) | ... |
-| `Battery limit` | 1 | [battery_limit.stl](../meshes/battery_limit.stl) | ... |
-| `Weight case` | 1 | [weight_case.stl](../meshes/weight_case) | ... |
+| `Chasis` | 1 | [chasis_mesh.stl](../meshes/chasis_mesh.stl) | <img src="./media/pieces/chasis.png" width="150"> |
+| `Chasis cover` | 1 | [chasis_cover_mesh.stl](../meshes/chasis_cover_mesh.stl) | <img src="./media/pieces/chasis_cover.png" width="150"> |
+| `Spacer` (optional) | 4 | [spacer.stl](../meshes/spacer.png) | <img src="./media/pieces/spacer.png" width="150"> |
+| `Left shoulder` | 2 | [left_shoulder_mesh.stl](../meshes/left_shoulder_mesh.stl) | <img src="./media/pieces/left_shoulder.png" width="150"> |
+| `Right shoulder` | 2 | [right_shoulder_mesh.stl](../meshes/right_shoulder_mesh.stl) | <img src="./media/pieces/right_shoulder.png" width="150"> |
+| `Left elbow` | 2 | [left_elbow_mesh.stl](../meshes/left_elbow_mesh.stl) | <img src="./media/pieces/left_elbow.png" width="150"> |
+| `Right elbow` | 2 | [right_elbow_mesh.stl](../meshes/right_elbow_mesh.stl) | <img src="./media/pieces/right_elbow.png" width="150"> |
+| `Leg up link` | 4 | [leg_up_link_mesh.stl](../meshes/leg_up_link_mesh.stl) | <img src="./media/pieces/leg_up_link.png" width="150"> |
+| `Foot` | 4 | [foot_fist_mesh.stl](../meshes/foot_fist_mesh.stl) | <img src="./media/pieces/foot.png" width="150"> | 
+| `Up box` | 1 | [up_box_mesh.stl](../meshes/up_box_mesh.stl) | <img src="./media/pieces/up_box.png" width="150"> |
+| `US Sensor chasis` | 3 | [us_chasis_mesh.stl](../meshes/us_chasis_mesh.stl) | <img src="./media/pieces/us_chasis.png" width="150"> |
+| `Battery limit` | 1 | [battery_limit.stl](../meshes/battery_limit.stl) | <img src="./media/pieces/battery_limit.png" width="150"> |
+| `Weight case` | 1 | [weight_case.stl](../meshes/weight_case.stl) | <img src="./media/pieces/weight_case.png" width="150"> |
 
 **Notes:**
-- *Left shoulder/elbow are for front left leg and back right leg, while right shoulder/elbow are for front right leg, back left leg.*
-- *Spacer is optional as you can replace it for a metallic one with similar dimensions (Inner hole must be at least as the 3D model one).*
----
+- ***Left shoulder/elbow** are for **front left** leg and **back right** leg, while **right shoulder/elbow** are for **front right** leg, **back left** leg.*
+- *Spacer is optional as you can replace it for M3 metalic washers with similar dimensions.*
+
 ### Electronic components
 | Name | Quantity | Description | Link | Image |
 | :--- | :---: | :---: | :---: | ---: |
-| `ESP32` development board | 1 | Dual-Core microcontroller with integrated WiFi and Bluetooth | [Link](https://www.amazon.es/AZDelivery-ESP-32-Dev-Kit-Development/dp/B0DJ33NNRD?) | ![esp32](./media/components/esp32.png) |
-| `PCA9685` | 1 | 16-channel, I2C-controlled PWM (Pulse Width Modulation) controller. For servos control. | [Link](https://es.aliexpress.com/item/1005005670283526.html) | ![pca](./media/components/pca.png) |
-| `DC-DC Buck module` | 1 | Ultra-small 10A DC-DC Buck Converter 9V-14V to 5V Step-Down Voltage Regulator Module. | [Link](https://es.aliexpress.com/item/1005009068963636.html?) | ![dc_dc_buck](./media/components/dc_dc_buck.png) |
-| `MG90S Servo` | 8 | High-torque, metal-gear micro servo motor. | [Link](https://es.aliexpress.com/item/1005007522665750.html?) | ![mg90s](./media/components/mg90s.png)
-| `Battery` | 1 | 3S1P 18650 Lithium-ion Battery Packs, 12V Rechargeable Lithium Battery.  | [Link](https://es.aliexpress.com/item/1005009656713743.html?) | ![battery](./media/components/battery.png)
-| `HC-SR04` | 3 | Ultrasonic distance sensor | [Link](https://es.aliexpress.com/item/1005010356855481.html?) | ![hc_sr04](./media/components/hc_sr04.png) |
-| `RGB LED` | 1 | RGB flat led module | ... | ![led_rgb](./media/components/led_rgb.jpg)
+| `ESP32` development board | 1 | Dual-Core microcontroller with integrated WiFi and Bluetooth | [Link](https://www.amazon.es/AZDelivery-ESP-32-Dev-Kit-Development/dp/B0DJ33NNRD?) | <img src="./media/components/esp32.png" width="200"> |
+| `PCA9685` | 1 | 16-channel, I2C-controlled PWM (Pulse Width Modulation) controller. For servos control. | [Link](https://es.aliexpress.com/item/1005005670283526.html) | <img src="./media/components/pca.png" width="200"> |
+| `DC-DC Buck module` | 1 | Ultra-small 10A DC-DC Buck Converter 9V-14V to 5V Step-Down Voltage Regulator Module. | [Link](https://es.aliexpress.com/item/1005009068963636.html?) | <img src="./media/components/dc_dc_buck.png" width="200"> |
+| `MG90S Servo` | 8 | High-torque, metal-gear micro servo motor. | [Link](https://es.aliexpress.com/item/1005007522665750.html?) | <img src="./media/components/mg90s.png" width="200"> |
+| `Battery` | 1 | 3S1P 18650 Lithium-ion Battery Packs, 12V Rechargeable Lithium Battery.  | [Link](https://es.aliexpress.com/item/1005009656713743.html?) | <img src="./media/components/battery.png" width="200">
+| `HC-SR04` | 3 | Ultrasonic distance sensor | [Link](https://es.aliexpress.com/item/1005010356855481.html?) | <img src="./media/components/hc_sr04.png" width="200"> |
+| `RGB LED` | 1 | RGB flat led module | Not specified | <img src="./media/components/led_rgb.jpg" width="200"> |
+| `Switch` | 1 | Electronic switch (as small as you can) | Not specified | Not specified |
 
-During maintenance tasks, this list acts as a reference to:
-- Identify which part must be inspected or replaced
-- Verify that the correct component is being used
-- Understand how mechanical and electrical subsystems interact
+### Wiring
 
-Any modification or replacement should always use parts compatible with the specifications described in this section to preserve the robot’s performance and safety.
+**Important**: Some wire lengths are redundant.
+
+| Name | Quantity/Length | Image |
+| :--- | :----: | ---: |
+| `2-Pole Terminal Block` | 1 | <img src="./media/components/pole_terminal.png" width="200"> |
+| `16 AWG Wire` | 500 mm aprox. | - |
+| `20 AWG Wire` | 500 mm aprox. | - |
+| `26 AWG Wire` | 500 mm aprox. | - |
+| `28 AWG Wire` | 200 mm aprox. | - |
+| `Female-to-female jumper wire` | 18 | <img src="./media/components/jumpers.jpg" width="200">
+
+**Notes**:
+- `2-Pole Terminal` can be substituted by:
+  + Using 2 `1-Pole Terminal Block`.
+  + Cutting a `N-pole Terminal Block` with more than 2 poles.
+- You can substitute 28 AWG cables by using *jumper wires* with their conectors removed.
+- Wire gauges:
+<img src="./media/components/wires.jpg" width="50%">
+
+### Fasteners
+
+
+| Name | Details | Quantity | Image |
+| :--- | :--- | :---: | ---: |
+| `Bearing` | F693ZZ Bearing | 8 | <img src="./media/components/bearing.jpg" width="150"> |
+| `M3x30mm Bolt` | M3 30mm hex bolt | 12 | <img src="./media/components/M3x30mmBolt.png" width="150"> |
+| `M3 Nut` | Standard M3 hex nut (used in legs + top cover) | 30 |<img src="./media/components/M3Nut.png" width="150"> |
+| `M3 Washer` | M3 metal washer | 16 | <img src="./media/components/M3Washer.png" width="150"> |
+| `M1 Screw` | M1 self-tapping screw (servo horn screws + ESP top cover mount) | 10 | <img src="./media/components/M1Screw.png" width="150"> |
+| `M2 Screw` | M2 screw (mounting servos, 2 per servo × 4 servos) | 8 | <img src="./media/components/M2Screw.png" width="150"> |
+
 
 ---
 
@@ -1407,6 +1437,11 @@ mode_task(void* pvParameters)
   }
 }
 ```
+---
+
+## Doxigen
+
+If you want to look for more information about our project, please checkout this Doxigen document in which is talked about almost all software we have made during the process of this project.
 
 
 
