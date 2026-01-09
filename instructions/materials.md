@@ -56,15 +56,12 @@
 
 ## Fasteners
 
-- Tornillo de rosca chapa = Sheet Metal Screw
-  <img src="./media/components/sheet_metal_screw.jpg" width="150"> <img src="./media/components/sheet_metal_screw_tiny.jpeg" width="100">
-
-- Tornillo para tuerca (Perno) = Bolt
-  <img src="./media/components/bolt.png" width="150">
-
-- Tuerca = nut
 
 | Name | Details | Quantity | Image |
-| :--- | :---: | :---: | ---: |
+| :--- | :--- | :---: | ---: |
 | `Bearing` | F693ZZ Bearing | 8 | <img src="./media/components/bearing.jpg" width="150"> |
-| `M3x30mm Bolt` | M3 30mm Hex bolt | 12 | - |
+| `M3x30mm Bolt` | M3 30mm hex bolt | 12 | <img src="./media/components/M3x30mmBolt.png" width="150"> |
+| `M3 Nut` | Standard M3 hex nut (used in legs + top cover) | 30 |<img src="./media/components/M3Nut.png" width="150"> |
+| `M3 Washer` | M3 metal washer | 16 | <img src="./media/components/M3Washer.png" width="150"> |
+| `M1 Screw` | M1 self-tapping screw (servo horn screws + ESP top cover mount) | 10 | <img src="./media/components/M1Screw.png" width="150"> |
+| `M2 Screw` | M2 screw (mounting servos, 2 per servo × 4 servos) | 8 | <img src="./media/components/M2Screw.png" width="150"> |
