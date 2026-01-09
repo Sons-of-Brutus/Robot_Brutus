@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "voltage_reduction")(type "KiCad")(uri "${KIPRJMOD}/voltage_reduction.kicad_sym")(options "")(descr ""))
+  (lib (name "esp32_devkit")(type "KiCad")(uri "${KIPRJMOD}/esp32_devkit.kicad_sym")(options "")(descr ""))
+  (lib (name "hc-sr04")(type "KiCad")(uri "${KIPRJMOD}/hc-sr04.kicad_sym")(options "")(descr ""))
+)
